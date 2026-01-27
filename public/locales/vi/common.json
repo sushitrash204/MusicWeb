@@ -1,0 +1,26 @@
+{
+    "app_title": "Music App",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "settings": "Cài đặt",
+    "language": "Ngôn ngữ",
+    "profile": "Hồ sơ",
+    "welcome": "Chào mừng",
+    
+    "AUTH_REGISTER_SUCCESS": "Đăng ký tài khoản thành công",
+    "AUTH_LOGIN_SUCCESS": "Đăng nhập thành công",
+    "AUTH_LOGOUT_SUCCESS": "Đăng xuất thành công",
+    "AUTH_REFRESH_SUCCESS": "Làm mới token thành công",
+    
+    "ERR_USER_EXISTS": "Người dùng đã tồn tại",
+    "ERR_USER_NOT_FOUND": "Không tìm thấy người dùng",
+    "ERR_WRONG_PASSWORD": "Sai mật khẩu",
+    "ERR_INVALID_TOKEN": "Token không hợp lệ",
+    "ERR_TOKEN_EXPIRED": "Token đã hết hạn",
+    "ERR_NO_TOKEN": "Không có token",
+    
+    "RATE_LIMIT_GLOBAL": "Quá nhiều yêu cầu, vui lòng thử lại sau",
+    "RATE_LIMIT_AUTH": "Quá nhiều lần thử đăng nhập/đăng ký, thử lại sau 1 giờ",
+    "RATE_LIMIT_LOGIN": "Quá nhiều lần đăng nhập thất bại, khóa trong 15 phút"
+}

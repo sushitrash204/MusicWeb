@@ -1,0 +1,23 @@
+{
+    "app_title": "Music App",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "settings": "Settings",
+    "language": "Language",
+    "profile": "Profile",
+    "welcome": "Welcome",
+    "AUTH_REGISTER_SUCCESS": "User registered successfully",
+    "AUTH_LOGIN_SUCCESS": "Logged in successfully",
+    "AUTH_LOGOUT_SUCCESS": "Logged out successfully",
+    "AUTH_REFRESH_SUCCESS": "Token refreshed successfully",
+    "ERR_USER_EXISTS": "User already exists",
+    "ERR_USER_NOT_FOUND": "User not found",
+    "ERR_WRONG_PASSWORD": "Incorrect password",
+    "ERR_INVALID_TOKEN": "Invalid token",
+    "ERR_TOKEN_EXPIRED": "Token expired",
+    "ERR_NO_TOKEN": "No token",
+    "RATE_LIMIT_GLOBAL": "Too many requests, please try again later",
+    "RATE_LIMIT_AUTH": "Too many login/register attempts, try again in 1 hour",
+    "RATE_LIMIT_LOGIN": "Too many failed login attempts, locked for 15 minutes"
+}

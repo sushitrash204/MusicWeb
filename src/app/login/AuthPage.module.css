@@ -1,0 +1,182 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #111827;
+    color: white;
+    padding: 1rem 3rem;
+}
+
+.card {
+    width: 100%;
+    max-width: 28rem;
+    padding: 2rem;
+    background-color: #1f2937;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid #374151;
+    transition: all 0.3s;
+}
+
+.title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(to right, #60a5fa, #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.tabContainer {
+    display: flex;
+    background-color: rgba(55, 65, 81, 0.5);
+    border-radius: 0.75rem;
+    padding: 0.25rem;
+    margin-bottom: 2rem;
+}
+
+.tabButton {
+    flex: 1;
+    padding: 0.5rem 0;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: #9ca3af;
+}
+
+.tabButton:hover {
+    color: #e5e7eb;
+}
+
+.activeTab {
+    background-color: #4b5563;
+    color: white;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    text-align: center;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .5;
+    }
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.inputGroup {
+    /* animation: fadeIn 0.3s ease-in-out; */
+}
+
+.label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+}
+
+.input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: #111827;
+    border: 1px solid #374151;
+    border-radius: 0.75rem;
+    outline: none;
+    color: white;
+}
+
+.input:focus {
+    box-shadow: 0 0 0 2px #3b82f6;
+    border-color: #3b82f6;
+}
+
+.submitButton {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(to right, #2563eb, #9333ea);
+    border-radius: 0.75rem;
+    font-weight: 700;
+    margin-top: 1rem;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+}
+
+.submitButton:hover {
+    background: linear-gradient(to right, #1d4ed8, #7e22ce);
+}
+
+.submitButton:active {
+    transform: scale(0.95);
+}
+
+.submitButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.linkButton {
+    color: #60a5fa;
+    font-weight: 500;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.linkButton:hover {
+    text-decoration: underline;
+}
+
+.animationContainer {
+    /* Simple fade in/slide in animation classes would go here or handled via JS libs if complex */
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

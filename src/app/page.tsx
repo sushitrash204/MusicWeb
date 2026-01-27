@@ -1,52 +1,27 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { logout } from '@/services/authService';
+import { useAuth } from '@/context/AuthContext';
 
 export default function HomePage() {
-  const [user, setUser] = useState<any>(null);
+  const { user, loading } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    // Kiểm tra xem đã đăng nhập chưa
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      router.push('/login');
-    } else {
-      // Trong thực tế, bạn sẽ gọi API lấy profile user ở đây
-      setUser({ username: 'User Default' });
-    }
-  }, [router]);
+  // Removed redirect logic to allow guest access
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      localStorage.removeItem('accessToken');
-      router.push('/login');
-    } catch (err) {
-      console.error('Logout failed', err);
-    }
-  };
-
-  if (!user) return <div className="bg-gray-900 min-h-screen text-white flex items-center justify-center">Đang tải...</div>;
+  if (loading) return <div className="bg-gray-900 min-h-screen text-white flex items-center justify-center">Đang tải...</div>;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
-      <header className="flex justify-between items-center mb-12">
-        <div>
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Âm Nhạc Cho Bạn
-          </h1>
-          <p className="text-gray-400 mt-2">Chào mừng trở lại, {user.username}!</p>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="px-6 py-2 bg-gray-800 hover:bg-red-600/20 hover:text-red-500 border border-gray-700 hover:border-red-500/50 rounded-lg transition-all"
-        >
-          Đăng xuất
-        </button>
-      </header>
+      <div className="mb-12">
+        <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          Âm Nhạc Cho Bạn
+        </h1>
+        <p className="text-gray-400 mt-2">
+          {user ? `Chào mừng trở lại, ${user.fullName || user.username}!` : 'Chào mừng bạn đến với Music App!'}
+        </p>
+      </div>
 
       <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Placeholder cho danh sách nhạc */}

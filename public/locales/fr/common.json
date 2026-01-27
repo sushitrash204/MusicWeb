@@ -1,0 +1,23 @@
+{
+    "app_title": "Music App",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion",
+    "settings": "Paramètres",
+    "language": "Langue",
+    "profile": "Profil",
+    "welcome": "Bienvenue",
+    "AUTH_REGISTER_SUCCESS": "Utilisateur enregistré avec succès",
+    "AUTH_LOGIN_SUCCESS": "Connexion réussie",
+    "AUTH_LOGOUT_SUCCESS": "Déconnexion réussie",
+    "AUTH_REFRESH_SUCCESS": "Jeton actualisé avec succès",
+    "ERR_USER_EXISTS": "L'utilisateur existe déjà",
+    "ERR_USER_NOT_FOUND": "Utilisateur non trouvé",
+    "ERR_WRONG_PASSWORD": "Mot de passe incorrect",
+    "ERR_INVALID_TOKEN": "Jeton invalide",
+    "ERR_TOKEN_EXPIRED": "Jeton expiré",
+    "ERR_NO_TOKEN": "Aucun jeton",
+    "RATE_LIMIT_GLOBAL": "Trop de requêtes, veuillez réessayer plus tard",
+    "RATE_LIMIT_AUTH": "Trop de tentatives, réessayez dans 1 heure",
+    "RATE_LIMIT_LOGIN": "Trop d'échecs de connexion, verrouillé pendant 15 minutes"
+}
