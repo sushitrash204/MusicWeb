@@ -13,14 +13,8 @@ api.interceptors.request.use(
     (config) => {
         // 1. Language
         if (typeof window !== 'undefined') {
-            const lang = localStorage.getItem('language') || 'vi';
+            const lang = localStorage.getItem('language') || 'en';
             config.params = { ...config.params, lang };
-
-            // 2. Access Token (if stored in localStorage/memory)
-            // For this implementation, we might be using cookies for refresh token, 
-            // but usually access token is in memory or local storage.
-            // Let's assume we store accessToken in localStorage for simplicity, or just rely on cookies if we did cookie-only.
-            // The backend authMiddleware checks 'Authorization: Bearer ...'.
             const token = localStorage.getItem('accessToken');
             if (token) {
                 config.headers['Authorization'] = `Bearer ${token}`;

@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import authService from '@/services/authService';
+import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import styles from './AuthPage.module.css';
 
 export default function AuthPage() {
+    const { login, register } = useAuth();
     const [isLogin, setIsLogin] = useState(true); // State để kiểm soát đang ở form nào
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -33,8 +35,8 @@ export default function AuthPage() {
         try {
             if (isLogin) {
                 // Xử lý Login
-                const data = await authService.login({ username: formData.username, password: formData.password });
-                localStorage.setItem('accessToken', data.accessToken); // Keep standard
+                await login({ username: formData.username, password: formData.password });
+                // localStorage and state are handled in AuthContext
                 router.push('/');
             } else {
                 // Xử lý Register

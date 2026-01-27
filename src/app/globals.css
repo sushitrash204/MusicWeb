@@ -1,8 +1,19 @@
 @import "tailwindcss";
 
 :root {
+  /* Light Mode - Blue/White Theme */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #020617;
+  /* Very dark blue-black */
+  --primary: #2563EB;
+  /* Blue 600 */
+  --primary-hover: #1d4ed8;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --text-muted: #64748b;
+  --button-text: #ffffff;
+  --dropdown-bg: #ffffff;
+  --dropdown-hover: #f1f5f9;
 }
 
 @theme inline {
@@ -12,15 +23,46 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Base Dark Mode Variables - Applied when data-theme="dark" attribute is on html */
+/* Base Dark Mode Variables */
+[data-theme="dark"] {
+  --background: #020617;
+  /* Slate 950 - Deep Blue/Black */
+  --foreground: #f8fafc;
+  /* Slate 50 */
+  --primary: #3b82f6;
+  /* Blue 500 */
+  --primary-hover: #60a5fa;
+  --card-bg: #0f172a;
+  /* Slate 900 */
+  --card-border: #1e293b;
+  /* Slate 800 */
+  --text-muted: #94a3b8;
+  /* Slate 400 */
+  --button-text: #ffffff;
+  --dropdown-bg: #0f172a;
+  --dropdown-hover: #1e293b;
+}
+
+/* Optional: Respect system preference if no manual override is set (handled by JS usually, but checks here for fallback) */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    /* This might be redundant if we use JS to set the class,
+         but allows FOUC prevention if we default to system match.
+         For now, we will rely on JS toggling the .dark class. */
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Global Transition for smooth theme switching */
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }

@@ -3,17 +3,18 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: var(--background);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 1000;
+    border-bottom: 1px solid var(--card-border);
 }
 
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #333;
+    color: var(--foreground);
     text-decoration: none;
 }
 
@@ -39,20 +40,20 @@
 
 .btnLogin {
     background: transparent;
-    color: #333;
+    color: var(--foreground);
 }
 
 .btnLogin:hover {
-    background: #f0f0f0;
+    background: var(--dropdown-hover);
 }
 
 .btnRegister {
-    background: #0070f3;
-    color: white;
+    background: var(--primary);
+    color: var(--button-text);
 }
 
 .btnRegister:hover {
-    background: #0060df;
+    background: var(--primary-hover);
 }
 
 .userMenu {
@@ -68,21 +69,37 @@
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
+    border: 1px solid var(--card-border);
+}
+
+.avatarPlaceholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--button-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 1px solid var(--card-border);
 }
 
 .username {
     font-weight: 500;
-    color: #333;
+    color: var(--foreground);
 }
 
 .dropdown {
     position: absolute;
     top: 120%;
     right: 0;
-    background: white;
-    border: 1px solid #eee;
+    background: var(--dropdown-bg);
+    border: 1px solid var(--card-border);
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     min-width: 200px;
     padding: 0.5rem 0;
     display: flex;
@@ -94,7 +111,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: #333;
+    color: var(--foreground);
     text-decoration: none;
     cursor: pointer;
     transition: background 0.2s;
@@ -106,20 +123,21 @@
 }
 
 .dropdownItem:hover {
-    background: #f5f5f5;
+    background: var(--dropdown-hover);
 }
 
 .dropdownDivider {
     height: 1px;
-    background: #eee;
+    background: var(--card-border);
     margin: 0.5rem 0;
 }
 
 .languageSelect {
     padding: 0.5rem;
     border-radius: 4px;
-    border: 1px solid #ddd;
-    background: white;
+    border: 1px solid var(--card-border);
+    background: var(--background);
+    color: var(--foreground);
     font-size: 0.9rem;
     cursor: pointer;
 }
