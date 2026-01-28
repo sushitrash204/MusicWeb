@@ -30,6 +30,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var localTheme = localStorage.getItem('theme');
+                  var isDark = localTheme !== 'light'; // Default to dark unless explicitly light
+                  var root = document.documentElement;
+                  if (isDark) {
+                    root.setAttribute('data-theme', 'dark');
+                    root.classList.add('dark');
+                  } else {
+                    root.setAttribute('data-theme', 'light');
+                    root.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         <Providers>
           <Header />
           <main className="min-h-screen">

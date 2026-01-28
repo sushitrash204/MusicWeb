@@ -11,6 +11,7 @@ interface User {
     email: string[];
     phone: string;
     role: string;
+    isArtist?: boolean;
 }
 
 interface AuthContextType {

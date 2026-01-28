@@ -26,7 +26,8 @@
 }
 
 /* Base Dark Mode Variables */
-[data-theme="dark"] {
+/* Base Dark Mode Variables */
+:root[data-theme="dark"] {
   /* Spotify Green */
   --primary: #1DB954;
   --primary-hover: #1ed760;
