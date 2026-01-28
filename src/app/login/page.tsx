@@ -1,19 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import authService from '@/services/authService';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next'; // Import i18n
+import '../../services/i18n'; // Ensure i18n is initialized
 import styles from './AuthPage.module.css';
 
 export default function AuthPage() {
-    const { login, register } = useAuth();
-    const [isLogin, setIsLogin] = useState(true); // State để kiểm soát đang ở form nào
-    const [loading, setLoading] = useState(false);
+    const { t } = useTranslation('common'); // Init i18n hook with namespace
+    const { login, register, user, loading: authLoading } = useAuth(); // Get user and global loading
+    const [isLogin, setIsLogin] = useState(true);
+    const [loading, setLoading] = useState(false); // Local form loading
     const [error, setError] = useState('');
     const router = useRouter();
 
-    // State chung cho cả 2 form
+    // Redirect if already logged in
+    useEffect(() => {
+        if (!authLoading && user) {
+            router.push('/');
+        }
+    }, [user, authLoading, router]);
+
     const [formData, setFormData] = useState({
         fullName: '',
         username: '',
@@ -34,14 +43,11 @@ export default function AuthPage() {
 
         try {
             if (isLogin) {
-                // Xử lý Login
                 await login({ username: formData.username, password: formData.password });
-                // localStorage and state are handled in AuthContext
                 router.push('/');
             } else {
-                // Xử lý Register
                 if (formData.password !== formData.confirmPassword) {
-                    throw new Error('Mật khẩu xác nhận không khớp!');
+                    throw new Error(t('password_mismatch'));
                 }
 
                 await authService.register({
@@ -52,12 +58,12 @@ export default function AuthPage() {
                     phoneNumber: formData.phoneNumber
                 });
 
-                alert('Đăng ký thành công! Vui lòng đăng nhập.');
-                setIsLogin(true); // Chuyển về tab đăng nhập
-                setFormData(prev => ({ ...prev, password: '', confirmPassword: '' })); // Xóa mật khẩu
+                alert(t('register_success_alert'));
+                setIsLogin(true);
+                setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
             }
         } catch (err: any) {
-            setError(err.response?.data?.message || err.message || 'Có lỗi xảy ra!');
+            setError(err.response?.data?.message || err.message || t('RATE_LIMIT_GLOBAL'));
         } finally {
             setLoading(false);
         }
@@ -66,126 +72,123 @@ export default function AuthPage() {
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-                <h1 className={styles.title}>
-                    {isLogin ? 'Đăng Nhập' : 'Tạo Tài Khoản'}
-                </h1>
+                <div className={styles.formContainer}>
+                    <h1 className={styles.title}>
+                        {isLogin ? t('login_title') : t('register_title')}
+                    </h1>
 
-                {/* Tab Switcher */}
-                <div className={styles.tabContainer}>
-                    <button
-                        className={`${styles.tabButton} ${isLogin ? styles.activeTab : ''}`}
-                        onClick={() => { setIsLogin(true); setError(''); }}
-                    >
-                        Đăng nhập
-                    </button>
-                    <button
-                        className={`${styles.tabButton} ${!isLogin ? styles.activeTab : ''}`}
-                        onClick={() => { setIsLogin(false); setError(''); }}
-                    >
-                        Đăng ký
-                    </button>
-                </div>
-
-                {error && (
-                    <div className={styles.error}>
-                        {error}
+                    <div className={styles.tabContainer}>
+                        <button
+                            className={`${styles.tabButton} ${isLogin ? styles.activeTab : ''}`}
+                            onClick={() => { setIsLogin(true); setError(''); }}
+                        >
+                            {t('login')}
+                        </button>
+                        <button
+                            className={`${styles.tabButton} ${!isLogin ? styles.activeTab : ''}`}
+                            onClick={() => { setIsLogin(false); setError(''); }}
+                        >
+                            {t('register')}
+                        </button>
                     </div>
-                )}
 
-                <form onSubmit={handleSubmit} className={styles.form}>
-
-                    {/* Các trường chỉ dành cho Register */}
-                    {!isLogin && (
-                        <div className={`${styles.inputGroup} ${styles.animationContainer}`}>
-                            <div>
-                                <label className={styles.label}>Họ và tên</label>
-                                <input
-                                    type="text"
-                                    name="fullName"
-                                    required={!isLogin}
-                                    value={formData.fullName}
-                                    onChange={handleChange}
-                                    className={styles.input}
-                                    placeholder="Nguyễn Văn A"
-                                />
-                            </div>
-                            <div>
-                                <label className={styles.label}>Email</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    required={!isLogin}
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    className={styles.input}
-                                    placeholder="email@example.com"
-                                />
-                            </div>
+                    {error && (
+                        <div className={styles.error}>
+                            {error}
                         </div>
                     )}
 
-                    {/* Username (Dùng chung) */}
-                    <div>
-                        <label className={styles.label}>Tên đăng nhập</label>
-                        <input
-                            type="text"
-                            name="username"
-                            required
-                            value={formData.username}
-                            onChange={handleChange}
-                            className={styles.input}
-                            placeholder="username123"
-                        />
-                    </div>
+                    <form onSubmit={handleSubmit} className={styles.form}>
 
-                    {/* Password (Dùng chung) */}
-                    <div>
-                        <label className={styles.label}>Mật khẩu</label>
-                        <input
-                            type="password"
-                            name="password"
-                            required
-                            value={formData.password}
-                            onChange={handleChange}
-                            className={styles.input}
-                            placeholder="••••••••"
-                        />
-                    </div>
+                        {!isLogin && (
+                            <div className={styles.animationContainer}>
+                                <div>
+                                    <label className={styles.label}>{t('full_name')}</label>
+                                    <input
+                                        type="text"
+                                        name="fullName"
+                                        required={!isLogin}
+                                        value={formData.fullName}
+                                        onChange={handleChange}
+                                        className={styles.input}
+                                        placeholder={t('full_name')}
+                                    />
+                                </div>
+                                <div>
+                                    <label className={styles.label}>{t('email')}</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        required={!isLogin}
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        className={styles.input}
+                                        placeholder="email@example.com"
+                                    />
+                                </div>
+                            </div>
+                        )}
 
-                    {/* Confirm Password (Chỉ Register) */}
-                    {!isLogin && (
-                        <div className={styles.animationContainer}>
-                            <label className={styles.label}>Xác nhận mật khẩu</label>
+                        <div>
+                            <label className={styles.label}>{t('username')}</label>
+                            <input
+                                type="text"
+                                name="username"
+                                required
+                                value={formData.username}
+                                onChange={handleChange}
+                                className={styles.input}
+                                placeholder="username123"
+                            />
+                        </div>
+
+                        <div>
+                            <label className={styles.label}>{t('password')}</label>
                             <input
                                 type="password"
-                                name="confirmPassword"
-                                required={!isLogin}
-                                value={formData.confirmPassword}
+                                name="password"
+                                required
+                                value={formData.password}
                                 onChange={handleChange}
                                 className={styles.input}
                                 placeholder="••••••••"
                             />
                         </div>
-                    )}
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className={styles.submitButton}
-                    >
-                        {loading ? 'Đang xử lý...' : (isLogin ? 'Đăng Nhập' : 'Đăng Ký')}
-                    </button>
-                </form>
+                        {!isLogin && (
+                            <div className={styles.animationContainer}>
+                                <label className={styles.label}>{t('confirm_password')}</label>
+                                <input
+                                    type="password"
+                                    name="confirmPassword"
+                                    required={!isLogin}
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    className={styles.input}
+                                    placeholder="••••••••"
+                                />
+                            </div>
+                        )}
 
-                <p className={styles.footer}>
-                    {isLogin ? 'Chưa có tài khoản? ' : 'Đã có tài khoản? '}
-                    <button
-                        className={styles.linkButton}
-                        onClick={() => { setIsLogin(!isLogin); setError(''); }}
-                    >
-                        {isLogin ? 'Đăng ký ngay' : 'Đăng nhập ngay'}
-                    </button>
-                </p>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className={styles.submitButton}
+                        >
+                            {loading ? t('processing') : (isLogin ? t('login') : t('register'))}
+                        </button>
+                    </form>
+
+                    <p className={styles.footer}>
+                        {isLogin ? t('no_account') + ' ' : t('has_account') + ' '}
+                        <button
+                            className={styles.linkButton}
+                            onClick={() => { setIsLogin(!isLogin); setError(''); }}
+                        >
+                            {isLogin ? t('register_now') : t('login_now')}
+                        </button>
+                    </p>
+                </div>
             </div>
         </div>
     );

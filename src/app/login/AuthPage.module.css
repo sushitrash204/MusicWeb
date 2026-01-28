@@ -3,180 +3,184 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #111827;
-    color: white;
-    padding: 1rem 3rem;
+    background-color: var(--background);
+    color: var(--foreground);
+    padding: 2rem;
+    transition: background-color 0.3s ease;
 }
 
 .card {
     width: 100%;
-    max-width: 28rem;
-    padding: 2rem;
-    background-color: #1f2937;
-    border-radius: 1rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    border: 1px solid #374151;
-    transition: all 0.3s;
+    max-width: 734px;
+    /* Spotify wider container, usually 450px for inner form */
+    padding: 0;
+    background-color: transparent;
+    /* Spotify login is usually clean on page bg, or white on gray. Let's make it transparent on global bg for modern look, or card if needed. */
+    /* Let's go with a centered clean column like Spotify Web Player login */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Inner form container */
+.formContainer {
+    width: 100%;
+    max-width: 450px;
 }
 
 .title {
-    font-size: 1.875rem;
+    font-size: 3rem;
     font-weight: 700;
     text-align: center;
-    margin-bottom: 1.5rem;
-    background: linear-gradient(to right, #60a5fa, #a855f7);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    margin-bottom: 2.5rem;
+    color: var(--foreground);
+    letter-spacing: -0.04em;
 }
 
 .tabContainer {
     display: flex;
-    background-color: rgba(55, 65, 81, 0.5);
-    border-radius: 0.75rem;
-    padding: 0.25rem;
+    justify-content: center;
+    gap: 2rem;
     margin-bottom: 2rem;
+    border-bottom: 1px solid var(--text-muted);
+    padding-bottom: 1rem;
+    width: 100%;
 }
 
 .tabButton {
-    flex: 1;
-    padding: 0.5rem 0;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    transition: all 0.2s;
+    background: none;
     border: none;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     cursor: pointer;
-    background: transparent;
-    color: #9ca3af;
+    color: var(--text-muted);
+    padding: 0.5rem 1rem;
+    transition: color 0.2s;
 }
 
 .tabButton:hover {
-    color: #e5e7eb;
+    color: var(--foreground);
 }
 
 .activeTab {
-    background-color: #4b5563;
-    color: white;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    color: var(--foreground);
+    position: relative;
 }
 
-.error {
-    background-color: rgba(239, 68, 68, 0.1);
-    border: 1px solid #ef4444;
-    color: #ef4444;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.875rem;
-    text-align: center;
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: .5;
-    }
+.activeTab::after {
+    content: '';
+    position: absolute;
+    bottom: -17px;
+    /* Align with border-bottom of container */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background-color: var(--primary);
 }
 
 .form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-}
-
-.inputGroup {
-    /* animation: fadeIn 0.3s ease-in-out; */
+    width: 100%;
 }
 
 .label {
     display: block;
     font-size: 0.875rem;
-    font-weight: 500;
-    color: #9ca3af;
-    margin-bottom: 0.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
 }
 
 .input {
     width: 100%;
-    padding: 0.5rem 1rem;
-    background-color: #111827;
-    border: 1px solid #374151;
-    border-radius: 0.75rem;
+    padding: 0.875rem 1rem;
+    background-color: var(--background);
+    border: 1px solid var(--text-muted);
+    border-radius: 4px;
+    /* Spotify inputs are rectangular with slight radius */
     outline: none;
-    color: white;
+    color: var(--foreground);
+    font-size: 1rem;
+    transition: border-color 0.2s;
 }
 
 .input:focus {
-    box-shadow: 0 0 0 2px #3b82f6;
-    border-color: #3b82f6;
+    border-color: var(--foreground);
+    /* White border on focus in dark mode usually */
+    border-width: 2px;
+}
+
+[data-theme="dark"] .input {
+    background-color: #121212;
+    border-color: #727272;
+}
+
+[data-theme="dark"] .input:focus {
+    border-color: white;
 }
 
 .submitButton {
     width: 100%;
-    padding: 0.75rem 1rem;
-    background: linear-gradient(to right, #2563eb, #9333ea);
-    border-radius: 0.75rem;
+    padding: 0.875rem 2rem;
+    background-color: var(--primary);
+    border-radius: 500px;
+    /* Pill shape */
     font-weight: 700;
-    margin-top: 1rem;
-    transition: all 0.2s;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 1.5rem;
+    transition: transform 0.1s, background-color 0.2s;
     border: none;
     cursor: pointer;
-    color: white;
-    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+    color: black;
+    /* Spotify green button has black text usually for contrast */
 }
 
 .submitButton:hover {
-    background: linear-gradient(to right, #1d4ed8, #7e22ce);
+    transform: scale(1.04);
+    background-color: var(--primary-hover);
 }
 
 .submitButton:active {
-    transform: scale(0.95);
-}
-
-.submitButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    transform: scale(1.0);
 }
 
 .footer {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     text-align: center;
-    color: #6b7280;
+    color: var(--foreground);
     font-size: 0.875rem;
 }
 
 .linkButton {
-    color: #60a5fa;
-    font-weight: 500;
+    color: var(--foreground);
+    font-weight: 700;
     border: none;
     background: none;
     cursor: pointer;
-    text-decoration: none;
+    text-decoration: underline;
+    margin-left: 0.5rem;
 }
 
 .linkButton:hover {
-    text-decoration: underline;
+    color: var(--primary);
 }
 
-.animationContainer {
-    /* Simple fade in/slide in animation classes would go here or handled via JS libs if complex */
-    animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.error {
+    background-color: #e91429;
+    /* Spotify Error Red */
+    color: white;
+    padding: 0.75rem;
+    border-radius: 4px;
+    /* Slight radius */
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    text-align: center;
+    font-weight: 500;
 }

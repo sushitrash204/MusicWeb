@@ -35,35 +35,36 @@
     }
 }
 
-@media (min-width: 1024px) {
-    .grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-}
-
 .card {
     background-color: var(--card-bg);
     padding: 1rem;
-    border-radius: 1rem;
-    border: 1px solid var(--card-border);
-    transition: all 0.2s;
+    border-radius: var(--radius);
+    /* Standard radius */
+    border: none;
+    transition: background-color 0.3s ease;
     cursor: pointer;
+    position: relative;
+    /* Spotify cards are usually uniform in darker bg */
 }
 
 .card:hover {
     background-color: var(--dropdown-hover);
-    transform: scale(1.02);
+    transform: none;
+    /* Spotify doesn't scale cards much, just color change usually */
 }
 
 .cardImage {
     width: 100%;
     aspect-ratio: 1 / 1;
-    background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2));
-    border-radius: 0.75rem;
+    background-color: #333;
+    /* Placeholder for image */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    border-radius: var(--radius);
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .cardIcon {

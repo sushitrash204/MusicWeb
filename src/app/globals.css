@@ -1,47 +1,51 @@
 @import "tailwindcss";
 
+/* Base Light Mode Variables */
 :root {
-  /* Light Mode - Blue/White Theme */
+  /* Spotify Green */
+  --primary: #1DB954;
+  --primary-hover: #1ed760;
+
+  /* Light Mode */
   --background: #ffffff;
-  --foreground: #020617;
-  /* Very dark blue-black */
-  --primary: #2563EB;
-  /* Blue 600 */
-  --primary-hover: #1d4ed8;
-  --card-bg: #ffffff;
-  --card-border: #e2e8f0;
-  --text-muted: #64748b;
+  --foreground: #000000;
+  --card-bg: #f8f8f8;
+  /* Very light grey */
+  --card-border: transparent;
+  /* Clean look */
+  --text-muted: #5e5e5e;
+  --text-secondary: #b3b3b3;
+
   --button-text: #ffffff;
   --dropdown-bg: #ffffff;
-  --dropdown-hover: #f1f5f9;
+  --dropdown-hover: #f0f0f0;
+
+  /* Utilities */
+  --radius: 8px;
+  --radius-pill: 500px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-/* Base Dark Mode Variables - Applied when data-theme="dark" attribute is on html */
 /* Base Dark Mode Variables */
 [data-theme="dark"] {
-  --background: #020617;
-  /* Slate 950 - Deep Blue/Black */
-  --foreground: #f8fafc;
-  /* Slate 50 */
-  --primary: #3b82f6;
-  /* Blue 500 */
-  --primary-hover: #60a5fa;
-  --card-bg: #0f172a;
-  /* Slate 900 */
-  --card-border: #1e293b;
-  /* Slate 800 */
-  --text-muted: #94a3b8;
-  /* Slate 400 */
+  /* Spotify Green */
+  --primary: #1DB954;
+  --primary-hover: #1ed760;
+
+  /* Dark Mode (Spotify) */
+  --background: #121212;
+  /* Official Spotify Bg */
+  --foreground: #ffffff;
+  --card-bg: #181818;
+  /* Official Spotify Card */
+  --card-border: transparent;
+  --text-muted: #a7a7a7;
+  --text-secondary: #b3b3b3;
+
   --button-text: #ffffff;
-  --dropdown-bg: #0f172a;
-  --dropdown-hover: #1e293b;
+
+  --dropdown-bg: #282828;
+  /* Spotify Menu */
+  --dropdown-hover: #3e3e3e;
 }
 
 /* Optional: Respect system preference if no manual override is set (handled by JS usually, but checks here for fallback) */
@@ -60,9 +64,4 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Global Transition for smooth theme switching */
-*,
-*::before,
-*::after {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-}
+/* Global transitions removed for performance and to avoid layout bugs */

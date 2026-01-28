@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000/api', // Backend matches .env PORT=3000
-    withCredentials: true, // Important for cookies (refreshToken)
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -25,11 +25,43 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle Token Expired (Optional, for advanced refresh flow)
+// Response Interceptor: Handle Token Expired
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
-        // Handle global errors or token refresh logic here if needed
+        const originalRequest = error.config;
+
+        // Check if error is 401 and request hasn't been retried yet
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            try {
+                // Call refresh token endpoint (this uses HttpOnly cookie)
+                // Use the configured baseURL for consistency
+                const refreshUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/auth/refresh`;
+                const response = await axios.post(refreshUrl, {}, { withCredentials: true });
+
+                const { accessToken } = response.data;
+
+                if (accessToken) {
+                    localStorage.setItem('accessToken', accessToken);
+
+                    // Update header for original request
+                    originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+
+                    // Retry original request
+                    return api(originalRequest);
+                }
+            } catch (refreshError) {
+                // Refresh failed (token expired or invalid)
+                localStorage.removeItem('accessToken');
+                if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+                    window.location.href = '/login';
+                }
+                return Promise.reject(refreshError);
+            }
+        }
+
         return Promise.reject(error);
     }
 );

@@ -3,12 +3,23 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: var(--background);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* background-color: var(--background); */
+    /* In Spotify dark mode, this might be black #000000, but var(--background) is #121212. Let's stick to var for now or override if needed. Spotify main view is #121212, Sidebar is #000. Header is transparent or #000. Let's make it match bg or slightly darker. */
+    background-color: var(--dropdown-bg);
+    /* Darker contrast */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    /* More subtle shadow */
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid var(--card-border);
+    border-bottom: none;
+    /* Spotify doesn't have a border usually */
+    transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .header {
+    background-color: #000000;
+    /* Distinct black header for Spotify look */
 }
 
 .logo {
@@ -16,12 +27,13 @@
     font-weight: bold;
     color: var(--foreground);
     text-decoration: none;
+    letter-spacing: -0.04em;
 }
 
 .actions {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .authButtons {

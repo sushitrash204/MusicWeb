@@ -1,0 +1,130 @@
+.container {
+    padding: 2rem;
+    min-height: 100vh;
+    background-color: var(--background);
+    color: var(--foreground);
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.tab {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab:hover {
+    color: var(--foreground);
+}
+
+.activeTab {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    font-weight: 600;
+}
+
+.tableContainer {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.th,
+.td {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.th {
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.actionBtn {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    margin-right: 0.5rem;
+    transition: transform 0.1s;
+}
+
+.actionBtn:hover {
+    transform: scale(1.05);
+}
+
+.approveBtn {
+    background-color: var(--primary);
+    color: #000;
+}
+
+.rejectBtn {
+    background-color: transparent;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+}
+
+.rejectBtn:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.formGroup {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input,
+.textarea {
+    padding: 0.75rem;
+    border-radius: 4px;
+    border: 1px solid var(--card-border);
+    background-color: var(--input-bg);
+    color: var(--foreground);
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.genreList {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.genreTag {
+    padding: 0.5rem 1rem;
+    background-color: var(--card-bg-hover);
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
