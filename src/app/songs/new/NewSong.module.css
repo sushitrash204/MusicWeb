@@ -1,0 +1,237 @@
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+
+.backButton {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+}
+
+.backButton:hover {
+    color: var(--foreground);
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--foreground);
+    margin: 0;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.section {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 1.5rem 0;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup:last-child {
+    margin-bottom: 0;
+}
+
+.label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin-bottom: 0.5rem;
+}
+
+.input,
+.textarea {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--input-bg, #2a2a2a);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    color: var(--foreground);
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.input:focus,
+.textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.textarea {
+    resize: vertical;
+    font-family: inherit;
+}
+
+.fileInput {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--input-bg, #2a2a2a);
+    border: 2px dashed var(--card-border);
+    border-radius: 4px;
+    color: var(--foreground);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.fileInput:hover {
+    border-color: var(--primary);
+    background: rgba(30, 215, 96, 0.05);
+}
+
+/* Tag Grid for Artists/Genres */
+.tagGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.tagLabel {
+    position: relative;
+    cursor: pointer;
+}
+
+.tagLabel input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.tag {
+    display: block;
+    padding: 0.75rem 1rem;
+    background: var(--background);
+    border: 2px solid var(--card-border);
+    border-radius: 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+
+.tagLabel input[type="checkbox"]:checked+.tag {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #000;
+}
+
+.tag:hover {
+    border-color: var(--primary);
+    color: var(--foreground);
+}
+
+/* Radio Group for Status */
+.radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--background);
+    border: 2px solid var(--card-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.radioLabel:hover {
+    border-color: var(--primary);
+}
+
+.radioLabel input[type="radio"] {
+    margin-top: 0.25rem;
+    accent-color: var(--primary);
+}
+
+.radioLabel span {
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.radioLabel small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem 0;
+}
+
+.cancelButton,
+.submitButton {
+    padding: 0.75rem 2rem;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.cancelButton {
+    background: transparent;
+    color: var(--text-muted);
+    border: 2px solid var(--card-border);
+}
+
+.cancelButton:hover {
+    border-color: var(--foreground);
+    color: var(--foreground);
+}
+
+.submitButton {
+    background: var(--primary);
+    color: #000;
+}
+
+.submitButton:hover {
+    transform: scale(1.05);
+}
+
+.submitButton:active {
+    transform: scale(0.95);
+}
+
+.submitButton:disabled,
+.cancelButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}

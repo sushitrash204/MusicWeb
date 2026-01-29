@@ -15,10 +15,63 @@ const getMyArtistProfile = async () => {
     return response.data;
 };
 
+const updateArtistProfile = async (artistData: { artistName?: string; bio?: string }) => {
+    const response = await api.put('/artists/me', artistData);
+    return response.data;
+};
+
+const getArtists = async () => {
+    const response = await api.get('/artists');
+    return response.data;
+};
+
+// Song Management
+const createSong = async (songData: FormData) => {
+    const response = await api.post('/songs', songData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+    return response.data;
+};
+
+const getMySongs = async () => {
+    const response = await api.get('/songs/my-songs');
+    return response.data;
+};
+
+const deleteSong = async (id: string) => {
+    const response = await api.delete(`/songs/${id}`);
+    return response.data;
+};
+
+const getRecentSongs = async (limit: number = 10) => {
+    const response = await api.get(`/songs/recent?limit=${limit}`);
+    return response.data;
+};
+
+const getArtistById = async (id: string) => {
+    const response = await api.get(`/artists/${id}`);
+    return response.data;
+};
+
+const getArtistSongs = async (artistId: string) => {
+    const response = await api.get(`/songs/artist/${artistId}`);
+    return response.data;
+};
+
 const artistService = {
     getGenres,
     submitArtistRequest,
-    getMyArtistProfile
+    getMyArtistProfile,
+    updateArtistProfile,
+    getArtists,
+    createSong,
+    getMySongs,
+    deleteSong,
+    getRecentSongs,
+    getArtistById,
+    getArtistSongs
 };
 
 export default artistService;

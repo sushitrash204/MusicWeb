@@ -1,0 +1,176 @@
+.container {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: 8px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    color: var(--foreground);
+    font-weight: bold;
+}
+
+.addButton {
+    background: var(--primary);
+    color: var(--button-text);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.songList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.songItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--background);
+    border-radius: 4px;
+    border: 1px solid var(--card-border);
+    transition: background 0.2s;
+}
+
+.songItem:hover {
+    background: var(--card-bg);
+}
+
+.playIconButton {
+    background: var(--primary);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #000;
+    font-size: 0.9rem;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.playIconButton:hover {
+    transform: scale(1.05);
+}
+
+.playIconButton:active {
+    transform: scale(0.95);
+}
+
+.songInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.songTitle {
+    color: var(--foreground);
+    font-weight: bold;
+}
+
+.songMeta {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.deleteButton {
+    background: transparent;
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.deleteButton:hover {
+    background: #ff4d4d1a;
+}
+
+/* Modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.modal h3 {
+    margin-bottom: 1.5rem;
+    color: var(--foreground);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.formGroup label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.formGroup input {
+    padding: 0.75rem;
+    border-radius: 4px;
+    background: var(--input-bg, #2a2a2a);
+    border: 1px solid var(--card-border);
+    color: var(--foreground);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.actions button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+}
+
+.submitButton {
+    background: var(--primary);
+    color: var(--button-text);
+}

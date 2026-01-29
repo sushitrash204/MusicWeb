@@ -20,6 +20,13 @@
   --dropdown-bg: #ffffff;
   --dropdown-hover: #f0f0f0;
 
+  /* Music Player */
+  --player-bg: #f8f8f8;
+  --player-border: #e0e0e0;
+  --player-cover-bg: #e0e0e0;
+  --player-track-bg: #d0d0d0;
+  --player-popup-bg: #ffffff;
+
   /* Utilities */
   --radius: 8px;
   --radius-pill: 500px;
@@ -47,16 +54,15 @@
   --dropdown-bg: #282828;
   /* Spotify Menu */
   --dropdown-hover: #3e3e3e;
+
+  /* Music Player */
+  --player-bg: #181818;
+  --player-border: #282828;
+  --player-cover-bg: #282828;
+  --player-track-bg: #4d4d4d;
+  --player-popup-bg: #282828;
 }
 
-/* Optional: Respect system preference if no manual override is set (handled by JS usually, but checks here for fallback) */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    /* This might be redundant if we use JS to set the class,
-         but allows FOUC prevention if we default to system match.
-         For now, we will rely on JS toggling the .dark class. */
-  }
-}
 
 body {
   background-color: var(--background);

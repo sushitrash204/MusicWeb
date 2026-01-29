@@ -388,3 +388,63 @@
         padding: 1.5rem;
     }
 }
+
+/* Modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.modalTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--foreground);
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.textArea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--background);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    color: var(--foreground);
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--background);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    color: var(--foreground);
+    font-size: 1rem;
+}

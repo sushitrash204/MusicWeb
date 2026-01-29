@@ -1,0 +1,45 @@
+.section {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+}
+
+/* Horizontal Scroll Container */
+.scrollContainer {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scroll-snap-type: x mandatory;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.scrollContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.itemWrapper {
+    flex: 0 0 auto;
+    width: 180px;
+    /* Fixed width, could be made dynamic or prop-based later */
+    scroll-snap-align: start;
+}
+
+.wideItem {
+    width: 280px;
+}

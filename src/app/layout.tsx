@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from 'react-hot-toast';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,6 +20,9 @@ export const metadata: Metadata = {
 
 import { Providers } from "./providers";
 import Header from "../components/Header";
+import MusicPlayer from "../components/MusicPlayer";
+import GlobalAlert from "../components/GlobalAlert";
+import { MusicPlayerProvider } from "../contexts/MusicPlayerContext";
 
 export default function RootLayout({
   children,
@@ -51,10 +55,15 @@ export default function RootLayout({
           }}
         />
         <Providers>
-          <Header />
-          <main className="min-h-screen">
-            {children}
-          </main>
+          <MusicPlayerProvider>
+            <Header />
+            <main className="min-h-screen" style={{ paddingBottom: '90px' }}>
+              {children}
+            </main>
+            <GlobalAlert />
+            <MusicPlayer />
+            <Toaster position="top-center" reverseOrder={false} />
+          </MusicPlayerProvider>
         </Providers>
       </body>
     </html>

@@ -1,0 +1,142 @@
+.container {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.placeholder {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    border: 2px dashed var(--card-border);
+    border-radius: 8px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.playButton {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: none;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.playButton:hover {
+    transform: scale(1.05);
+}
+
+.playButton:active {
+    transform: scale(0.95);
+}
+
+.playButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.timeInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.separator {
+    color: var(--text-muted);
+}
+
+.timeline {
+    position: relative;
+    height: 80px;
+    background: var(--background);
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    padding: 1rem 0;
+}
+
+.progressBar {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.progress {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 2px;
+    transition: width 0.1s linear;
+}
+
+/* CapCut-style preview window */
+.previewWindow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60px;
+    background: rgba(30, 215, 96, 0.2);
+    border: 2px solid var(--primary);
+    border-radius: 4px;
+    cursor: grab;
+    transition: background 0.2s;
+}
+
+.previewWindow:hover {
+    background: rgba(30, 215, 96, 0.3);
+}
+
+.previewWindow:active {
+    cursor: grabbing;
+}
+
+.previewHandle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+.previewLabel {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: #000;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.hint {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+}

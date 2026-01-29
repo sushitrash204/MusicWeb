@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import artistService from '@/services/artistService';
+import ArtistSongs from '@/components/ArtistSongs';
 import styles from './Profile.module.css';
 import '../../services/i18n';
 
@@ -38,7 +39,7 @@ export default function ProfilePage() {
                 setArtist(artistData);
             } catch (error: any) {
                 if (error.response?.status === 404) {
-                    setArtist(null);
+                    setArtist(null); // Truly no profile
                 } else {
                     console.error('Failed to load artist profile', error);
                 }
@@ -49,6 +50,35 @@ export default function ProfilePage() {
 
         fetchArtistProfile();
     }, [user, authLoading, router]);
+
+    // Artist Edit State
+    const [isEditArtistOpen, setIsEditArtistOpen] = useState(false);
+    const [editArtistForm, setEditArtistForm] = useState({ artistName: '', bio: '' });
+    const [updateLoading, setUpdateLoading] = useState(false);
+
+    const handleEditArtistOpen = () => {
+        if (artist) {
+            setEditArtistForm({
+                artistName: artist.artistName,
+                bio: artist.bio || ''
+            });
+            setIsEditArtistOpen(true);
+        }
+    };
+
+    const handleEditArtistSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setUpdateLoading(true);
+        try {
+            const updatedArtist = await artistService.updateArtistProfile(editArtistForm);
+            setArtist(updatedArtist);
+            setIsEditArtistOpen(false);
+        } catch (error) {
+            console.error('Failed to update artist profile', error);
+        } finally {
+            setUpdateLoading(false);
+        }
+    };
 
     if (authLoading || loading) {
         return (
@@ -102,7 +132,7 @@ export default function ProfilePage() {
                     </button>
                     <button
                         className={styles.editButton}
-                        onClick={() => router.push('/edit-profile')}
+                        onClick={handleEditArtistOpen}
                     >
                         {t('edit_profile')}
                     </button>
@@ -122,7 +152,50 @@ export default function ProfilePage() {
                     </div>
 
 
+
+                    <div className={styles.artistSongsSection}>
+                        <ArtistSongs />
+                    </div>
+
                 </div>
+
+                {/* Edit Artist Modal */}
+                {isEditArtistOpen && (
+                    <div className={styles.modalOverlay}>
+                        <div className={styles.modalContent}>
+                            <h2 className={styles.modalTitle}>{t('edit_profile')}</h2>
+                            <form onSubmit={handleEditArtistSubmit}>
+                                <div style={{ marginBottom: '1rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 700 }}>{t('artist_name')}</label>
+                                    <input
+                                        type="text"
+                                        className={styles.input}
+                                        value={editArtistForm.artistName}
+                                        onChange={(e) => setEditArtistForm({ ...editArtistForm, artistName: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div style={{ marginBottom: '1rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 700 }}>{t('artist_bio')}</label>
+                                    <textarea
+                                        className={styles.textArea}
+                                        value={editArtistForm.bio}
+                                        onChange={(e) => setEditArtistForm({ ...editArtistForm, bio: e.target.value })}
+                                        placeholder={t('artist_bio_placeholder')}
+                                    />
+                                </div>
+                                <div className={styles.modalActions}>
+                                    <button type="button" className={styles.editButton} onClick={() => setIsEditArtistOpen(false)}>
+                                        {t('cancel')}
+                                    </button>
+                                    <button type="submit" className={styles.primaryButton} disabled={updateLoading}>
+                                        {updateLoading ? t('saving') : t('save_changes')}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }
@@ -183,6 +256,14 @@ export default function ProfilePage() {
                     </div>
                     <h1 className={styles.userName}>{user?.fullName}</h1>
                     <p className={styles.userUsername}>@{user?.username}</p>
+
+                    <button
+                        className={styles.editButton}
+                        onClick={() => router.push('/settings')}
+                        style={{ marginBottom: '2rem' }}
+                    >
+                        {t('edit_profile')}
+                    </button>
 
                     <div className={styles.divider}></div>
 

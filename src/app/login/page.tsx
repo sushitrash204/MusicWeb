@@ -5,12 +5,14 @@ import authService from '@/services/authService';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next'; // Import i18n
+import { useAlert } from '@/context/AlertContext';
 import '../../services/i18n'; // Ensure i18n is initialized
 import styles from './AuthPage.module.css';
 
 export default function AuthPage() {
     const { t } = useTranslation('common'); // Init i18n hook with namespace
     const { login, register, user, loading: authLoading } = useAuth(); // Get user and global loading
+    const { showAlert } = useAlert();
     const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false); // Local form loading
     const [error, setError] = useState('');

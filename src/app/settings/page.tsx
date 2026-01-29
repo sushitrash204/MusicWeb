@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import styles from './Settings.module.css';
 import '../../services/i18n';
 
@@ -16,9 +17,82 @@ const LANGUAGES = [
     { code: 'es', name: 'Spanish', nativeName: 'Español' }
 ];
 
+
 export default function SettingsPage() {
     const { t, i18n } = useTranslation('common');
     const router = useRouter();
+    const { user, loading: authLoading } = useAuth(); // Auth hook
+
+    // Form State
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        phone: '',
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    });
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState({ type: '', text: '' });
+
+    // Pre-fill form
+    useEffect(() => {
+        if (user) {
+            const u = user as any;
+            setFormData(prev => ({
+                ...prev,
+                fullName: u.fullName || '',
+                email: Array.isArray(u.email) ? u.email[0] : (u.email || ''),
+                phone: u.phone || ''
+            }));
+        }
+    }, [user]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage({ type: '', text: '' });
+
+        if (formData.newPassword) {
+            if (formData.newPassword !== formData.confirmPassword) {
+                setMessage({ type: 'error', text: t('passwords_do_not_match') });
+                setLoading(false);
+                return;
+            }
+            if (!formData.currentPassword) {
+                setMessage({ type: 'error', text: t('current_password_required') });
+                setLoading(false);
+                return;
+            }
+        }
+
+        try {
+            // Placeholder for API call
+            // await userService.updateProfile(formData);
+            setMessage({ type: 'success', text: t('profile_updated_successfully') });
+            setFormData(prev => ({
+                ...prev,
+                currentPassword: '',
+                newPassword: '',
+                confirmPassword: ''
+            }));
+        } catch (error: any) {
+            setMessage({
+                type: 'error',
+                text: error.response?.data?.message || t('update_failed')
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
     const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -61,6 +135,103 @@ export default function SettingsPage() {
 
                 {/* Settings Card */}
                 <div className={styles.card}>
+                    {/* User Info Edit Section */}
+                    <form className={styles.formSection} onSubmit={handleSubmit}>
+                        <h2 className={styles.sectionTitle}>{t('profile_information')}</h2>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="fullName">{t('full_name')}</label>
+                            <input
+                                type="text"
+                                id="fullName"
+                                name="fullName"
+                                value={formData.fullName}
+                                onChange={handleChange}
+                                className={styles.input}
+                                required
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="email">{t('email')}</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                className={styles.input}
+                                required
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="phone">{t('phone_number')}</label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                className={styles.input}
+                                placeholder={t('optional')}
+                            />
+                        </div>
+
+                        <h2 className={styles.sectionTitle} style={{ marginTop: '2rem' }}>{t('change_password')}</h2>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="currentPassword">{t('current_password')}</label>
+                            <input
+                                type="password"
+                                id="currentPassword"
+                                name="currentPassword"
+                                value={formData.currentPassword}
+                                onChange={handleChange}
+                                className={styles.input}
+                            />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                            <label htmlFor="newPassword">{t('new_password')}</label>
+                            <input
+                                type="password"
+                                id="newPassword"
+                                name="newPassword"
+                                value={formData.newPassword}
+                                onChange={handleChange}
+                                className={styles.input}
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="confirmPassword">{t('confirm_password')}</label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                className={styles.input}
+                            />
+                        </div>
+
+                        {message.text && (
+                            <div className={`${styles.message} ${styles[message.type]}`}>
+                                {message.text}
+                            </div>
+                        )}
+
+                        <div className={styles.actions}>
+                            <button
+                                type="submit"
+                                className={styles.saveButton}
+                                disabled={loading}
+                            >
+                                {loading ? t('saving') : t('save_changes')}
+                            </button>
+                        </div>
+                    </form>
+
+                    <div className={styles.divider} style={{ margin: '2rem 0' }}></div>
                     {/* Language Setting */}
                     <div className={styles.settingItem}>
                         <div className={styles.settingInfo}>
