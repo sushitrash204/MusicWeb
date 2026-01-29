@@ -73,6 +73,12 @@ const ArtistSongs = () => {
                                 <div className={styles.songMeta}>{song.duration}s • {song.plays || 0} plays</div>
                             </div>
                             <button
+                                className={styles.editButton}
+                                onClick={() => router.push(`/songs/edit/${song._id}`)}
+                            >
+                                {t('edit', 'Edit')}
+                            </button>
+                            <button
                                 className={styles.deleteButton}
                                 onClick={() => handleDelete(song._id)}
                             >

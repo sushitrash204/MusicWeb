@@ -6,12 +6,16 @@ import styles from './AudioPreviewSelector.module.css';
 
 interface AudioPreviewSelectorProps {
     audioFile: File | null;
+    existingAudioUrl?: string;
+    initialPreviewStart?: number;
     onPreviewStartChange: (seconds: number) => void;
     onDurationChange: (seconds: number) => void;
 }
 
 const AudioPreviewSelector: React.FC<AudioPreviewSelectorProps> = ({
     audioFile,
+    existingAudioUrl,
+    initialPreviewStart = 30,
     onPreviewStartChange,
     onDurationChange
 }) => {
@@ -22,17 +26,19 @@ const AudioPreviewSelector: React.FC<AudioPreviewSelectorProps> = ({
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [previewStart, setPreviewStart] = useState(30); // Default 30s
+    const [previewStart, setPreviewStart] = useState(initialPreviewStart);
     const [isDragging, setIsDragging] = useState(false);
-    const [audioUrl, setAudioUrl] = useState<string>('');
+    const [audioUrl, setAudioUrl] = useState<string>(existingAudioUrl || '');
 
     useEffect(() => {
         if (audioFile) {
             const url = URL.createObjectURL(audioFile);
             setAudioUrl(url);
             return () => URL.revokeObjectURL(url);
+        } else if (existingAudioUrl) {
+            setAudioUrl(existingAudioUrl);
         }
-    }, [audioFile]);
+    }, [audioFile, existingAudioUrl]);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -125,7 +131,7 @@ const AudioPreviewSelector: React.FC<AudioPreviewSelectorProps> = ({
         setIsDragging(false);
     };
 
-    if (!audioFile) {
+    if (!audioFile && !existingAudioUrl) {
         return (
             <div className={styles.placeholder}>
                 <p>{t('upload_audio_preview', 'Upload audio to preview')}</p>
@@ -144,6 +150,7 @@ const AudioPreviewSelector: React.FC<AudioPreviewSelectorProps> = ({
             {/* Player Controls */}
             <div className={styles.controls}>
                 <button
+                    type="button"
                     className={styles.playButton}
                     onClick={togglePlay}
                     disabled={!audioUrl}

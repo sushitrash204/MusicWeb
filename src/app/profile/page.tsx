@@ -41,7 +41,7 @@ export default function ProfilePage() {
                 if (error.response?.status === 404) {
                     setArtist(null); // Truly no profile
                 } else {
-                    console.error('Failed to load artist profile', error);
+                    console.error('[Profile] Failed to load artist profile', error);
                 }
             } finally {
                 setLoading(false);
@@ -200,7 +200,7 @@ export default function ProfilePage() {
         );
     }
 
-    // Pending Request View
+    // Pending Request View - NOW WITH SONGS!
     if (artist && artist.status === 'pending') {
         return (
             <div className={styles.container}>
@@ -211,6 +211,13 @@ export default function ProfilePage() {
                         <p className={styles.statusDescription}>
                             {t('request_pending_description')}
                         </p>
+                    </div>
+                </div>
+
+                {/* Show songs even when pending */}
+                <div className={styles.contentSection} style={{ marginTop: '2rem' }}>
+                    <div className={styles.artistSongsSection}>
+                        <ArtistSongs />
                     </div>
                 </div>
             </div>
@@ -243,7 +250,7 @@ export default function ProfilePage() {
     // Regular User Profile View
     return (
         <div className={styles.container}>
-            <div className={styles.centerContent}>
+            <div className={styles.centerContent} style={{ flexDirection: 'column', minHeight: 'auto', paddingTop: '6rem' }}>
                 <div className={styles.userProfileCard}>
                     <div className={styles.userAvatar}>
                         {user?.avatar ? (
@@ -278,6 +285,13 @@ export default function ProfilePage() {
                         >
                             {t('apply_now')}
                         </button>
+                    </div>
+                </div>
+
+                <div className={styles.likedSongsWrapper} style={{ width: '100%', maxWidth: '1200px', marginTop: '4rem' }}>
+                    <h2 className={styles.sectionTitle}>{t('liked_songs', 'Liked Songs')}</h2>
+                    <div className={styles.likedSongsContent} style={{ background: 'var(--card-bg)', borderRadius: '8px', padding: '1rem' }}>
+                        <p style={{ color: 'var(--text-muted)', textAlign: 'center' }}>{t('no_favorites', 'No favorite songs yet.')}</p>
                     </div>
                 </div>
             </div>

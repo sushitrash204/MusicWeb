@@ -80,7 +80,7 @@
     "passwords_do_not_match": "Mật khẩu không khớp",
     "current_password_required": "Cần mật khẩu hiện tại để đổi mật khẩu",
     "profile_updated_successfully": "Cập nhật hồ sơ thành công",
-    "update_failed": "Cập nhật thất bại",
+    "update_failed": "Cập nhật thất bại.",
     "settings_title": "Cài đặt",
     "language_preference": "Ngôn ngữ",
     "language_description": "Chọn ngôn ngữ hiển thị",
@@ -152,5 +152,11 @@
     "alert_login_msg": "Bạn cần đăng nhập để thực hiện hành động này.",
     "alert_login_btn": "Đăng nhập",
     "close": "Đóng",
-    "confirm": "Xác nhận"
+    "confirm": "Xác nhận",
+    "edit": "Sửa",
+    "edit_song_title": "Chỉnh sửa bài hát",
+    "update_song": "Cập nhật bài hát",
+    "updating": "Đang cập nhật...",
+    "update_success": "Cập nhật bài hát thành công!",
+    "audio_already_uploaded": "Đã có tệp âm thanh"
 }

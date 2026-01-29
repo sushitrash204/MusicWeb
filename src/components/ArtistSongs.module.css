@@ -104,6 +104,23 @@
     background: #ff4d4d1a;
 }
 
+.editButton {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.editButton:hover {
+    background: var(--primary);
+    color: #000;
+}
+
 /* Modal */
 .modalOverlay {
     position: fixed;

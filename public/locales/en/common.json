@@ -80,7 +80,7 @@
     "passwords_do_not_match": "Passwords do not match",
     "current_password_required": "Current password is required to change password",
     "profile_updated_successfully": "Profile updated successfully",
-    "update_failed": "Failed to update profile",
+    "update_failed": "Failed to update song.",
     "settings_title": "Settings",
     "language_preference": "Language",
     "language_description": "Choose your preferred language",
@@ -152,5 +152,11 @@
     "alert_login_msg": "You need to log in to perform this action.",
     "alert_login_btn": "Log In",
     "close": "Close",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "edit": "Edit",
+    "edit_song_title": "Edit Song",
+    "update_song": "Update Song",
+    "updating": "Updating...",
+    "update_success": "Song updated successfully!",
+    "audio_already_uploaded": "Audio file already exists"
 }

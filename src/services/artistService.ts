@@ -45,6 +45,20 @@ const deleteSong = async (id: string) => {
     return response.data;
 };
 
+const updateSong = async (id: string, songData: FormData) => {
+    const response = await api.put(`/songs/${id}`, songData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+    return response.data;
+};
+
+const getSongById = async (id: string) => {
+    const response = await api.get(`/songs/${id}`);
+    return response.data;
+};
+
 const getRecentSongs = async (limit: number = 10) => {
     const response = await api.get(`/songs/recent?limit=${limit}`);
     return response.data;
@@ -69,6 +83,8 @@ const artistService = {
     createSong,
     getMySongs,
     deleteSong,
+    updateSong,
+    getSongById,
     getRecentSongs,
     getArtistById,
     getArtistSongs
