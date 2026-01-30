@@ -30,10 +30,19 @@ const AudioPreviewSelector: React.FC<AudioPreviewSelectorProps> = ({
     const [isDragging, setIsDragging] = useState(false);
     const [audioUrl, setAudioUrl] = useState<string>(existingAudioUrl || '');
 
+    // Use refs for callbacks to avoid effect triggering on prop change
+    const onDurationChangeRef = useRef(onDurationChange);
+    useEffect(() => {
+        onDurationChangeRef.current = onDurationChange;
+    }, [onDurationChange]);
+
     useEffect(() => {
         if (audioFile) {
             const url = URL.createObjectURL(audioFile);
             setAudioUrl(url);
+            // Reset duration while loading new file
+            setDuration(0);
+            onDurationChangeRef.current(0);
             return () => URL.revokeObjectURL(url);
         } else if (existingAudioUrl) {
             setAudioUrl(existingAudioUrl);
@@ -47,7 +56,7 @@ const AudioPreviewSelector: React.FC<AudioPreviewSelectorProps> = ({
         const handleLoadedMetadata = () => {
             const dur = Math.floor(audio.duration);
             setDuration(dur);
-            onDurationChange(dur);
+            onDurationChangeRef.current(dur);
         };
 
         const handleTimeUpdate = () => {
@@ -67,7 +76,7 @@ const AudioPreviewSelector: React.FC<AudioPreviewSelectorProps> = ({
             audio.removeEventListener('timeupdate', handleTimeUpdate);
             audio.removeEventListener('ended', handleEnded);
         };
-    }, [audioUrl, onDurationChange]);
+    }, [audioUrl]);
 
     const togglePlay = () => {
         const audio = audioRef.current;

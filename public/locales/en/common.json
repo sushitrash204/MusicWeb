@@ -158,5 +158,15 @@
     "update_song": "Update Song",
     "updating": "Updating...",
     "update_success": "Song updated successfully!",
-    "audio_already_uploaded": "Audio file already exists"
+    "audio_already_uploaded": "Audio file already exists",
+    "shuffle": "Shuffle",
+    "repeat_off": "Repeat Off",
+    "repeat_all": "Repeat All",
+    "repeat_one": "Repeat One",
+    "play_all": "Play All",
+    "album": "Album",
+    "album_not_found": "Album not found",
+    "no_songs_in_album": "No songs in this album",
+    "add_songs": "Add Songs",
+    "songs": "Songs"
 }

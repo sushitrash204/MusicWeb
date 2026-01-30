@@ -16,16 +16,21 @@ interface Song {
 
 interface SongCardProps {
     song: Song;
+    onPlay?: (song: Song) => void;
 }
 
-const SongCard: React.FC<SongCardProps> = ({ song }) => {
+const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
     const { playSong, currentSong, isPlaying } = useMusicPlayer();
 
     const isCurrentSong = currentSong?._id === song._id;
 
     const handlePlay = (e: React.MouseEvent) => {
         e.stopPropagation();
-        playSong(song);
+        if (onPlay) {
+            onPlay(song);
+        } else {
+            playSong(song);
+        }
     };
 
     const formatDuration = (seconds: number) => {

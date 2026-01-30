@@ -1,41 +1,95 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/context/AuthContext';
 import artistService from '@/services/artistService';
+import albumService from '@/services/albumService';
 import SongCard from '@/components/SongCard';
+import AlbumCard from '@/components/AlbumCard';
+import ScrollableSection from '@/components/ScrollableSection';
+import { useMusicPlayer } from '@/contexts/MusicPlayerContext';
 import styles from './ArtistProfile.module.css';
 
 export default function ArtistProfilePage() {
     const { t } = useTranslation('common');
     const params = useParams();
+    const router = useRouter();
+    const { user } = useAuth();
+    const { playList } = useMusicPlayer();
     const id = params?.id as string;
 
     const [artist, setArtist] = useState<any>(null);
     const [songs, setSongs] = useState<any[]>([]);
+    const [albums, setAlbums] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const handlePlayAll = () => {
+        if (songs.length > 0) {
+            playList(songs, 0);
+        }
+    };
+
+    const handlePlaySong = (song: any) => {
+        const index = songs.findIndex(s => s._id === song._id);
+        if (index !== -1) {
+            playList(songs, index);
+        }
+    };
 
     useEffect(() => {
         if (!id) return;
 
+        let isMounted = true;
+        const timeoutId = setTimeout(() => {
+            if (isMounted) {
+                console.warn('Fetch timed out for artist ID:', id);
+                setLoading(false);
+            }
+        }, 10000); // 10s timeout safety
+
         const fetchData = async () => {
+            console.log('Fetching artist data for ID:', id);
             try {
                 setLoading(true);
-                const [artistData, songsData] = await Promise.all([
-                    artistService.getArtistById(id),
-                    artistService.getArtistSongs(id)
+                // Fetch artist info first for immediate UI feedback
+                const artistData = await artistService.getArtistById(id);
+
+                if (isMounted) {
+                    console.log('Artist data received:', artistData);
+                    setArtist(artistData);
+                    setLoading(false); // Stop main loading
+                }
+
+                // Fetch songs and albums in parallel
+                console.log('Fetching songs and albums...');
+                const [songsData, albumsData] = await Promise.all([
+                    artistService.getArtistSongs(id),
+                    albumService.getAlbumsByArtist(id)
                 ]);
-                setArtist(artistData);
-                setSongs(songsData);
+
+                if (isMounted) {
+                    console.log('Songs and albums received');
+                    setSongs(songsData);
+                    setAlbums(albumsData);
+                }
             } catch (error) {
-                console.error('Failed to fetch artist profile', error);
+                if (isMounted) {
+                    console.error('Failed to fetch artist profile:', error);
+                    setLoading(false);
+                }
             } finally {
-                setLoading(false);
+                clearTimeout(timeoutId);
             }
         };
 
         fetchData();
+
+        return () => {
+            isMounted = false;
+            clearTimeout(timeoutId);
+        };
     }, [id]);
 
     if (loading) return <div className="flex justify-center items-center min-h-screen">{t('loading', 'Loading...')}</div>;
@@ -68,6 +122,20 @@ export default function ArtistProfilePage() {
                         {/* Placeholder for monthly listeners */}
                         1,234,567 {t('monthly_listeners', 'monthly listeners')}
                     </div>
+
+                    <div className={styles.actions}>
+                        <button
+                            className={styles.playAllButton}
+                            onClick={handlePlayAll}
+                            disabled={songs.length === 0}
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                            {t('play_all', 'Phát tất cả')}
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
@@ -80,6 +148,7 @@ export default function ArtistProfilePage() {
                                 <SongCard
                                     key={song._id}
                                     song={{ ...song, artists: song.artists || [{ _id: artist._id, artistName: name }] }}
+                                    onPlay={handlePlaySong}
                                 />
                             ))
                         ) : (
@@ -87,6 +156,20 @@ export default function ArtistProfilePage() {
                         )}
                     </div>
                 </section>
+
+                <div className="mb-8">
+                    <ScrollableSection
+                        title={t('albums', 'Albums')}
+                        items={albums}
+                        keyExtractor={(album: any) => album._id}
+                        renderItem={(album: any) => (
+                            <AlbumCard album={album} />
+                        )}
+                    />
+                    {albums.length === 0 && (
+                        <p className="text-[var(--text-muted)] ml-4">{t('no_albums', 'No albums yet.')}</p>
+                    )}
+                </div>
 
                 <section className={styles.bio}>
                     <h2 className={styles.bioTitle}>{t('about', 'About')}</h2>

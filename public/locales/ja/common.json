@@ -152,5 +152,21 @@
     "alert_login_msg": "この操作を行うにはログインが必要です。",
     "alert_login_btn": "ログイン",
     "close": "閉じる",
-    "confirm": "確認"
+    "confirm": "確認",
+    "edit": "編集",
+    "edit_song_title": "曲を編集",
+    "update_song": "曲を更新",
+    "updating": "更新中...",
+    "update_success": "曲が正常に更新されました！",
+    "audio_already_uploaded": "音声ファイルは既に存在します",
+    "shuffle": "シャッフル",
+    "repeat_off": "リピートオフ",
+    "repeat_all": "すべてリピート",
+    "repeat_one": "1曲リピート",
+    "play_all": "すべて再生",
+    "album": "アルバム",
+    "album_not_found": "アルバムが見つかりません",
+    "no_songs_in_album": "このアルバムには曲がありません",
+    "add_songs": "曲を追加",
+    "songs": "曲"
 }

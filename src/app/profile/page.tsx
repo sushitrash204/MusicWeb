@@ -5,7 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import artistService from '@/services/artistService';
+import albumService from '@/services/albumService';
 import ArtistSongs from '@/components/ArtistSongs';
+import AlbumCard from '@/components/AlbumCard';
 import styles from './Profile.module.css';
 import '../../services/i18n';
 
@@ -23,6 +25,7 @@ export default function ProfilePage() {
     const router = useRouter();
 
     const [artist, setArtist] = useState<Artist | null>(null);
+    const [albums, setAlbums] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -35,8 +38,12 @@ export default function ProfilePage() {
 
         const fetchArtistProfile = async () => {
             try {
-                const artistData = await artistService.getMyArtistProfile();
+                const [artistData, albumsData] = await Promise.all([
+                    artistService.getMyArtistProfile(),
+                    albumService.getMyAlbums()
+                ]);
                 setArtist(artistData);
+                setAlbums(albumsData);
             } catch (error: any) {
                 if (error.response?.status === 404) {
                     setArtist(null); // Truly no profile
@@ -155,6 +162,29 @@ export default function ProfilePage() {
 
                     <div className={styles.artistSongsSection}>
                         <ArtistSongs />
+                    </div>
+
+                    <div className={styles.albumsSection} style={{ marginTop: '3rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                            <h2 className={styles.sectionTitle} style={{ margin: 0 }}>{t('albums', 'Albums')}</h2>
+                            <button
+                                className={styles.primaryButton}
+                                style={{ padding: '0.5rem 1.5rem', fontSize: '0.8rem' }}
+                                onClick={() => router.push('/albums/new')}
+                            >
+                                + {t('add_album', 'Thêm Album')}
+                            </button>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1.5rem' }}>
+                            {albums.length > 0 ? (
+                                albums.map(album => (
+                                    <AlbumCard key={album._id} album={{ ...album, artist: { _id: artist._id, artistName: artist.artistName } }} />
+                                ))
+                            ) : (
+                                <p style={{ color: 'var(--text-muted)' }}>{t('no_albums_yet', 'Bạn chưa có album nào. Hãy tạo ngay!')}</p>
+                            )}
+                        </div>
                     </div>
 
                 </div>

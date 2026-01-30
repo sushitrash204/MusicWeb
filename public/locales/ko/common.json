@@ -152,5 +152,21 @@
     "alert_login_msg": "이 작업을 수행하려면 로그인이 필요합니다.",
     "alert_login_btn": "로그인",
     "close": "닫기",
-    "confirm": "확인"
+    "confirm": "확인",
+    "edit": "편집",
+    "edit_song_title": "곡 편집",
+    "update_song": "곡 업데이트",
+    "updating": "업데이트 중...",
+    "update_success": "곡이 성공적으로 업데이트되었습니다!",
+    "audio_already_uploaded": "오디오 파일이 이미 존재합니다",
+    "shuffle": "셔플",
+    "repeat_off": "반복 끄기",
+    "repeat_all": "전체 반복",
+    "repeat_one": "한 곡 반복",
+    "play_all": "모두 재생",
+    "album": "앨범",
+    "album_not_found": "앨범을 찾을 수 없습니다",
+    "no_songs_in_album": "이 앨범에 곡이 없습니다",
+    "add_songs": "곡 추가",
+    "songs": "곡"
 }

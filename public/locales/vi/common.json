@@ -158,5 +158,15 @@
     "update_song": "Cập nhật bài hát",
     "updating": "Đang cập nhật...",
     "update_success": "Cập nhật bài hát thành công!",
-    "audio_already_uploaded": "Đã có tệp âm thanh"
+    "audio_already_uploaded": "Đã có tệp âm thanh",
+    "shuffle": "Trộn bài",
+    "repeat_off": "Tắt lặp lại",
+    "repeat_all": "Lặp lại danh sách",
+    "repeat_one": "Lặp lại 1 bài",
+    "play_all": "Phát tất cả",
+    "album": "Album",
+    "album_not_found": "Không tìm thấy album",
+    "no_songs_in_album": "Album chưa có bài hát nào",
+    "add_songs": "Thêm bài hát",
+    "songs": "Bài hát"
 }

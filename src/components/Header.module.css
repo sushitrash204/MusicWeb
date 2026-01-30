@@ -153,3 +153,107 @@
     font-size: 0.9rem;
     cursor: pointer;
 }
+
+/* New / Modified Styles */
+
+/* New / Modified Styles */
+
+.desktopOnly {
+    display: flex;
+}
+
+.mobileMenuBtn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--foreground);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.mobileMenu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--background);
+    z-index: 999;
+    padding-top: 80px;
+    /* Space for header */
+}
+
+.mobileMenuContent {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    height: 100%;
+    align-items: center;
+    gap: 2rem;
+}
+
+.mobileAuthButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.mobileUserInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mobileNav {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    align-items: center;
+}
+
+.mobileNavLink {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--foreground);
+    text-decoration: none;
+    padding: 0.5rem;
+}
+
+.logoAndToggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+@media (min-width: 769px) {
+    .logoAndToggle {
+        width: auto;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+    }
+
+    .desktopOnly {
+        display: none;
+    }
+
+    .mobileMenuBtn {
+        display: block;
+    }
+
+    .actions {
+        display: none;
+        /* Hide default actions container if not using desktopOnly class, but we applied desktopOnly class in TSX */
+    }
+}
+
+/* Paste this at the end or replace relevant parts */
+/* Ensure CSS variables work in mobile menu */

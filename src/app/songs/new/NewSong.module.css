@@ -1,23 +1,24 @@
 .container {
-    max-width: 900px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
-    min-height: 100vh;
+    color: var(--foreground);
 }
 
 .header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 2rem;
 }
 
 .backButton {
-    background: transparent;
+    background: none;
     border: none;
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: 1rem;
     cursor: pointer;
-    padding: 0.5rem 0;
-    margin-bottom: 1rem;
-    transition: color 0.2s;
+    font-weight: 600;
 }
 
 .backButton:hover {
@@ -25,10 +26,8 @@
 }
 
 .title {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--foreground);
-    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
 }
 
 .form {
@@ -39,43 +38,38 @@
 
 .section {
     background: var(--card-bg);
-    border-radius: 8px;
     padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
 }
 
 .sectionTitle {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--foreground);
-    margin: 0 0 1.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
 }
 
 .formGroup {
     margin-bottom: 1.5rem;
 }
 
-.formGroup:last-child {
-    margin-bottom: 0;
-}
-
 .label {
     display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--foreground);
     margin-bottom: 0.5rem;
+    font-weight: 500;
 }
 
 .input,
 .textarea {
     width: 100%;
     padding: 0.75rem;
-    background: var(--input-bg, #2a2a2a);
-    border: 1px solid var(--card-border);
-    border-radius: 4px;
+    border-radius: var(--radius);
+    background: var(--background);
+    border: 1px solid var(--border);
     color: var(--foreground);
     font-size: 1rem;
-    transition: border-color 0.2s;
 }
 
 .input:focus,
@@ -84,28 +78,15 @@
     border-color: var(--primary);
 }
 
-.textarea {
-    resize: vertical;
-    font-family: inherit;
-}
-
 .fileInput {
+    display: block;
     width: 100%;
-    padding: 0.75rem;
-    background: var(--input-bg, #2a2a2a);
-    border: 2px dashed var(--card-border);
-    border-radius: 4px;
-    color: var(--foreground);
+    padding: 0.5rem;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
 }
 
-.fileInput:hover {
-    border-color: var(--primary);
-    background: rgba(30, 215, 96, 0.05);
-}
-
-/* Tag Grid for Artists/Genres */
 .tagGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -113,125 +94,122 @@
 }
 
 .tagLabel {
-    position: relative;
     cursor: pointer;
+    display: block;
 }
 
-.tagLabel input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
+.tagLabel input {
+    display: none;
 }
 
 .tag {
-    display: block;
-    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
     background: var(--background);
-    border: 2px solid var(--card-border);
-    border-radius: 20px;
-    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 9999px;
     font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-muted);
     transition: all 0.2s;
+    text-align: center;
 }
 
-.tagLabel input[type="checkbox"]:checked+.tag {
+.tagLabel input:checked+.tag {
     background: var(--primary);
-    border-color: var(--primary);
     color: #000;
-}
-
-.tag:hover {
+    font-weight: 600;
     border-color: var(--primary);
-    color: var(--foreground);
 }
 
-/* Radio Group for Status */
 .radioGroup {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
 }
 
 .radioLabel {
     display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 1rem;
-    background: var(--background);
-    border: 2px solid var(--card-border);
-    border-radius: 8px;
+    flex-direction: column;
     cursor: pointer;
+    background: var(--background);
+    padding: 1rem;
+    border-radius: var(--radius);
+    flex: 1;
+    border: 1px solid var(--border);
     transition: all 0.2s;
+}
+
+.radioLabel input {
+    margin-bottom: 0.5rem;
 }
 
 .radioLabel:hover {
     border-color: var(--primary);
 }
 
-.radioLabel input[type="radio"] {
-    margin-top: 0.25rem;
-    accent-color: var(--primary);
+.analyzing {
+    color: #eab308;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: pulse 2s infinite;
 }
 
-.radioLabel span {
-    font-weight: 600;
-    color: var(--foreground);
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
 }
 
-.radioLabel small {
-    display: block;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
-}
-
-/* Actions */
 .actions {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    padding: 1.5rem 0;
-}
-
-.cancelButton,
-.submitButton {
-    padding: 0.75rem 2rem;
-    border-radius: 24px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    align-items: center;
 }
 
 .cancelButton {
     background: transparent;
+    border: 1px solid var(--border);
     color: var(--text-muted);
-    border: 2px solid var(--card-border);
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
 }
 
 .cancelButton:hover {
-    border-color: var(--foreground);
     color: var(--foreground);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .submitButton {
     background: var(--primary);
+    border: none;
     color: #000;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
 }
 
-.submitButton:hover {
-    transform: scale(1.05);
+.submitButton:hover:not(:disabled) {
+    opacity: 0.9;
 }
 
-.submitButton:active {
-    transform: scale(0.95);
-}
-
-.submitButton:disabled,
-.cancelButton:disabled {
+.submitButton:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
 }

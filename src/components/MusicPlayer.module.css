@@ -128,6 +128,14 @@
     color: var(--foreground);
 }
 
+.controlButton.active {
+    color: var(--primary);
+}
+
+.controlButton.active:hover {
+    color: var(--primary-hover);
+}
+
 .playButton {
     background: var(--foreground);
     color: var(--background);
@@ -296,11 +304,27 @@
 }
 
 /* Responsive */
+/* Responsive */
 @media (max-width: 768px) {
     .player {
         grid-template-columns: 1fr auto;
-        height: 80px;
-        padding: 0 0.5rem;
+        height: 120px;
+        /* Increased height to accommodate stacked controls */
+        padding: 0.5rem 1rem;
+        flex-direction: column;
+        display: flex;
+        align-items: stretch;
+    }
+
+    .songInfo {
+        flex: 1;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .cover {
+        width: 48px;
+        height: 48px;
     }
 
     .rightControls {
@@ -308,7 +332,23 @@
     }
 
     .controls {
-        grid-column: 1 / -1;
-        order: -1;
+        width: 100%;
+        max-width: none;
+        margin-top: 0.5rem;
+    }
+
+    .buttons {
+        gap: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .time {
+        font-size: 0.7rem;
+        min-width: 30px;
+    }
+
+    .controlButton {
+        padding: 0.5rem;
+        /* Increase touch area */
     }
 }

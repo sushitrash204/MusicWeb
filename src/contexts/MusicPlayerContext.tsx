@@ -27,6 +27,11 @@ interface MusicPlayerContextType {
     setVolume: (volume: number) => void;
     nextSong: () => void;
     previousSong: () => void;
+    playList: (songs: Song[], startIndex?: number) => void;
+    isShuffle: boolean;
+    repeatMode: 'off' | 'all' | 'one';
+    toggleShuffle: () => void;
+    toggleRepeat: () => void;
 }
 
 const MusicPlayerContext = createContext<MusicPlayerContextType | undefined>(undefined);
@@ -42,7 +47,6 @@ export const useMusicPlayer = () => {
 export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [currentSong, setCurrentSong] = useState<Song | null>(null);
-    const currentSongRef = useRef<Song | null>(null); // Ref for event listener access
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -58,19 +62,108 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
         userRef.current = user;
     }, [user]);
 
+    const currentSongRef = useRef<Song | null>(null);
+    const queueRef = useRef<Song[]>([]);
+    const currentIndexRef = useRef(-1);
+    const isShuffleRef = useRef(false);
+    const repeatModeRef = useRef<'off' | 'all' | 'one'>('off');
+
+    const [queue, setQueue] = useState<Song[]>([]);
+    const [currentIndex, setCurrentIndex] = useState(-1);
+    const [isShuffle, setIsShuffle] = useState(false);
+    const [repeatMode, setRepeatMode] = useState<'off' | 'all' | 'one'>('off');
+
+    // Sync refs
     useEffect(() => {
         currentSongRef.current = currentSong;
     }, [currentSong]);
 
-    // Initialize audio element
     useEffect(() => {
-        audioRef.current = new Audio();
-        audioRef.current.volume = volume;
+        queueRef.current = queue;
+    }, [queue]);
+
+    useEffect(() => {
+        currentIndexRef.current = currentIndex;
+    }, [currentIndex]);
+
+    useEffect(() => {
+        isShuffleRef.current = isShuffle;
+    }, [isShuffle]);
+
+    useEffect(() => {
+        repeatModeRef.current = repeatMode;
+    }, [repeatMode]);
+
+    const toggleShuffle = () => setIsShuffle(prev => !prev);
+
+    const toggleRepeat = () => {
+        setRepeatMode(prev => {
+            if (prev === 'off') return 'all';
+            if (prev === 'all') return 'one';
+            return 'off';
+        });
+    };
+
+    const getNextIndex = (currentIdx: number, qLength: number, shuffle: boolean, repeat: 'off' | 'all' | 'one') => {
+        if (qLength === 0) return -1;
+        if (repeat === 'one') return currentIdx; // Should not trigger on next button, only ended.
+        // But helper function general purpose:
+        if (shuffle) {
+            // Simple random for now
+            let nextIdx = Math.floor(Math.random() * qLength);
+            // Try to avoid repeating same song if length > 1
+            if (qLength > 1 && nextIdx === currentIdx) {
+                nextIdx = (nextIdx + 1) % qLength;
+            }
+            return nextIdx;
+        }
+        // Normal
+        if (currentIdx < qLength - 1) return currentIdx + 1;
+        if (repeat === 'all') return 0;
+        return -1;
+    };
+
+
+    // Helper to play without resetting queue implicitly if part of playlist
+    const playSongInternal = async (song: Song, index: number) => {
+        if (!audioRef.current) return;
+
+        setCurrentIndex(index);
+        setCurrentSong(song);
+
+        audioRef.current.src = song.audioUrl;
+
+        if (!userRef.current) {
+            audioRef.current.currentTime = song.previewStart || 0;
+            setCurrentTime(0);
+        } else {
+            audioRef.current.currentTime = 0;
+        }
+
+        try {
+            await audioRef.current.play();
+            setIsPlaying(true); // Set playing state here
+        } catch (e) {
+            console.error("Play error", e);
+            setIsPlaying(false); // Ensure playing state is false on error
+        }
+    };
+
+    // This ref allows the useEffect to call the latest playSongInternal
+    const playSongInternalRef = useRef(playSongInternal);
+    useEffect(() => { playSongInternalRef.current = playSongInternal; });
+
+    // Initialize audio element - RUN ONCE
+    useEffect(() => {
+        if (!audioRef.current) {
+            audioRef.current = new Audio();
+        }
 
         const audio = audioRef.current;
+        audio.volume = volume;
 
         const handleTimeUpdate = () => {
-            const song = currentSongRef.current;
+            const song = currentSongRef.current; // Use ref to get latest song
 
             if (!userRef.current && song) {
                 const start = song.previewStart || 0;
@@ -104,7 +197,7 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
         };
 
         const handleDurationChange = () => {
-            if (!userRef.current) {
+            if (!userRef.current && currentSongRef.current) {
                 setDuration(15); // Fixed 15s duration for guests
             } else {
                 setDuration(audio.duration);
@@ -116,6 +209,37 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
             if (!userRef.current && currentSongRef.current) {
                 setCurrentTime(0);
                 audio.currentTime = currentSongRef.current.previewStart || 0;
+            } else {
+                // Auto play next song if available
+                const q = queueRef.current;
+                const idx = currentIndexRef.current;
+                const shuffle = isShuffleRef.current;
+                const repeat = repeatModeRef.current;
+
+                if (q.length === 0) return;
+
+                if (repeat === 'one') {
+                    audio.currentTime = 0;
+                    audio.play();
+                    return;
+                }
+
+                let nextIdx = -1;
+                if (shuffle) {
+                    nextIdx = Math.floor(Math.random() * q.length);
+                    if (q.length > 1 && nextIdx === idx) nextIdx = (nextIdx + 1) % q.length;
+                } else {
+                    if (idx < q.length - 1) {
+                        nextIdx = idx + 1;
+                    } else if (repeat === 'all') {
+                        nextIdx = 0;
+                    }
+                }
+
+                if (nextIdx !== -1) {
+                    const nextTrack = q[nextIdx];
+                    playSongInternalRef.current(nextTrack, nextIdx);
+                }
             }
         };
 
@@ -149,36 +273,53 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
             audio.removeEventListener('pause', handlePause);
             audio.pause();
         };
-    }, []);
+    }, []); // Empty dependency array - run once
 
     const playSong = async (song: Song) => {
-        if (!audioRef.current) return;
+        // When playing a single song individually, we clear the queue or set it to just this song
+        setQueue([song]);
+        setCurrentIndex(0);
+        await playSongInternal(song, 0);
+    };
 
-        // If same song, just toggle play
-        if (currentSong?._id === song._id) {
-            togglePlay();
-            return;
-        }
+    const playList = (songs: Song[], startIndex = 0) => {
+        if (songs.length === 0) return;
+        setQueue(songs);
+        playSongInternal(songs[startIndex], startIndex);
+    };
 
-        setCurrentSong(song);
-        currentSongRef.current = song;
+    const nextSong = () => {
+        const q = queue;
+        const idx = currentIndex;
 
-        audioRef.current.src = song.audioUrl;
+        if (q.length === 0) return;
 
-        // Start position for guest
-        if (!userRef.current) {
-            audioRef.current.currentTime = song.previewStart || 0;
-            setDuration(15);
-            setCurrentTime(0);
+        let nextIdx = -1;
+
+        if (isShuffle) {
+            nextIdx = Math.floor(Math.random() * q.length);
+            // Avoid repeating same song if possible
+            if (q.length > 1 && nextIdx === idx) {
+                nextIdx = (nextIdx + 1) % q.length;
+            }
         } else {
-            audioRef.current.currentTime = 0;
+            if (idx < q.length - 1) {
+                nextIdx = idx + 1;
+            } else if (repeatMode !== 'off') {
+                nextIdx = 0; // Wrap around
+            }
         }
 
-        try {
-            await audioRef.current.play();
-            setIsPlaying(true);
-        } catch (e) {
-            console.error("Play error", e);
+        if (nextIdx !== -1) {
+            playSongInternal(q[nextIdx], nextIdx);
+        }
+    };
+
+    const previousSong = () => {
+        if (queue.length > 0 && currentIndex > 0) {
+            playSongInternal(queue[currentIndex - 1], currentIndex - 1);
+        } else if (audioRef.current) {
+            audioRef.current.currentTime = 0;
         }
     };
 
@@ -188,7 +329,6 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
         if (isPlaying) {
             audioRef.current.pause();
         } else {
-            // Check resume position for guests
             if (!userRef.current) {
                 const start = currentSong.previewStart || 0;
                 if (audioRef.current.currentTime < start || audioRef.current.currentTime >= start + 15) {
@@ -204,13 +344,9 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
         if (!userRef.current) {
             const start = currentSong.previewStart || 0;
-            // UI gives 0-15. Map to start + time.
             let target = start + time;
-
-            // Safety clamp
             if (target < start) target = start;
             if (target > start + 15) target = start + 15;
-
             audioRef.current.currentTime = target;
             setCurrentTime(time);
         } else {
@@ -223,16 +359,6 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
         if (!audioRef.current) return;
         audioRef.current.volume = newVolume;
         setVolumeState(newVolume);
-    };
-
-    const nextSong = () => {
-        // TODO: Implement playlist logic
-        console.log('Next song');
-    };
-
-    const previousSong = () => {
-        // TODO: Implement playlist logic
-        console.log('Previous song');
     };
 
     return (
@@ -248,7 +374,12 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
                 seekTo,
                 setVolume,
                 nextSong,
-                previousSong
+                previousSong,
+                playList,
+                isShuffle,
+                repeatMode,
+                toggleShuffle,
+                toggleRepeat
             }}
         >
             {children}

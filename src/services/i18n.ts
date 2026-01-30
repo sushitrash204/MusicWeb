@@ -10,7 +10,7 @@ i18n
     })
   )
   .init({
-    lng: typeof window !== 'undefined' ? localStorage.getItem('language') || 'vi' : 'vi',
+    lng: 'vi', // Fixed default for SSR match. Client will sync later.
     fallbackLng: 'vi',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

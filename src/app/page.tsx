@@ -8,23 +8,30 @@ import artistService from '@/services/artistService';
 import ScrollableSection from '@/components/ScrollableSection';
 import ArtistCard from '@/components/ArtistCard';
 import SongCard from '@/components/SongCard';
+import AlbumCard from '@/components/AlbumCard';
+import { useMusicPlayer } from '@/contexts/MusicPlayerContext';
+import albumService from '@/services/albumService';
 
 export default function HomePage() {
   const { user, loading } = useAuth();
   const { t } = useTranslation('common');
   const router = useRouter();
+  const { playList } = useMusicPlayer();
   const [artists, setArtists] = useState<any[]>([]);
   const [recentSongs, setRecentSongs] = useState<any[]>([]);
+  const [albums, setAlbums] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [artistsData, songsData] = await Promise.all([
+        const [artistsData, songsData, albumsData] = await Promise.all([
           artistService.getArtists(),
-          artistService.getRecentSongs(10)
+          artistService.getRecentSongs(10),
+          albumService.getAllAlbums(1, 10, 'releaseDate')
         ]);
         setArtists(artistsData);
         setRecentSongs(songsData);
+        setAlbums(albumsData.albums || []);
       } catch (error) {
         console.error('Failed to fetch data', error);
       }
@@ -69,11 +76,31 @@ export default function HomePage() {
           keyExtractor={(song: any) => song._id}
           variant="wide"
           renderItem={(song: any) => (
-            <SongCard song={song} />
+            <SongCard
+              song={song}
+              onPlay={(s) => {
+                const idx = recentSongs.findIndex(rs => rs._id === s._id);
+                if (idx !== -1) playList(recentSongs, idx);
+              }}
+            />
           )}
         />
         {recentSongs.length === 0 && (
           <p className="text-[var(--text-muted)]">{t('no_songs', 'No songs yet.')}</p>
+        )}
+      </div>
+
+      <div className="mb-8">
+        <ScrollableSection
+          title={t('new_albums', 'New Albums')}
+          items={albums}
+          keyExtractor={(album: any) => album._id}
+          renderItem={(album: any) => (
+            <AlbumCard album={album} />
+          )}
+        />
+        {albums.length === 0 && (
+          <p className="text-[var(--text-muted)]">{t('no_albums', 'No albums yet.')}</p>
         )}
       </div>
     </div>

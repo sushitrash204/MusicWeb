@@ -152,5 +152,21 @@
     "alert_login_msg": "您需要登录才能执行此操作。",
     "alert_login_btn": "登录",
     "close": "关闭",
-    "confirm": "确认"
+    "confirm": "确认",
+    "edit": "编辑",
+    "edit_song_title": "编辑歌曲",
+    "update_song": "更新歌曲",
+    "updating": "更新中...",
+    "update_success": "歌曲更新成功！",
+    "audio_already_uploaded": "音频文件已存在",
+    "shuffle": "随机播放",
+    "repeat_off": "不重复",
+    "repeat_all": "全部循环",
+    "repeat_one": "单曲循环",
+    "play_all": "播放全部",
+    "album": "专辑",
+    "album_not_found": "未找到专辑",
+    "no_songs_in_album": "此专辑中没有歌曲",
+    "add_songs": "添加歌曲",
+    "songs": "歌曲"
 }

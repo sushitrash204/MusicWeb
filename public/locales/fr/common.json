@@ -152,5 +152,21 @@
     "alert_login_msg": "Vous devez vous connecter pour effectuer cette action.",
     "alert_login_btn": "Se connecter",
     "close": "Fermer",
-    "confirm": "Confirmer"
+    "confirm": "Confirmer",
+    "edit": "Éditer",
+    "edit_song_title": "Éditer la chanson",
+    "update_song": "Mettre à jour la chanson",
+    "updating": "Mise à jour...",
+    "update_success": "Chanson mise à jour avec succès !",
+    "audio_already_uploaded": "Le fichier audio existe déjà",
+    "shuffle": "Aléatoire",
+    "repeat_off": "Ne pas répéter",
+    "repeat_all": "Tout répéter",
+    "repeat_one": "Répéter une fois",
+    "play_all": "Tout lire",
+    "album": "Album",
+    "album_not_found": "Album introuvable",
+    "no_songs_in_album": "Aucune chanson dans cet album",
+    "add_songs": "Ajouter des chansons",
+    "songs": "Chansons"
 }

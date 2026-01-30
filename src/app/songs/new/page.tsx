@@ -256,6 +256,11 @@ export default function NewSongPage() {
 
                 {/* Submit Button */}
                 <div className={styles.actions}>
+                    {formData.audioFile && formData.duration === 0 && (
+                        <div className={styles.analyzing}>
+                            ⚠️ {t('analyzing_audio', 'Đang phân tích thời lượng file... Vui lòng đợi.')}
+                        </div>
+                    )}
                     <button
                         type="button"
                         className={styles.cancelButton}
@@ -267,7 +272,7 @@ export default function NewSongPage() {
                     <button
                         type="submit"
                         className={styles.submitButton}
-                        disabled={loading}
+                        disabled={loading || (!!formData.audioFile && formData.duration === 0)}
                     >
                         {loading ? t('uploading', 'Uploading...') : t('create_song', 'Create Song')}
                     </button>
