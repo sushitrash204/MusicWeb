@@ -114,6 +114,14 @@ const Header = () => {
         }
     };
 
+    const handlePremiumClick = () => {
+        if (!user) {
+            router.push('/login');
+            return;
+        }
+        setIsPremiumModalOpen(true);
+    };
+
     const hasResults = results && (
         results.songs.length > 0 ||
         results.albums.length > 0 ||
@@ -236,13 +244,13 @@ const Header = () => {
             <div className={styles.rightSection}>
                 {/* Desktop Actions */}
                 <div className={`${styles.actions} ${styles.desktopOnly}`}>
+                    {(!user || !user.isPremium) && (
+                        <button className={styles.premiumBtn} onClick={handlePremiumClick}>
+                            {t('get_premium')}
+                        </button>
+                    )}
                     {user ? (
                         <>
-                            {!user.isPremium && (
-                                <button className={styles.premiumBtn} onClick={() => setIsPremiumModalOpen(true)}>
-                                    {t('get_premium')}
-                                </button>
-                            )}
                             <div className={styles.userMenu} ref={dropdownRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                                 {user.avatar ? (
                                     <img
@@ -345,7 +353,7 @@ const Header = () => {
                                         className={styles.premiumBtnMobile}
                                         onClick={() => {
                                             toggleMobileMenu();
-                                            setIsPremiumModalOpen(true);
+                                            handlePremiumClick();
                                         }}
                                     >
                                         {t('get_premium')}
