@@ -23,7 +23,7 @@ const LyricsPanel: React.FC<LyricsPanelProps> = ({ isOpen, onClose, lyrics, titl
 
     // Identify if lyrics are simple text or JSON
     const parsedLyrics = useMemo(() => {
-        if (!lyrics) return [];
+        if (!lyrics || lyrics === '[]') return [];
         try {
             const json = JSON.parse(lyrics);
             if (Array.isArray(json)) return json;

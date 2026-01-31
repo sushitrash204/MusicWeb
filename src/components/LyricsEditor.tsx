@@ -82,75 +82,20 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
         }
     }, [audioFile, existingAudioUrl]);
 
-    // Parse Value to Blocks
+    // Sync blocks when value changes (if in edit mode)
     useEffect(() => {
-        if (value === '[]' || !value) {
-            setBlocks([]);
-            return;
-        }
+        if (mode === 'edit' && value && !value.startsWith('[')) {
+            const lines = value.split('\n').filter(l => l.trim() !== '');
+            // Only update if lines changed to avoid excessive re-renders
+            const currentBlockTexts = blocks.map(b => b.text);
+            const linesString = lines.join('\n');
+            const currentString = currentBlockTexts.join('\n');
 
-        try {
-            const json = JSON.parse(value);
-            if (Array.isArray(json)) {
-                const newBlocks: LyricBlock[] = [];
-                for (let i = 0; i < json.length; i++) {
-                    const item = json[i];
-                    let end = 0;
-                    if (item.duration) {
-                        end = item.time + item.duration;
-                    } else {
-                        const nextTime = json[i + 1]?.time;
-                        end = nextTime && nextTime > item.time
-                            ? nextTime
-                            : item.time + 3;
-                    }
-
-                    newBlocks.push({
-                        id: `block-${Date.now()}-${i}`,
-                        text: item.text,
-                        startTime: item.time || 0,
-                        endTime: end,
-                        lane: i % 2
-                    });
-                }
-                setBlocks(newBlocks);
-                return;
-            }
-        } catch (e) {
-            // Not JSON
-        }
-
-        if (value && mode === 'edit' && blocks.length === 0) {
-            const lines = value.split('\n').filter(l => l.trim() && l !== '[]');
-            const newBlocks = lines.map((text, i) => ({
-                id: `block-${Date.now()}-${i}`,
-                text,
-                startTime: i * 4,
-                endTime: (i * 4) + 3,
-                lane: i % 2
-            }));
-            if (newBlocks.length > 0) setBlocks(newBlocks);
-        }
-    }, [value, mode]); // Added mode to deps to re-parse text if switching from edit to sync
-
-    const handleTabChange = (newMode: 'edit' | 'sync') => {
-        if (newMode === 'sync') {
-            // Smart Parsing: Convert text lines to blocks if they don't match
-            const currentText = typeof value === 'string' && value.startsWith('[') ?
-                blocks.map(b => b.text).join('\n') : value;
-
-            const lines = currentText.split('\n').filter(l => l.trim() && l !== '[]');
-
-            let blocksToSave = blocks;
-
-            // Only re-parse if the number of lines is different from current blocks
-            // or if we have no blocks yet
-            if (blocks.length !== lines.length) {
+            if (linesString !== currentString) {
                 const newBlocks = lines.map((text, i) => {
-                    // Try to preserve existing timing if text at same index matches
                     const existing = blocks[i];
                     return {
-                        id: `block-${Date.now()}-${i}`,
+                        id: existing?.id || `block-${Date.now()}-${i}`,
                         text: text.trim(),
                         startTime: existing?.startTime ?? i * 4,
                         endTime: existing?.endTime ?? (i * 4) + 3,
@@ -158,11 +103,73 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
                     };
                 });
                 setBlocks(newBlocks);
-                blocksToSave = newBlocks;
             }
+        }
+    }, [value, mode]);
 
-            // CRITICAL: Save the blocks as JSON immediatey when entering Sync mode
-            saveBlocks(blocksToSave);
+    // Parse Value to Blocks (Initial Load & Mode Change)
+    useEffect(() => {
+        if (!value || value === '[]') {
+            if (blocks.length > 0) setBlocks([]);
+            return;
+        }
+
+        // Only parse from value if we are entering a mode that needs it 
+        // Or if blocks are currently empty
+        try {
+            if (value.startsWith('[')) {
+                const json = JSON.parse(value);
+                if (Array.isArray(json)) {
+                    const newBlocks: LyricBlock[] = json.map((item, i) => {
+                        let end = 0;
+                        if (item.duration) {
+                            end = item.time + item.duration;
+                        } else {
+                            const nextTime = json[i + 1]?.time;
+                            end = nextTime && nextTime > item.time
+                                ? nextTime
+                                : item.time + 3;
+                        }
+
+                        return {
+                            id: `block-${Date.now()}-${i}`,
+                            text: item.text || '',
+                            startTime: item.time || 0,
+                            endTime: end,
+                            lane: 0
+                        };
+                    });
+                    setBlocks(newBlocks);
+                    return;
+                }
+            }
+        } catch (e) {
+            // Not JSON or parse error
+        }
+    }, [isSyncEnabled]); // Run when sync is toggled
+
+    const handleTabChange = (newMode: 'edit' | 'sync') => {
+        if (newMode === 'sync') {
+            // Use latest text from value
+            const currentText = (value && !value.startsWith('[')) ? value :
+                blocks.map(b => b.text).join('\n');
+
+            const lines = currentText.split('\n').filter(l => l.trim() !== '');
+
+            // Always rebuild or update blocks to match the latest text lines
+            const newBlocks = lines.map((text, i) => {
+                const existing = blocks[i];
+                return {
+                    id: existing?.id || `block-${Date.now()}-${i}`,
+                    text: text.trim(),
+                    startTime: existing?.startTime ?? i * 4,
+                    endTime: existing?.endTime ?? (i * 4) + 3,
+                    lane: 0
+                };
+            });
+
+            setBlocks(newBlocks);
+            saveBlocks(newBlocks); // Persistent immediately
         }
         setMode(newMode);
     };
