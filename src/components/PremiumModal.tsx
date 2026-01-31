@@ -10,7 +10,7 @@ interface PremiumModalProps {
 
 // CONFIGURATION - CHANGE THESE TO YOUR SEPAY/BANK INFO
 const BANK_ACCOUNT = process.env.NEXT_PUBLIC_BANK_ACCOUNT || '103877409967';
-const BANK_NAME = process.env.NEXT_PUBLIC_BANK_NAME || 'ICB';
+const BANK_NAME = process.env.NEXT_PUBLIC_BANK_NAME || 'VietinBank';
 const AMOUNT = Number(process.env.NEXT_PUBLIC_PAYMENT_AMOUNT) || 5000;
 
 export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
@@ -18,10 +18,10 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
 
     if (!isOpen || !user) return null;
 
-    // Create unique transfer content: MUSA <UserId>
-    // Using user._id ensures we can identify who paid.
-    // We strip spaces just in case, though ID shouldn't have them.
-    const transferContent = `MUSA ${user._id}`;
+    // Create unique transfer content: SEVQR TKPACB MUSA <UserId>
+    // SePay VA requirement: Must start with SEVQR and contain TKPACB
+    // We append MUSA <UserId> for our backend to identify the user.
+    const transferContent = `SEVQR TKPACB MUSA ${user._id}`;
 
     // Construct QR URL
     // https://qr.sepay.vn/img?acc=SO_TAI_KHOAN&bank=NGAN_HANG&amount=SO_TIEN&des=NOI_DUNG
