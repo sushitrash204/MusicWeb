@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useMusicPlayer } from '@/contexts/MusicPlayerContext';
+import { useTranslation } from 'react-i18next';
 import styles from './SongCard.module.css';
 
 interface Song {
@@ -17,10 +18,57 @@ interface Song {
 interface SongCardProps {
     song: Song;
     onPlay?: (song: Song) => void;
+    variant?: 'grid' | 'list';
 }
 
-const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
+import { PlusIcon, HeartIcon as HeartOutlineIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import AddToPlaylistModal from './AddToPlaylistModal';
+import favoriteService from '@/services/favoriteService';
+
+const SongCard: React.FC<SongCardProps> = ({ song, onPlay, variant = 'grid' }) => {
     const { playSong, currentSong, isPlaying } = useMusicPlayer();
+    const { t } = useTranslation('common');
+    const [showPlaylistModal, setShowPlaylistModal] = React.useState(false);
+    const [isFavorited, setIsFavorited] = React.useState(false);
+
+    React.useEffect(() => {
+        const checkFavorite = async () => {
+            try {
+                const favorites = await favoriteService.getFavorites();
+                setIsFavorited(favorites.songs.some(s => (s._id || s) === song._id));
+            } catch (error) {
+                console.error('Failed to check favorite', error);
+            }
+        };
+        checkFavorite();
+    }, [song._id]);
+
+    const handleToggleFavorite = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+            await favoriteService.toggleFavoriteSong(song._id);
+            setIsFavorited(!isFavorited);
+        } catch (error) {
+            console.error('Failed to toggle favorite', error);
+        }
+    };
+
+    const titleRef = React.useRef<HTMLDivElement>(null);
+    const [isOverflown, setIsOverflown] = React.useState(false);
+
+    React.useEffect(() => {
+        const checkOverflow = () => {
+            if (titleRef.current) {
+                const { scrollWidth, clientWidth } = titleRef.current;
+                setIsOverflown(scrollWidth > clientWidth);
+            }
+        };
+
+        checkOverflow();
+        window.addEventListener('resize', checkOverflow);
+        return () => window.removeEventListener('resize', checkOverflow);
+    }, [song.title]);
 
     const isCurrentSong = currentSong?._id === song._id;
 
@@ -33,6 +81,11 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
         }
     };
 
+    const handleAddToPlaylist = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowPlaylistModal(true);
+    };
+
     const formatDuration = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
@@ -40,7 +93,7 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
     };
 
     return (
-        <div className={styles.card}>
+        <div className={`${styles.card} ${variant === 'list' ? styles.listVariant : ''}`}>
             <div className={styles.coverWrapper}>
                 {song.coverImage ? (
                     <img src={song.coverImage} alt={song.title} className={styles.cover} />
@@ -63,12 +116,58 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay }) => {
                 </button>
             </div>
             <div className={styles.info}>
-                <div className={styles.title}>{song.title}</div>
+                <div
+                    className={`${styles.title} ${isOverflown ? styles.canScroll : ''}`}
+                    ref={titleRef}
+                >
+                    {isOverflown ? (
+                        <span className={styles.titleText}>{song.title} &nbsp;&nbsp;&nbsp; {song.title}</span>
+                    ) : (
+                        <span className={styles.titleStatic}>{song.title}</span>
+                    )}
+                </div>
                 <div className={styles.artist}>
-                    {song.artists?.map(a => a.artistName).join(', ') || 'Unknown Artist'}
+                    {song.artists?.map(a => a.artistName).join(', ') || t('unknown_artist')}
                 </div>
             </div>
-            <div className={styles.duration}>{formatDuration(song.duration)}</div>
+
+            {variant === 'list' && (
+                <div className={styles.playsCenter}>
+                    {(song.plays || 0).toLocaleString()}
+                </div>
+            )}
+
+            <div className={styles.actions}>
+                <div className={styles.mainActions}>
+                    <button
+                        className={styles.actionBtn}
+                        onClick={handleToggleFavorite}
+                        title={isFavorited ? t('remove_from_favorites') : t('add_to_favorites')}
+                    >
+                        {isFavorited ? (
+                            <HeartSolidIcon className="w-5 h-5 text-primary" />
+                        ) : (
+                            <HeartOutlineIcon className="w-5 h-5" />
+                        )}
+                    </button>
+                    <button className={styles.actionBtn} onClick={handleAddToPlaylist}>
+                        <PlusIcon className="w-5 h-5" />
+                    </button>
+                    {variant === 'list' && (
+                        <div className={styles.verifiedWrap}>
+                            <CheckCircleIcon className="w-5 h-5 text-primary" />
+                        </div>
+                    )}
+                </div>
+                <div className={styles.duration}>{formatDuration(song.duration)}</div>
+            </div>
+
+            {showPlaylistModal && (
+                <AddToPlaylistModal
+                    songId={song._id}
+                    onClose={() => setShowPlaylistModal(false)}
+                />
+            )}
         </div>
     );
 };

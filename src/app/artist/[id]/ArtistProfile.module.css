@@ -100,6 +100,28 @@
     transform: none;
 }
 
+.followButton {
+    background: transparent;
+    color: var(--foreground);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.followButton:hover {
+    border-color: #fff;
+    transform: scale(1.05);
+}
+
+.followButton.following {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
 .addAlbumButton {
     background: rgba(255, 255, 255, 0.1);
     color: var(--foreground);

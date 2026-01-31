@@ -1,4 +1,5 @@
 import axios from 'axios';
+import tokenManager from './tokenManager';
 
 const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
@@ -15,7 +16,9 @@ api.interceptors.request.use(
         if (typeof window !== 'undefined') {
             const lang = localStorage.getItem('language') || 'en';
             config.params = { ...config.params, lang };
-            const token = localStorage.getItem('accessToken');
+
+            // USE RAM TOKEN instead of localStorage
+            const token = tokenManager.getToken();
             if (token) {
                 config.headers['Authorization'] = `Bearer ${token}`;
             }
@@ -37,14 +40,14 @@ api.interceptors.response.use(
 
             try {
                 // Call refresh token endpoint (this uses HttpOnly cookie)
-                // Use the configured baseURL for consistency
                 const refreshUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/auth/refresh`;
                 const response = await axios.post(refreshUrl, {}, { withCredentials: true });
 
                 const { accessToken } = response.data;
 
                 if (accessToken) {
-                    localStorage.setItem('accessToken', accessToken);
+                    // STORE NEW TOKEN IN RAM
+                    tokenManager.setToken(accessToken);
 
                     // Update header for original request
                     originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -54,8 +57,13 @@ api.interceptors.response.use(
                 }
             } catch (refreshError) {
                 // Refresh failed (token expired or invalid)
-                localStorage.removeItem('accessToken');
+                tokenManager.setToken(null);
+
+                // If it's a 429 from refresh, maybe don't redirect yet? 
+                // But generally if refresh fails, we need to login again.
                 if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+                    // Optional: clear user from localStorage here if we still use it for session signal
+                    localStorage.removeItem('user');
                     window.location.href = '/login';
                 }
                 return Promise.reject(refreshError);

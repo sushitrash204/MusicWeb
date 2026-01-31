@@ -64,6 +64,11 @@ const getRecentSongs = async (limit: number = 10) => {
     return response.data;
 };
 
+const getPopularSongs = async (limit: number = 10) => {
+    const response = await api.get(`/songs/popular?limit=${limit}`);
+    return response.data;
+};
+
 const getArtistById = async (id: string) => {
     const response = await api.get(`/artists/${id}`);
     return response.data;
@@ -71,6 +76,16 @@ const getArtistById = async (id: string) => {
 
 const getArtistSongs = async (artistId: string) => {
     const response = await api.get(`/songs/artist/${artistId}`);
+    return response.data;
+};
+
+const startPlaySession = async (songId: string) => {
+    const response = await api.post(`/songs/${songId}/start-play`);
+    return response.data;
+};
+
+const confirmPlaySession = async (sessionId: string) => {
+    const response = await api.post(`/songs/confirm-play/${sessionId}`);
     return response.data;
 };
 
@@ -86,8 +101,11 @@ const artistService = {
     updateSong,
     getSongById,
     getRecentSongs,
+    getPopularSongs,
     getArtistById,
-    getArtistSongs
+    getArtistSongs,
+    startPlaySession,
+    confirmPlaySession
 };
 
 export default artistService;

@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useRef, useEffect } from 'r
 import { useAuth } from '@/context/AuthContext';
 import { useAlert } from '@/context/AlertContext';
 import { toast } from 'react-hot-toast';
+import artistService from '@/services/artistService';
 
 interface Song {
     _id: string;
@@ -12,6 +13,7 @@ interface Song {
     coverImage?: string;
     duration: number;
     artists: any[];
+    lyrics?: string;
     previewStart?: number;
 }
 
@@ -32,6 +34,9 @@ interface MusicPlayerContextType {
     repeatMode: 'off' | 'all' | 'one';
     toggleShuffle: () => void;
     toggleRepeat: () => void;
+    queue: Song[];
+    currentIndex: number;
+    history: Song[];
 }
 
 const MusicPlayerContext = createContext<MusicPlayerContextType | undefined>(undefined);
@@ -56,6 +61,8 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const { user } = useAuth();
     const { showAlert } = useAlert();
     const userRef = useRef(user);
+    const hasCountedRef = useRef(false);
+    const currentSessionIdRef = useRef<string | null>(null);
 
     // Sync refs
     useEffect(() => {
@@ -70,6 +77,25 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     const [queue, setQueue] = useState<Song[]>([]);
     const [currentIndex, setCurrentIndex] = useState(-1);
+    const [history, setHistory] = useState<Song[]>([]);
+
+    // Load history from localStorage on mount
+    useEffect(() => {
+        const savedHistory = localStorage.getItem('music_history');
+        if (savedHistory) {
+            try {
+                setHistory(JSON.parse(savedHistory));
+            } catch (e) {
+                console.error("Failed to parse history", e);
+            }
+        }
+    }, []);
+
+    // Save history to localStorage when it changes
+    useEffect(() => {
+        localStorage.setItem('music_history', JSON.stringify(history));
+    }, [history]);
+
     const [isShuffle, setIsShuffle] = useState(false);
     const [repeatMode, setRepeatMode] = useState<'off' | 'all' | 'one'>('off');
 
@@ -130,6 +156,8 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
         setCurrentIndex(index);
         setCurrentSong(song);
+        hasCountedRef.current = false;
+        currentSessionIdRef.current = null;
 
         audioRef.current.src = song.audioUrl;
 
@@ -140,9 +168,24 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
             audioRef.current.currentTime = 0;
         }
 
+        // Add to history if not already the last one
+        setHistory(prev => {
+            if (prev.length > 0 && prev[0]._id === song._id) return prev;
+            return [song, ...prev].slice(0, 20); // Keep last 20
+        });
+
         try {
             await audioRef.current.play();
             setIsPlaying(true); // Set playing state here
+
+            // Initialize play session for logged in users
+            if (userRef.current) {
+                artistService.startPlaySession(song._id)
+                    .then(data => {
+                        currentSessionIdRef.current = data.sessionId;
+                    })
+                    .catch(err => console.error("Failed to start play session", err));
+            }
         } catch (e) {
             console.error("Play error", e);
             setIsPlaying(false); // Ensure playing state is false on error
@@ -193,6 +236,13 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
             } else {
                 // Normal user
                 setCurrentTime(audio.currentTime);
+
+                // Increment play count after 30 seconds
+                if (userRef.current && song && !hasCountedRef.current && audio.currentTime >= 30 && currentSessionIdRef.current) {
+                    hasCountedRef.current = true;
+                    artistService.confirmPlaySession(currentSessionIdRef.current)
+                        .catch(err => console.error("Failed to confirm play session", err));
+                }
             }
         };
 
@@ -379,7 +429,10 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
                 isShuffle,
                 repeatMode,
                 toggleShuffle,
-                toggleRepeat
+                toggleRepeat,
+                queue,
+                currentIndex,
+                history
             }}
         >
             {children}

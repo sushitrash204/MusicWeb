@@ -1,26 +1,30 @@
 .card {
     background: var(--card-bg);
-    padding: 1rem;
     border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    padding: 1rem;
+    transition: background 0.3s ease;
     cursor: pointer;
-    transition: background 0.2s;
+    display: flex;
+    flex-direction: column;
+    /* Default: Grid (vertical) */
+    gap: 0.75rem;
+    width: 100%;
+    height: 100%;
 }
 
 .card:hover {
-    background: var(--dropdown-hover);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .coverWrapper {
     position: relative;
-    width: 56px;
-    height: 56px;
-    flex-shrink: 0;
+    width: 100%;
+    aspect-ratio: 1/1;
+    /* Square for grid */
     border-radius: 4px;
     overflow: hidden;
     background: var(--player-cover-bg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .cover {
@@ -85,8 +89,39 @@
     color: var(--foreground);
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
     margin-bottom: 0.25rem;
+    position: relative;
+}
+
+.titleStatic {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.titleText {
+    display: inline-block;
+    padding-right: 40px;
+}
+
+.canScroll .titleText {
+    animation: marquee 10s linear infinite;
+    animation-play-state: paused;
+}
+
+.card:hover .canScroll .titleText {
+    animation-play-state: running;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+        /* Changed to -50% because we duplicated the text */
+    }
 }
 
 .artist {
@@ -98,7 +133,103 @@
 }
 
 .duration {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--text-muted);
     font-variant-numeric: tabular-nums;
+}
+
+.playsCenter {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-align: center;
+    flex: 1;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.verifiedWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.5rem;
+}
+
+.mainActions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    /* Very close buttons - user said "sát qua một chút" */
+}
+
+.actionBtn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: color 0.2s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actionBtn:hover {
+    color: var(--foreground);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* List Variant (Horizontal) */
+.listVariant {
+    flex-direction: row;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    height: auto;
+    gap: 1rem;
+    align-items: center;
+}
+
+.listVariant:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.listVariant .coverWrapper {
+    width: 48px;
+    height: 48px;
+    aspect-ratio: 1/1;
+    box-shadow: none;
+}
+
+.listVariant .info {
+    flex: 2;
+    padding: 0;
+}
+
+.listVariant .title {
+    font-size: 0.9375rem;
+    margin-bottom: 0.125rem;
+}
+
+.listVariant .playsCenter {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+}
+
+.listVariant .actions {
+    flex: 1;
+    justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+    .actions {
+        gap: 0.75rem;
+    }
 }

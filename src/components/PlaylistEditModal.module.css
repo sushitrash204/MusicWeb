@@ -1,0 +1,153 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: #282828;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+}
+
+.closeButton:hover {
+    color: var(--foreground);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.input,
+.textarea {
+    background: #3e3e3e;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 12px;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.input:focus,
+.textarea:focus {
+    outline: none;
+    background: #4a4a4a;
+    border-color: #5a5a5a;
+}
+
+.textarea {
+    resize: none;
+    min-height: 100px;
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.saveButton {
+    background: var(--spotify-green);
+    color: black;
+    border: none;
+    border-radius: 500px;
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.saveButton:hover {
+    transform: scale(1.04);
+    background: #1fdf64;
+}
+
+.saveButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.cancelButton {
+    background: transparent;
+    color: white;
+    border: none;
+    border-radius: 500px;
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cancelButton:hover {
+    color: var(--text-muted);
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    transition: color 0.2s;
+    user-select: none;
+}
+
+.checkboxLabel:hover {
+    color: var(--foreground);
+}
+
+.checkboxLabel input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--spotify-green);
+    cursor: pointer;
+}

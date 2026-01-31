@@ -146,7 +146,7 @@ export default function AdminDashboard() {
                                         </td>
                                         <td className={styles.td}>{req.bio}</td>
                                         <td className={styles.td}>
-                                            {req.genres.map((g: any) => g.name).join(', ')}
+                                            {(req.genres || []).map((g: any) => g.name).join(', ')}
                                         </td>
                                         <td className={styles.td}>
                                             <button

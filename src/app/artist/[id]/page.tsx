@@ -10,6 +10,8 @@ import SongCard from '@/components/SongCard';
 import AlbumCard from '@/components/AlbumCard';
 import ScrollableSection from '@/components/ScrollableSection';
 import { useMusicPlayer } from '@/contexts/MusicPlayerContext';
+import favoriteService from '@/services/favoriteService';
+import { toast } from 'react-hot-toast';
 import styles from './ArtistProfile.module.css';
 
 export default function ArtistProfilePage() {
@@ -24,10 +26,25 @@ export default function ArtistProfilePage() {
     const [songs, setSongs] = useState<any[]>([]);
     const [albums, setAlbums] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     const handlePlayAll = () => {
         if (songs.length > 0) {
             playList(songs, 0);
+        }
+    };
+
+    const handleFollow = async () => {
+        if (!user) {
+            router.push('/login');
+            return;
+        }
+        try {
+            await favoriteService.followArtist(id);
+            setIsFollowing(!isFollowing);
+            toast.success(isFollowing ? t('unfollowed') : t('followed'));
+        } catch (error) {
+            console.error('Failed to follow artist', error);
         }
     };
 
@@ -58,8 +75,18 @@ export default function ArtistProfilePage() {
 
                 if (isMounted) {
                     console.log('Artist data received:', artistData);
+                    if (artistData.isMe) {
+                        router.replace('/profile');
+                        return;
+                    }
                     setArtist(artistData);
                     setLoading(false); // Stop main loading
+                }
+
+                // Check following status if user is logged in
+                if (user && isMounted) {
+                    const favorites = await favoriteService.getFavorites();
+                    setIsFollowing(favorites.artists.some(a => (a._id || a) === id));
                 }
 
                 // Fetch songs and albums in parallel
@@ -119,8 +146,7 @@ export default function ArtistProfilePage() {
                     </div>
                     <h1 className={styles.name}>{name}</h1>
                     <div className={styles.stats}>
-                        {/* Placeholder for monthly listeners */}
-                        1,234,567 {t('monthly_listeners', 'monthly listeners')}
+                        {(artist.totalStreams || 0).toLocaleString()} {t('total_streams', 'total streams')}
                     </div>
 
                     <div className={styles.actions}>
@@ -133,6 +159,12 @@ export default function ArtistProfilePage() {
                                 <path d="M8 5v14l11-7z" />
                             </svg>
                             {t('play_all', 'Phát tất cả')}
+                        </button>
+                        <button
+                            className={`${styles.followButton} ${isFollowing ? styles.following : ''}`}
+                            onClick={handleFollow}
+                        >
+                            {isFollowing ? t('following', 'Đang theo dõi') : t('follow', 'Theo dõi')}
                         </button>
                     </div>
 
@@ -149,6 +181,7 @@ export default function ArtistProfilePage() {
                                     key={song._id}
                                     song={{ ...song, artists: song.artists || [{ _id: artist._id, artistName: name }] }}
                                     onPlay={handlePlaySong}
+                                    variant="list"
                                 />
                             ))
                         ) : (

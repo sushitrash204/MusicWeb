@@ -2,19 +2,34 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
-    /* background-color: var(--background); */
-    /* In Spotify dark mode, this might be black #000000, but var(--background) is #121212. Let's stick to var for now or override if needed. Spotify main view is #121212, Sidebar is #000. Header is transparent or #000. Let's make it match bg or slightly darker. */
+    padding: 0.5rem 2rem;
     background-color: var(--dropdown-bg);
-    /* Darker contrast */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    /* More subtle shadow */
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: none;
-    /* Spotify doesn't have a border usually */
     transition: background-color 0.3s ease;
+    height: 64px;
+}
+
+.leftSection {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.centerSection {
+    flex: 1.5;
+    display: flex;
+    justify-content: center;
+}
+
+.rightSection {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
 }
 
 [data-theme="dark"] .header {
@@ -156,8 +171,6 @@
 
 /* New / Modified Styles */
 
-/* New / Modified Styles */
-
 .desktopOnly {
     display: flex;
 }
@@ -223,15 +236,16 @@
 }
 
 .logoAndToggle {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
+    display: none;
 }
 
-@media (min-width: 769px) {
-    .logoAndToggle {
-        width: auto;
+@media (max-width: 768px) {
+    .header {
+        padding: 0 1rem;
+    }
+
+    .centerSection {
+        display: none;
     }
 }
 
@@ -251,9 +265,179 @@
 
     .actions {
         display: none;
-        /* Hide default actions container if not using desktopOnly class, but we applied desktopOnly class in TSX */
     }
 }
 
-/* Paste this at the end or replace relevant parts */
-/* Ensure CSS variables work in mobile menu */
+/* Search Bar Styles */
+.searchContainer {
+    position: relative;
+    max-width: 400px;
+    width: 100%;
+    margin: 0 1rem;
+    flex-grow: 1;
+}
+
+.searchWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 500px;
+    padding: 6px 16px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.searchWrapper:focus-within {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.searchIcon {
+    width: 20px;
+    height: 20px;
+    color: var(--text-muted);
+}
+
+.searchInput {
+    background: transparent;
+    border: none;
+    color: var(--foreground);
+    padding: 4px 8px;
+    width: 100%;
+    font-size: 0.875rem;
+    outline: none;
+}
+
+.searchInput::placeholder {
+    color: var(--text-muted);
+}
+
+/* Search Dropdown Results */
+.searchResults {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--dropdown-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    max-height: 480px;
+    overflow-y: auto;
+    z-index: 1001;
+}
+
+.searchSection {
+    padding: 0.75rem 0;
+}
+
+.sectionHeader {
+    padding: 0 1rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.searchItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    color: var(--foreground);
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.searchItem:hover {
+    background: var(--dropdown-hover);
+}
+
+.itemImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.itemImageCircle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.itemInfo {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.itemName {
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+
+.itemMeta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.historyHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+}
+
+.clearHistory {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.clearHistory:hover {
+    color: var(--foreground);
+}
+
+.historyItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.removeHistory {
+    padding: 4px;
+    margin-left: 0.5rem;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.removeHistory:hover {
+    color: var(--foreground);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.noResults {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .searchContainer {
+        display: none;
+    }
+}

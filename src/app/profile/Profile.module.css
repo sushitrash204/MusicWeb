@@ -12,201 +12,129 @@
     color: var(--text-muted);
 }
 
-/* Cover Image */
-.coverImage {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 400px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    z-index: 0;
-}
-
-.coverOverlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
-}
-
-/* Artist Profile Header */
-.headerBanner {
-    position: relative;
-    z-index: 1;
-    padding: 6rem 2rem 2rem;
-}
-
-.loading {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 3rem;
-    font-size: 1.2rem;
-    color: var(--text-muted);
-}
-
-.headerContent {
-    max-width: 1200px;
-    margin: 0 auto;
+.header {
+    background: linear-gradient(to bottom, #444, #121212);
+    padding: 2rem;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
+    gap: 2rem;
+    height: 300px;
+    position: relative;
+    z-index: 1;
 }
 
-.artistAvatar {
+.avatar {
     width: 232px;
     height: 232px;
     border-radius: 50%;
-    overflow: hidden;
-    background-color: var(--primary);
-    margin-bottom: 1.5rem;
+    object-fit: cover;
     box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
 }
 
-.artistAvatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.artistAvatar .avatarInitials {
-    width: 100%;
-    height: 100%;
+.placeholderAvatar {
+    width: 232px;
+    height: 232px;
+    border-radius: 50%;
+    background: #333;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 5rem;
-    font-weight: 700;
-    color: #000;
+    color: #fff;
+    box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
 }
 
-.verifiedBadge {
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.verified {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--primary);
     font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+    color: #fff;
 }
 
-.verifiedBadge svg {
-    width: 24px;
-    height: 24px;
+.verifiedIcon {
+    width: 20px;
+    height: 20px;
+    fill: #3d91f4;
 }
 
-.artistName {
+.name {
     font-size: 6rem;
     font-weight: 900;
     margin: 0;
-    letter-spacing: -0.04em;
     line-height: 1;
+    color: #fff;
 }
 
-.monthlyListeners {
+.stats {
     font-size: 1rem;
-    color: var(--foreground);
-    margin-top: 1rem;
-    font-weight: 400;
+    color: #fff;
 }
 
-/* Action Bar */
-.actionBar {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+.actions {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
-.playButton {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background-color: var(--primary);
+.playAllButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 2rem;
+    background: var(--primary);
+    color: #000;
     border: none;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.1s, background-color 0.2s;
+    transition: transform 0.2s;
 }
 
-.playButton:hover {
-    transform: scale(1.06);
-    background-color: #1fdf64;
-}
-
-.playButton:active {
-    transform: scale(1.0);
-}
-
-.playButton svg {
-    margin-left: 2px;
+.playAllButton:hover {
+    transform: scale(1.05);
 }
 
 .editButton {
-    padding: 0.75rem 2rem;
-    border-radius: 500px;
-    border: 1px solid var(--foreground);
     background: transparent;
     color: var(--foreground);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
     font-weight: 700;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .editButton:hover {
-    transform: scale(1.04);
-    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+    transform: scale(1.05);
 }
 
-.editButton:active {
-    transform: scale(1.0);
-}
-
-.followButton {
-    padding: 0.75rem 2rem;
-    border-radius: 500px;
-    border: 1px solid var(--card-border);
-    background: transparent;
+.addAlbumButton {
+    background: rgba(255, 255, 255, 0.1);
     color: var(--foreground);
-    font-weight: 700;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    border: 1px solid var(--border);
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    width: fit-content;
 }
 
-.followButton:hover {
-    transform: scale(1.04);
-    border-color: var(--foreground);
-}
-
-.moreButton {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s;
-}
-
-.moreButton:hover {
-    color: var(--foreground);
+.addAlbumButton:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
 }
 
 /* Content Section */
@@ -214,12 +142,15 @@
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
 .sectionTitle {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
+    color: #fff;
 }
 
 .bioSection {

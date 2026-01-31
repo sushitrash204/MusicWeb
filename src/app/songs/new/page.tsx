@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import AudioPreviewSelector from '@/components/AudioPreviewSelector';
+import LyricsEditor from '@/components/LyricsEditor';
+import ArtistSearchPicker from '@/components/ArtistSearchPicker';
 import artistService from '@/services/artistService';
 import api from '@/services/api';
 import styles from './NewSong.module.css';
@@ -25,6 +27,7 @@ export default function NewSongPage() {
     const [loading, setLoading] = useState(false);
     const [artists, setArtists] = useState<Artist[]>([]);
     const [genres, setGenres] = useState<Genre[]>([]);
+    const [myArtist, setMyArtist] = useState<Artist | null>(null);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -44,12 +47,24 @@ export default function NewSongPage() {
 
     const fetchData = async () => {
         try {
-            const [artistsData, genresData] = await Promise.all([
+            // Fetch all data in parallel for faster loading
+            const [artistsData, genresData, myArtistData] = await Promise.all([
                 artistService.getArtists(),
-                artistService.getGenres()
+                artistService.getGenres(),
+                artistService.getMyArtistProfile().catch(() => null) // Don't fail if user has no artist profile
             ]);
+
             setArtists(artistsData);
             setGenres(genresData);
+
+            // Auto-select user as default artist if they have one
+            if (myArtistData && myArtistData._id) {
+                setMyArtist(myArtistData);
+                setFormData(prev => ({
+                    ...prev,
+                    selectedArtists: [myArtistData._id]
+                }));
+            }
         } catch (error) {
             console.error('Failed to fetch data', error);
         }
@@ -97,15 +112,6 @@ export default function NewSongPage() {
         }
     };
 
-    const toggleArtist = (artistId: string) => {
-        setFormData(prev => ({
-            ...prev,
-            selectedArtists: prev.selectedArtists.includes(artistId)
-                ? prev.selectedArtists.filter(id => id !== artistId)
-                : [...prev.selectedArtists, artistId]
-        }));
-    };
-
     const toggleGenre = (genreId: string) => {
         setFormData(prev => ({
             ...prev,
@@ -140,17 +146,6 @@ export default function NewSongPage() {
                             placeholder={t('song_title_placeholder', 'Enter song title...')}
                         />
                     </div>
-
-                    <div className={styles.formGroup}>
-                        <label className={styles.label}>{t('lyrics', 'Lyrics')} ({t('optional', 'Optional')})</label>
-                        <textarea
-                            className={styles.textarea}
-                            rows={6}
-                            value={formData.lyrics}
-                            onChange={e => setFormData({ ...formData, lyrics: e.target.value })}
-                            placeholder={t('lyrics_placeholder', 'Enter lyrics...')}
-                        />
-                    </div>
                 </section>
 
                 {/* Media Section */}
@@ -158,7 +153,7 @@ export default function NewSongPage() {
                     <h2 className={styles.sectionTitle}>{t('media', 'Media')}</h2>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>{t('audio_file', 'Audio File')} * ({t('audio_file_formats', 'MP3, WAV')})</label>
+                        <label className={styles.label}>{t('audio_file', 'Audio File')} *</label>
                         <input
                             type="file"
                             required
@@ -169,12 +164,24 @@ export default function NewSongPage() {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label className={styles.label}>{t('cover_image', 'Cover Image')} ({t('optional', 'Optional')})</label>
+                        <label className={styles.label}>{t('cover_image', 'Cover Image')}</label>
                         <input
                             type="file"
                             accept="image/*"
                             className={styles.fileInput}
                             onChange={e => setFormData({ ...formData, coverFile: e.target.files?.[0] || null })}
+                        />
+                    </div>
+                </section>
+
+                {/* Lyrics Section - Now BELOW Media section so we have audio for sync */}
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>{t('lyrics', 'Lyrics')}</h2>
+                    <div className={styles.formGroup}>
+                        <LyricsEditor
+                            value={formData.lyrics}
+                            onChange={(newValue) => setFormData({ ...formData, lyrics: newValue })}
+                            audioFile={formData.audioFile}
                         />
                     </div>
                 </section>
@@ -191,26 +198,17 @@ export default function NewSongPage() {
 
                 {/* Artists Selection */}
                 <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>{t('artists_selection', 'Artists')} * ({t('artists_min', 'Select at least 1')})</h2>
-                    <div className={styles.tagGrid}>
-                        {artists.map(artist => (
-                            <label key={artist._id} className={styles.tagLabel}>
-                                <input
-                                    type="checkbox"
-                                    checked={formData.selectedArtists.includes(artist._id)}
-                                    onChange={() => toggleArtist(artist._id)}
-                                />
-                                <span className={styles.tag}>
-                                    {artist.artistName}
-                                </span>
-                            </label>
-                        ))}
-                    </div>
+                    <h2 className={styles.sectionTitle}>{t('artists_selection', 'Artists')} *</h2>
+                    <ArtistSearchPicker
+                        selectedArtists={formData.selectedArtists}
+                        onChange={(artistIds) => setFormData({ ...formData, selectedArtists: artistIds })}
+                        defaultArtist={myArtist}
+                    />
                 </section>
 
                 {/* Genres Selection */}
                 <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>{t('genres_selection', 'Genres')} ({t('optional', 'Optional')})</h2>
+                    <h2 className={styles.sectionTitle}>{t('genres_selection', 'Genres')}</h2>
                     <div className={styles.tagGrid}>
                         {genres.map(genre => (
                             <label key={genre._id} className={styles.tagLabel}>

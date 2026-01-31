@@ -3,6 +3,12 @@
 import React, { useState } from 'react';
 import { useMusicPlayer } from '@/contexts/MusicPlayerContext';
 import { useTranslation } from 'react-i18next';
+import { PlusIcon, HeartIcon as HeartOutlineIcon, MicrophoneIcon, Bars3BottomLeftIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid';
+import AddToPlaylistModal from './AddToPlaylistModal';
+import favoriteService, { Favorite } from '@/services/favoriteService';
+import QueuePanel from './QueuePanel';
+import LyricsPanel from './LyricsPanel';
 import styles from './MusicPlayer.module.css';
 
 const MusicPlayer = () => {
@@ -25,6 +31,36 @@ const MusicPlayer = () => {
     const { t } = useTranslation('common');
 
     const [showVolume, setShowVolume] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [isQueueOpen, setIsQueueOpen] = useState(false);
+    const [isLyricsOpen, setIsLyricsOpen] = useState(false);
+    const [isFavorited, setIsFavorited] = useState(false);
+
+    React.useEffect(() => {
+        if (currentSong) {
+            checkIfFavorited();
+        }
+    }, [currentSong]);
+
+    const checkIfFavorited = async () => {
+        try {
+            const favorites = await favoriteService.getFavorites();
+            const favorited = favorites.songs.some(s => (s._id || s) === currentSong?._id);
+            setIsFavorited(favorited);
+        } catch (error) {
+            console.error('Failed to check favorite status', error);
+        }
+    };
+
+    const handleToggleFavorite = async () => {
+        if (!currentSong) return;
+        try {
+            await favoriteService.toggleFavoriteSong(currentSong._id);
+            setIsFavorited(!isFavorited);
+        } catch (error) {
+            console.error('Failed to toggle favorite', error);
+        }
+    };
 
     if (!currentSong) return null;
 
@@ -62,11 +98,26 @@ const MusicPlayer = () => {
                         {currentSong.artists?.map((a: any) => a.artistName).join(', ') || 'Unknown Artist'}
                     </div>
                 </div>
-                <button className={styles.likeButton}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M8 14s-6-4-6-8c0-2.5 2-4 4-4 1.5 0 2.5 1 2 2s1.5-2 2-2c2 0 4 1.5 4 4 0 4-6 8-6 8z" stroke="currentColor" strokeWidth="1.5" />
-                    </svg>
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <button
+                        className={styles.likeButton}
+                        onClick={handleToggleFavorite}
+                        title={isFavorited ? t('remove_from_favorites') : t('add_to_favorites')}
+                    >
+                        {isFavorited ? (
+                            <HeartSolidIcon className="w-5 h-5 text-primary" />
+                        ) : (
+                            <HeartOutlineIcon className="w-5 h-5" />
+                        )}
+                    </button>
+                    <button
+                        className={styles.addToPlaylistButton}
+                        onClick={() => setShowAddModal(true)}
+                        title={t('add_to_playlist')}
+                    >
+                        <PlusIcon className="w-5 h-5" />
+                    </button>
+                </div>
             </div>
 
             {/* Center: Controls */}
@@ -141,33 +192,61 @@ const MusicPlayer = () => {
                 </div>
             </div>
 
-            {/* Right: Volume */}
+            {/* Right: Volume & More */}
             <div className={styles.rightControls}>
                 <button
-                    className={styles.volumeButton}
-                    onMouseEnter={() => setShowVolume(true)}
-                    onMouseLeave={() => setShowVolume(false)}
+                    className={`${styles.secondaryButton} ${isLyricsOpen ? styles.active : ''}`}
+                    title={t('lyrics', 'Lyrics')}
+                    onClick={() => {
+                        setIsLyricsOpen(!isLyricsOpen);
+                    }}
                 >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M9.741.85a.8.8 0 0 1 .8.8v13.5a.8.8 0 0 1-1.296.624l-5.675-4.253H1a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1h2.57l5.675-4.253a.8.8 0 0 1 .496-.397z" />
-                        {volume > 0.5 && <path d="M11.5 4.5a4.5 4.5 0 0 1 0 7" />}
-                        {volume > 0 && <path d="M13 2a7 7 0 0 1 0 12" />}
-                    </svg>
-                    {showVolume && (
-                        <div className={styles.volumeSlider}>
-                            <input
-                                type="range"
-                                min="0"
-                                max="1"
-                                step="0.01"
-                                value={volume}
-                                onChange={handleVolumeChange}
-                                className={styles.volumeInput}
-                            />
-                        </div>
-                    )}
+                    <MicrophoneIcon className="w-5 h-5" />
                 </button>
+                <button
+                    className={`${styles.secondaryButton} ${isQueueOpen ? styles.active : ''}`}
+                    title={t('queue', 'Queue')}
+                    onClick={() => {
+                        setIsQueueOpen(!isQueueOpen);
+                    }}
+                >
+                    <Bars3BottomLeftIcon className="w-5 h-5" />
+                </button>
+                <div className={styles.volumeContainer}>
+                    <button className={styles.volumeButton}>
+                        <SpeakerWaveIcon className="w-5 h-5" />
+                    </button>
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={volume}
+                        onChange={handleVolumeChange}
+                        className={styles.volumeInput}
+                        style={{ '--volume-progress': `${volume * 100}%` } as React.CSSProperties}
+                    />
+                </div>
             </div>
+
+            {showAddModal && currentSong && (
+                <AddToPlaylistModal
+                    songId={currentSong._id}
+                    onClose={() => setShowAddModal(false)}
+                />
+            )}
+
+            <QueuePanel isOpen={isQueueOpen} onClose={() => setIsQueueOpen(false)} />
+            <LyricsPanel
+                isOpen={isLyricsOpen}
+                onClose={() => setIsLyricsOpen(false)}
+                lyrics={currentSong.lyrics}
+                title={currentSong.title}
+                artist={currentSong.artists?.map((a: any) => a.artistName).join(', ') || 'Unknown Artist'}
+                coverImage={currentSong.coverImage}
+                currentTime={currentTime}
+                isQueueOpen={isQueueOpen}
+            />
         </div>
     );
 };

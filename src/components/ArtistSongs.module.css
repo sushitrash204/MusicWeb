@@ -19,13 +19,21 @@
 }
 
 .addButton {
-    background: var(--primary);
-    color: var(--button-text);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    background-color: var(--primary);
+    color: #000;
+    padding: 0.5rem 1.5rem;
+    border-radius: var(--radius-pill);
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: none;
+    font-size: 0.8rem;
+    transition: transform 0.1s;
+}
+
+.addButton:hover {
+    transform: scale(1.04);
 }
 
 .songList {
@@ -190,4 +198,17 @@
 .submitButton {
     background: var(--primary);
     color: var(--button-text);
+}
+
+.songRow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.adminActions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
 }

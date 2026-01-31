@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './ArtistCard.module.css';
 
 interface Artist {
     _id: string;
     artistName: string;
+    isMe?: boolean;
     userId: {
+        _id?: string;
         fullName: string;
         avatar?: string;
     };
@@ -16,6 +18,8 @@ interface ArtistCardProps {
 }
 
 const ArtistCard: React.FC<ArtistCardProps> = ({ artist, onClick }) => {
+    const [imageError, setImageError] = useState(false);
+
     // Helper to get initials
     const getInitials = (name: string) => {
         if (!name) return '??';
@@ -26,15 +30,17 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist, onClick }) => {
 
     // Prioritize artist avatar from user profile
     const imageUrl = artist.userId?.avatar;
+    const shouldShowImage = imageUrl && !imageError;
 
     return (
         <div className={styles.card} onClick={onClick}>
             <div className={styles.imageWrapper}>
-                {imageUrl ? (
+                {shouldShowImage ? (
                     <img
                         src={imageUrl}
                         alt={artist.artistName}
                         className={styles.artistImage}
+                        onError={() => setImageError(true)}
                     />
                 ) : (
                     <div className={styles.placeholder}>

@@ -19,18 +19,21 @@ export default function HomePage() {
   const { playList } = useMusicPlayer();
   const [artists, setArtists] = useState<any[]>([]);
   const [recentSongs, setRecentSongs] = useState<any[]>([]);
+  const [popularSongs, setPopularSongs] = useState<any[]>([]);
   const [albums, setAlbums] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [artistsData, songsData, albumsData] = await Promise.all([
+        const [artistsData, songsData, popularData, albumsData] = await Promise.all([
           artistService.getArtists(),
           artistService.getRecentSongs(10),
+          artistService.getPopularSongs(10),
           albumService.getAllAlbums(1, 10, 'releaseDate')
         ]);
         setArtists(artistsData);
         setRecentSongs(songsData);
+        setPopularSongs(popularData);
         setAlbums(albumsData.albums || []);
       } catch (error) {
         console.error('Failed to fetch data', error);
@@ -60,7 +63,13 @@ export default function HomePage() {
           renderItem={(artist: any) => (
             <ArtistCard
               artist={artist}
-              onClick={() => router.push(`/artist/${artist._id}`)}
+              onClick={() => {
+                if (artist.isMe) {
+                  router.push('/profile');
+                } else {
+                  router.push(`/artist/${artist._id}`);
+                }
+              }}
             />
           )}
         />
@@ -74,7 +83,6 @@ export default function HomePage() {
           title={t('new_releases', 'New Releases')}
           items={recentSongs}
           keyExtractor={(song: any) => song._id}
-          variant="wide"
           renderItem={(song: any) => (
             <SongCard
               song={song}
@@ -86,6 +94,26 @@ export default function HomePage() {
           )}
         />
         {recentSongs.length === 0 && (
+          <p className="text-[var(--text-muted)]">{t('no_songs', 'No songs yet.')}</p>
+        )}
+      </div>
+
+      <div className="mb-8">
+        <ScrollableSection
+          title={t('popular_songs', 'Popular Songs')}
+          items={popularSongs}
+          keyExtractor={(song: any) => song._id}
+          renderItem={(song: any) => (
+            <SongCard
+              song={song}
+              onPlay={(s) => {
+                const idx = popularSongs.findIndex(rs => rs._id === s._id);
+                if (idx !== -1) playList(popularSongs, idx);
+              }}
+            />
+          )}
+        />
+        {popularSongs.length === 0 && (
           <p className="text-[var(--text-muted)]">{t('no_songs', 'No songs yet.')}</p>
         )}
       </div>

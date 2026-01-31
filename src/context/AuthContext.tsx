@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import authService from '../services/authService';
+import tokenManager from '../services/tokenManager';
 
 interface User {
     _id: string;
@@ -21,53 +22,81 @@ interface AuthContextType {
     login: (credentials: any) => Promise<void>;
     register: (userData: any) => Promise<void>;
     logout: () => Promise<void>;
+    updateUser: (userData: User) => void;
+    refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
+    const [token, setTokenState] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Synchronize local state with tokenManager
+    const setToken = (newToken: string | null) => {
+        setTokenState(newToken);
+        tokenManager.setToken(newToken);
+    };
+
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        const storedToken = localStorage.getItem('accessToken');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-        if (storedToken) {
-            setToken(storedToken);
-        }
-        setLoading(false);
+        const initializeAuth = async () => {
+            // Try silent refresh immediately on load
+            try {
+                const data = await authService.refreshToken();
+                if (data.accessToken) {
+                    setToken(data.accessToken);
+                    // Refresh user data too
+                    const freshUser = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${data.accessToken}`
+                        }
+                    });
+                    if (freshUser.ok) {
+                        const userData = await freshUser.json();
+                        setUser(userData);
+                        // Only store avatar for UI consistency, no sensitive data
+                        if (userData.avatar) {
+                            localStorage.setItem('userAvatar', userData.avatar);
+                        }
+                    }
+                }
+            } catch (error) {
+                // If refresh fails, clear everything
+                setToken(null);
+                setUser(null);
+                localStorage.removeItem('userAvatar');
+                localStorage.removeItem('user'); // Cleanup legacy data
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initializeAuth();
     }, []);
 
     const login = async (credentials: any) => {
         const data = await authService.login(credentials);
-        // Assuming data contains user info. Token might be in data.token or handled by authService saving to localStorage?
-        // Let's assume authService saves 'accessToken' to localStorage or returns it.
-        // If authService returns just user, we might need to check how it saves token.
-        // Based on logout removing 'accessToken', it must be there.
-        // Let's re-read token from localStorage or assume data has it if we change authService?
-        // Safest: read from localStorage or data.
-
-        // For now, let's assume successful login sets localStorage 'accessToken' inside authService or we do it here if data has it.
-        // Let's assume authService does it. We update state.
-        const t = localStorage.getItem('accessToken'); // Try to get it if service set it
-        setToken(t || (data.token as string)); // data.token fallback
-
+        if (data.accessToken) {
+            setToken(data.accessToken);
+        }
         setUser(data);
-        localStorage.setItem('user', JSON.stringify(data));
+        if (data.avatar) {
+            localStorage.setItem('userAvatar', data.avatar);
+        }
+        localStorage.removeItem('user'); // Cleanup
     };
 
     const register = async (userData: any) => {
         const data = await authService.register(userData);
-        // Same assumption for register
-        const t = localStorage.getItem('accessToken');
-        setToken(t || (data.token as string));
-
+        if (data.accessToken) {
+            setToken(data.accessToken);
+        }
         setUser(data);
-        localStorage.setItem('user', JSON.stringify(data));
+        if (data.avatar) {
+            localStorage.setItem('userAvatar', data.avatar);
+        }
+        localStorage.removeItem('user'); // Cleanup
     };
 
     const logout = async () => {
@@ -78,12 +107,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         setUser(null);
         setToken(null);
+        localStorage.removeItem('userAvatar');
         localStorage.removeItem('user');
-        localStorage.removeItem('accessToken');
+        if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+        }
+    };
+
+    const updateUser = (userData: User) => {
+        setUser(userData);
+        if (userData.avatar) {
+            localStorage.setItem('userAvatar', userData.avatar);
+        }
+    };
+
+    const refreshUser = async () => {
+        try {
+            const currentToken = tokenManager.getToken();
+            if (!currentToken) return;
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/profile`, {
+                headers: {
+                    'Authorization': `Bearer ${currentToken}`
+                }
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                updateUser(userData);
+            }
+        } catch (error) {
+            console.error('Failed to refresh user', error);
+        }
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+        <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateUser, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

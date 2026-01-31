@@ -35,8 +35,8 @@
 
 .itemWrapper {
     flex: 0 0 auto;
-    width: 180px;
-    /* Fixed width, could be made dynamic or prop-based later */
+    width: 210px;
+    /* Increased from 180px to make it "to lên một chút" as requested */
     scroll-snap-align: start;
 }
 

@@ -6,8 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { useMusicPlayer } from '@/contexts/MusicPlayerContext';
 import { useAuth } from '@/context/AuthContext';
 import albumService from '@/services/albumService';
+import favoriteService from '@/services/favoriteService';
 import SongCard from '@/components/SongCard';
 import AddSongModal from '@/components/AddSongModal';
+import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import styles from './AlbumDetail.module.css';
 
 export default function AlbumDetailPage() {
@@ -17,12 +20,33 @@ export default function AlbumDetailPage() {
     const { playSong, playList } = useMusicPlayer();
     const [album, setAlbum] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [isFavorited, setIsFavorited] = useState(false);
 
     useEffect(() => {
         if (params.id) {
             fetchAlbum(params.id as string);
+            checkFavorite(params.id as string);
         }
     }, [params.id]);
+
+    const checkFavorite = async (id: string) => {
+        try {
+            const favorites = await favoriteService.getFavorites();
+            setIsFavorited(favorites.albums.some(a => (a._id || a) === id));
+        } catch (error) {
+            console.error('Failed to check favorite', error);
+        }
+    };
+
+    const handleToggleFavorite = async () => {
+        if (!album) return;
+        try {
+            await favoriteService.toggleFavoriteAlbum(album._id);
+            setIsFavorited(!isFavorited);
+        } catch (error) {
+            console.error('Failed to toggle favorite', error);
+        }
+    };
 
     const fetchAlbum = async (id: string) => {
         try {
@@ -108,6 +132,18 @@ export default function AlbumDetailPage() {
                             {t('play_all')}
                         </button>
 
+                        <button
+                            className={styles.likeButton}
+                            onClick={handleToggleFavorite}
+                            title={isFavorited ? t('remove_from_favorites') : t('add_to_favorites')}
+                        >
+                            {isFavorited ? (
+                                <HeartSolidIcon className="w-8 h-8 text-primary" />
+                            ) : (
+                                <HeartOutlineIcon className="w-8 h-8" />
+                            )}
+                        </button>
+
                         {isOwner && (
                             <button
                                 className={styles.addSongButton}
@@ -132,7 +168,7 @@ export default function AlbumDetailPage() {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <span className={styles.songNumber}>{index + 1}</span>
-                                <SongCard song={song} />
+                                <SongCard song={song} variant="list" />
                             </div>
                         ))
                     ) : (

@@ -1,0 +1,656 @@
+/* Main Container */
+.container {
+    background: var(--player-bg);
+    border-radius: 8px;
+    padding: 0;
+    color: var(--foreground);
+    border: 1px solid var(--player-border);
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    height: auto;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Full Screen Mode */
+.fullScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: var(--background);
+    border-radius: 0;
+    border: none;
+}
+
+.editorHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    padding: 0.75rem 1rem;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid var(--player-border);
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.syncToggle {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.toggleLabel {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* Switch Styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--text-muted);
+    transition: .3s;
+    border-radius: 22px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--background);
+    transition: .3s;
+    border-radius: 50%;
+}
+
+.switch input:checked+.slider {
+    background-color: var(--primary);
+}
+
+.switch input:checked+.slider:before {
+    transform: translateX(22px);
+}
+
+.tabs {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.simpleEdit {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: var(--player-bg);
+    border-radius: 0 0 8px 8px;
+    min-height: 400px;
+}
+
+.textarea {
+    flex: 1;
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--player-border);
+    border-radius: 6px;
+    color: var(--foreground);
+    padding: 1.25rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    min-height: 300px;
+}
+
+.textarea:focus {
+    border-color: var(--primary);
+}
+
+.tabGroup {
+    display: flex;
+}
+
+.tab {
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.tab:hover {
+    color: var(--text-secondary);
+}
+
+.tab.active {
+    color: var(--foreground);
+    border-bottom-color: var(--primary);
+}
+
+.fullScreenBtn {
+    background: none;
+    border: 1px solid var(--text-muted);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.fullScreenBtn:hover {
+    background: var(--card-bg);
+    color: var(--foreground);
+    border-color: var(--text-secondary);
+}
+
+/* Edit Mode */
+.editMode {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Edit Instructions */
+
+.editInstructions {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Sync Mode - Toolbar */
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--player-border);
+}
+
+.toolbarGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-right: 1rem;
+    border-right: 1px solid var(--player-border);
+    margin-right: 0.5rem;
+}
+
+.toolbarGroup:last-child {
+    border-right: none;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.actionBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.addBtn {
+    background: #2d8f2d;
+    color: white;
+}
+
+.addBtn:hover {
+    background: #36a536;
+}
+
+.deleteBtn {
+    background: #a32a2a;
+    color: white;
+}
+
+.deleteBtn:hover {
+    background: #c93333;
+}
+
+.deleteBtn:disabled {
+    background: var(--text-muted);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.playButton {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.playButton:hover {
+    transform: scale(1.05);
+}
+
+.timeDisplay {
+    font-family: monospace;
+    font-size: 1rem;
+    color: var(--foreground);
+    background: var(--background);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    min-width: 100px;
+    text-align: center;
+}
+
+.zoomControls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.zoomLabel {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-right: 0.5rem;
+}
+
+.zoomInput {
+    cursor: pointer;
+    background: var(--text-muted);
+}
+
+/* Timeline Area */
+.syncLayout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    background: var(--player-bg);
+}
+
+.mainTimeline {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    border-right: 1px solid var(--player-border);
+}
+
+.timelineContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Edit Panel (Right Side) */
+.editPanel {
+    width: 300px;
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--player-border);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+.panelHeader {
+    padding: 1rem;
+    background: var(--player-bg);
+    border-bottom: 1px solid var(--player-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panelTitle {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--foreground);
+    font-weight: 600;
+}
+
+.closePanel {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.closePanel:hover {
+    color: var(--foreground);
+}
+
+.panelBody {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.panelLabel {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.panelInput {
+    background: var(--background);
+    border: 1px solid var(--player-border);
+    border-radius: 4px;
+    padding: 0.75rem;
+    color: var(--foreground);
+    font-family: inherit;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.panelInput:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.panelHint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.saveBtn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+.saveBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+}
+
+.saveBtn:active {
+    transform: translateY(0);
+}
+
+/* Ruler */
+.rulerContainer {
+    height: 30px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--player-border);
+    overflow: hidden;
+    position: relative;
+}
+
+.ruler {
+    height: 100%;
+    position: relative;
+}
+
+.rulerMark {
+    position: absolute;
+    bottom: 0;
+    border-left: 1px solid var(--text-muted);
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    padding-left: 4px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.rulerMark.major {
+    height: 100%;
+    border-left-color: var(--text-secondary);
+}
+
+.rulerMark.minor {
+    height: 30%;
+}
+
+/* Tracks Area */
+.tracksArea {
+    flex: 1;
+    overflow-y: hidden;
+    overflow-x: auto;
+    position: relative;
+    user-select: none;
+    /* Prevent text selection while dragging */
+}
+
+/* Playhead */
+.playhead {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #ff4d4f;
+    /* Red playhead */
+    z-index: 100;
+    pointer-events: none;
+    will-change: left;
+}
+
+.playheadHead {
+    position: absolute;
+    top: 0;
+    left: -6px;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 10px solid #ff4d4f;
+}
+
+/* Tracks */
+.track {
+    height: 50px;
+    border-bottom: 1px solid var(--player-border);
+    position: relative;
+    margin-top: 10px;
+}
+
+/* Lyric Block */
+.block {
+    position: absolute;
+    height: 40px;
+    top: 5px;
+    background: rgba(29, 185, 84, 0.4);
+    /* Greenish tint */
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    cursor: grab;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    z-index: 10;
+}
+
+.block:hover {
+    background: rgba(29, 185, 84, 0.6);
+}
+
+.block.active {
+    background: rgba(29, 185, 84, 0.8);
+    border-color: #fff;
+    z-index: 20;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Selected block visual cue */
+.block.selected {
+    border: 2px solid #fff;
+    background: rgba(29, 185, 84, 0.9);
+}
+
+.blockText {
+    font-size: 0.85rem;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+/* Resize Handles */
+.resizeHandle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    cursor: col-resize;
+    z-index: 25;
+    background: transparent;
+}
+
+.resizeHandle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.resizeLeft {
+    left: 0;
+}
+
+.resizeRight {
+    right: 0;
+}
+
+.shortcutHint {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #aaa;
+    pointer-events: none;
+    z-index: 50;
+}
+
+/* Modal Helper for Add Text */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.modalContent {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 400px;
+    border: 1px solid var(--player-border);
+}
+
+.modalTitle {
+    color: var(--foreground);
+    margin-bottom: 1rem;
+}
+
+.modalInput {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--background);
+    border: 1px solid var(--player-border);
+    color: var(--foreground);
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.modalBtn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.modalCancel {
+    background: var(--text-muted);
+    color: var(--foreground);
+}
+
+.modalSubmit {
+    background: var(--primary);
+    color: #fff;
+}

@@ -8,6 +8,7 @@ import artistService from '@/services/artistService';
 import albumService from '@/services/albumService';
 import ArtistSongs from '@/components/ArtistSongs';
 import AlbumCard from '@/components/AlbumCard';
+import { useMusicPlayer } from '@/contexts/MusicPlayerContext';
 import styles from './Profile.module.css';
 import '../../services/i18n';
 
@@ -15,6 +16,7 @@ interface Artist {
     _id: string;
     artistName: string;
     bio: string;
+    totalStreams: number;
     status: 'pending' | 'active' | 'rejected';
     genres: Array<{ _id: string; name: string }>;
 }
@@ -22,11 +24,45 @@ interface Artist {
 export default function ProfilePage() {
     const { t } = useTranslation('common');
     const { user, loading: authLoading } = useAuth();
+    const { playList } = useMusicPlayer();
     const router = useRouter();
 
     const [artist, setArtist] = useState<Artist | null>(null);
     const [albums, setAlbums] = useState<any[]>([]);
+    const [songs, setSongs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingSongs, setLoadingSongs] = useState(true);
+
+    const fetchArtistProfile = async () => {
+        try {
+            const [artistData, albumsData] = await Promise.all([
+                artistService.getMyArtistProfile(),
+                albumService.getMyAlbums()
+            ]);
+            setArtist(artistData);
+            setAlbums(albumsData);
+        } catch (error: any) {
+            if (error.response?.status === 404) {
+                setArtist(null); // Truly no profile
+            } else {
+                console.error('[Profile] Failed to load artist profile', error);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchSongs = async () => {
+        setLoadingSongs(true);
+        try {
+            const data = await artistService.getMySongs();
+            setSongs(data);
+        } catch (error) {
+            console.error('Failed to fetch songs', error);
+        } finally {
+            setLoadingSongs(false);
+        }
+    };
 
     useEffect(() => {
         if (authLoading) return;
@@ -36,26 +72,8 @@ export default function ProfilePage() {
             return;
         }
 
-        const fetchArtistProfile = async () => {
-            try {
-                const [artistData, albumsData] = await Promise.all([
-                    artistService.getMyArtistProfile(),
-                    albumService.getMyAlbums()
-                ]);
-                setArtist(artistData);
-                setAlbums(albumsData);
-            } catch (error: any) {
-                if (error.response?.status === 404) {
-                    setArtist(null); // Truly no profile
-                } else {
-                    console.error('[Profile] Failed to load artist profile', error);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchArtistProfile();
+        fetchSongs();
     }, [user, authLoading, router]);
 
     // Artist Edit State
@@ -87,6 +105,12 @@ export default function ProfilePage() {
         }
     };
 
+    const handlePlayAll = () => {
+        if (songs.length > 0) {
+            playList(songs);
+        }
+    };
+
     if (authLoading || loading) {
         return (
             <div className={styles.container}>
@@ -97,57 +121,51 @@ export default function ProfilePage() {
 
     // Artist Profile View (Spotify-like)
     if (artist && artist.status === 'active') {
+        const avatar = user?.avatar;
+        const name = artist.artistName;
+
         return (
             <div className={styles.container}>
-                {/* Cover Image */}
-                <div className={styles.coverImage}>
-                    {/* Gradient overlay */}
-                    <div className={styles.coverOverlay}></div>
-                </div>
-
-                {/* Header Banner */}
-                <div className={styles.headerBanner}>
-                    <div className={styles.headerContent}>
-                        {/* Artist Avatar */}
-                        <div className={styles.artistAvatar}>
-                            {user?.avatar ? (
-                                <img src={user.avatar} alt={artist.artistName} />
-                            ) : (
-                                <div className={styles.avatarInitials}>
-                                    {artist.artistName.substring(0, 2).toUpperCase()}
-                                </div>
-                            )}
+                <div className={styles.header}>
+                    {avatar ? (
+                        <img src={avatar} alt={name} className={styles.avatar} />
+                    ) : (
+                        <div className={styles.placeholderAvatar}>
+                            {name.charAt(0).toUpperCase()}
                         </div>
+                    )}
 
-                        <div className={styles.verifiedBadge}>
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M10.814.5a1.658 1.658 0 0 1 2.372 0l2.512 2.572 3.595-.043a1.658 1.658 0 0 1 1.678 1.678l-.043 3.595 2.572 2.512c.667.65.667 1.722 0 2.372l-2.572 2.512.043 3.595a1.658 1.658 0 0 1-1.678 1.678l-3.595-.043-2.512 2.572a1.658 1.658 0 0 1-2.372 0l-2.512-2.572-3.595.043a1.658 1.658 0 0 1-1.678-1.678l.043-3.595L.5 13.186a1.658 1.658 0 0 1 0-2.372l2.572-2.512-.043-3.595a1.658 1.658 0 0 1 1.678-1.678l3.595.043L10.814.5zm6.584 9.12a1 1 0 0 0-1.414-1.413l-6.011 6.01-1.894-1.893a1 1 0 0 0-1.414 1.414l3.308 3.308 7.425-7.425z" />
+                    <div className={styles.info}>
+                        <div className={styles.verified}>
+                            <svg className={styles.verifiedIcon} viewBox="0 0 24 24">
+                                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.9 14.7L6 12.6l1.5-1.5 2.6 2.6 6.8-6.8 1.5 1.5-8.3 8.3z" />
                             </svg>
-                            <span>{t('verified_artist')}</span>
+                            {t('verified_artist', 'Verified Artist')}
                         </div>
-                        <h1 className={styles.artistName}>{artist.artistName}</h1>
-                        <p className={styles.monthlyListeners}>26,344,579 {t('monthly_listeners')}</p>
-                    </div>
-                </div>
+                        <h1 className={styles.name}>{name}</h1>
+                        <div className={styles.stats}>
+                            {(artist.totalStreams || 0).toLocaleString()} {t('total_streams', 'total streams')}
+                        </div>
 
-                {/* Action Buttons */}
-                <div className={styles.actionBar}>
-                    <button className={styles.playButton}>
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M7.05 3.606l13.49 7.788a.7.7 0 010 1.212L7.05 20.394A.7.7 0 016 19.788V4.212a.7.7 0 011.05-.606z" />
-                        </svg>
-                    </button>
-                    <button
-                        className={styles.editButton}
-                        onClick={handleEditArtistOpen}
-                    >
-                        {t('edit_profile')}
-                    </button>
-                    <button className={styles.moreButton}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M4.5 13.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm15 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm-7.5 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-                        </svg>
-                    </button>
+                        <div className={styles.actions}>
+                            <button
+                                className={styles.playAllButton}
+                                onClick={handlePlayAll}
+                                disabled={songs.length === 0}
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                                {t('play_all', 'Phát tất cả')}
+                            </button>
+                            <button
+                                className={styles.editButton}
+                                onClick={handleEditArtistOpen}
+                            >
+                                {t('edit_profile')}
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Content Section */}
@@ -158,21 +176,23 @@ export default function ProfilePage() {
                         <p className={styles.bioText}>{artist.bio || t('no_bio')}</p>
                     </div>
 
-
-
                     <div className={styles.artistSongsSection}>
-                        <ArtistSongs />
+                        <ArtistSongs
+                            songs={songs}
+                            loading={loadingSongs}
+                            onRefresh={fetchSongs}
+                        />
                     </div>
 
                     <div className={styles.albumsSection} style={{ marginTop: '3rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h2 className={styles.sectionTitle} style={{ margin: 0 }}>{t('albums', 'Albums')}</h2>
+                            <h2 className={styles.sectionTitle} style={{ margin: 0 }}>{t('albums')}</h2>
                             <button
                                 className={styles.primaryButton}
                                 style={{ padding: '0.5rem 1.5rem', fontSize: '0.8rem' }}
                                 onClick={() => router.push('/albums/new')}
                             >
-                                + {t('add_album', 'Thêm Album')}
+                                + {t('add_album')}
                             </button>
                         </div>
 
@@ -182,7 +202,7 @@ export default function ProfilePage() {
                                     <AlbumCard key={album._id} album={{ ...album, artist: { _id: artist._id, artistName: artist.artistName } }} />
                                 ))
                             ) : (
-                                <p style={{ color: 'var(--text-muted)' }}>{t('no_albums_yet', 'Bạn chưa có album nào. Hãy tạo ngay!')}</p>
+                                <p style={{ color: 'var(--text-muted)' }}>{t('no_albums_yet')}</p>
                             )}
                         </div>
                     </div>
@@ -247,7 +267,11 @@ export default function ProfilePage() {
                 {/* Show songs even when pending */}
                 <div className={styles.contentSection} style={{ marginTop: '2rem' }}>
                     <div className={styles.artistSongsSection}>
-                        <ArtistSongs />
+                        <ArtistSongs
+                            songs={songs}
+                            loading={loadingSongs}
+                            onRefresh={fetchSongs}
+                        />
                     </div>
                 </div>
             </div>
@@ -319,9 +343,9 @@ export default function ProfilePage() {
                 </div>
 
                 <div className={styles.likedSongsWrapper} style={{ width: '100%', maxWidth: '1200px', marginTop: '4rem' }}>
-                    <h2 className={styles.sectionTitle}>{t('liked_songs', 'Liked Songs')}</h2>
-                    <div className={styles.likedSongsContent} style={{ background: 'var(--card-bg)', borderRadius: '8px', padding: '1rem' }}>
-                        <p style={{ color: 'var(--text-muted)', textAlign: 'center' }}>{t('no_favorites', 'No favorite songs yet.')}</p>
+                    <h2 className={styles.sectionTitle}>{t('liked_songs')}</h2>
+                    <div className={styles.likedSongsContent} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '2rem' }}>{t('no_favorites')}</p>
                     </div>
                 </div>
             </div>

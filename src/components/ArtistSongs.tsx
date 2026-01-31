@@ -3,9 +3,16 @@ import { useRouter } from 'next/navigation';
 import artistService from '../services/artistService';
 import { useMusicPlayer } from '../contexts/MusicPlayerContext';
 import { useTranslation } from 'react-i18next';
+import SongCard from './SongCard';
 import styles from './ArtistSongs.module.css';
 
-const ArtistSongs = () => {
+interface ArtistSongsProps {
+    songs?: any[];
+    loading?: boolean;
+    onRefresh?: () => void;
+}
+
+const ArtistSongs = ({ songs: propSongs, loading: propLoading, onRefresh }: ArtistSongsProps) => {
     const { t } = useTranslation('common');
     const router = useRouter();
     const { playSong } = useMusicPlayer();
@@ -13,8 +20,13 @@ const ArtistSongs = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchSongs();
-    }, []);
+        if (propSongs) {
+            setSongs(propSongs);
+            setLoading(propLoading ?? false);
+        } else {
+            fetchSongs();
+        }
+    }, [propSongs, propLoading]);
 
     const fetchSongs = async () => {
         try {
@@ -31,7 +43,11 @@ const ArtistSongs = () => {
         if (!confirm(t('confirm_delete_song', 'Are you sure you want to delete this song?'))) return;
         try {
             await artistService.deleteSong(id);
-            setSongs(songs.filter(s => s._id !== id));
+            if (onRefresh) {
+                onRefresh();
+            } else {
+                setSongs(songs.filter(s => s._id !== id));
+            }
         } catch (error) {
             console.error('Failed to delete song', error);
         }
@@ -60,30 +76,26 @@ const ArtistSongs = () => {
                     <p className={styles.empty}>{t('no_songs', 'No songs uploaded yet.')}</p>
                 ) : (
                     songs.map((song) => (
-                        <div key={song._id} className={styles.songItem}>
-                            <button
-                                className={styles.playIconButton}
-                                onClick={() => handlePlay(song)}
-                                title="Play"
-                            >
-                                ▶
-                            </button>
-                            <div className={styles.songInfo}>
-                                <div className={styles.songTitle}>{song.title}</div>
-                                <div className={styles.songMeta}>{song.duration}s • {song.plays || 0} plays</div>
+                        <div key={song._id} className={styles.songRow}>
+                            <SongCard
+                                song={song}
+                                variant="list"
+                                onPlay={handlePlay}
+                            />
+                            <div className={styles.adminActions}>
+                                <button
+                                    className={styles.editButton}
+                                    onClick={() => router.push(`/songs/edit/${song._id}`)}
+                                >
+                                    {t('edit', 'Edit')}
+                                </button>
+                                <button
+                                    className={styles.deleteButton}
+                                    onClick={() => handleDelete(song._id)}
+                                >
+                                    {t('delete', 'Delete')}
+                                </button>
                             </div>
-                            <button
-                                className={styles.editButton}
-                                onClick={() => router.push(`/songs/edit/${song._id}`)}
-                            >
-                                {t('edit', 'Edit')}
-                            </button>
-                            <button
-                                className={styles.deleteButton}
-                                onClick={() => handleDelete(song._id)}
-                            >
-                                {t('delete', 'Delete')}
-                            </button>
                         </div>
                     ))
                 )}
