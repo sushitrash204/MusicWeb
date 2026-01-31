@@ -234,5 +234,13 @@
     "save": "Enregistrer",
     "edit_hint_save": "Cliquez sur Enregistrer pour appliquer les modifications à la chronologie.",
     "enable_sync_lyrics": "Paroles synchronisées",
-    "zoom": "Zoom"
+    "get_premium": "Obtenir le Premium",
+    "premium_unlock_title": "Débloquer le Premium",
+    "premium_success_title": "Paiement Réussi",
+    "premium_amount": "Montant",
+    "premium_content": "Contenu",
+    "premium_instructions": "Scannez le code QR avec votre application bancaire. Le statut premium sera activé automatiquement dans un délai de 1 à 2 minutes après le paiement.",
+    "premium_success_message": "Félicitations ! Votre compte est désormais Premium. Vous pouvez maintenant profiter de toutes les fonctionnalités premium.",
+    "premium_done": "Terminé",
+    "premium_checking": "Vérification du statut..."
 }

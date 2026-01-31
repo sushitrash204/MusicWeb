@@ -235,5 +235,13 @@
     "edit_hint_save": "Nhấn Lưu để cập nhật thay đổi lên timeline.",
     "enable_sync_lyrics": "Lời bài hát đồng bộ",
     "zoom": "Phóng to",
-    "get_premium": "Mua Premium"
+    "get_premium": "Mua Premium",
+    "premium_unlock_title": "Mở khóa Premium",
+    "premium_success_title": "Thanh toán thành công",
+    "premium_amount": "Số tiền",
+    "premium_content": "Nội dung",
+    "premium_instructions": "Quét mã QR bằng ứng dụng ngân hàng của bạn. Trạng thái Premium sẽ được kích hoạt tự động trong vòng 1-2 phút sau khi thanh toán.",
+    "premium_success_message": "Chúc mừng! Tài khoản của bạn đã được nâng cấp lên Premium. Bây giờ bạn có thể tận hưởng mọi tính năng cao cấp.",
+    "premium_done": "Hoàn tất",
+    "premium_checking": "Đang kiểm tra trạng thái..."
 }

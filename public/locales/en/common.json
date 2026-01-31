@@ -240,5 +240,13 @@
     "edit_hint_save": "Click Save to apply changes to the timeline.",
     "enable_sync_lyrics": "Synchronized Lyrics",
     "zoom": "Zoom",
-    "get_premium": "Get Premium"
+    "get_premium": "Get Premium",
+    "premium_unlock_title": "Unlock Premium",
+    "premium_success_title": "Payment Successful",
+    "premium_amount": "Amount",
+    "premium_content": "Content",
+    "premium_instructions": "Scan the QR code with your banking app. The premium status will be activated automatically within 1-2 minutes after payment.",
+    "premium_success_message": "Congratulations! Your account is now Premium. You can now enjoy all premium features.",
+    "premium_done": "Done",
+    "premium_checking": "Checking status..."
 }

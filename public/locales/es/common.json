@@ -234,5 +234,13 @@
     "save": "Guardar",
     "edit_hint_save": "Haz clic en Guardar para aplicar los cambios a la línea de tiempo.",
     "enable_sync_lyrics": "Letras sincronizadas",
-    "zoom": "Zoom"
+    "get_premium": "Obtener Premium",
+    "premium_unlock_title": "Desbloquear Premium",
+    "premium_success_title": "Pago Exitoso",
+    "premium_amount": "Monto",
+    "premium_content": "Contenido",
+    "premium_instructions": "Escanee el código QR con su aplicación bancaria. El estado premium se activará automáticamente de 1 a 2 minutos después del pago.",
+    "premium_success_message": "¡Felicidades! Su cuenta ahora es Premium. Ahora puede disfrutar de todas las funciones premium.",
+    "premium_done": "Hecho",
+    "premium_checking": "Comprobando estado..."
 }

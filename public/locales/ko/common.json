@@ -234,5 +234,13 @@
     "save": "저장",
     "edit_hint_save": "저장을 클릭하여 타임라인에 변경 사항을 적용하세요.",
     "enable_sync_lyrics": "동기화된 가사",
-    "zoom": "확대/축소"
+    "get_premium": "프리미엄 구매",
+    "premium_unlock_title": "프리미엄 잠금 해제",
+    "premium_success_title": "결제 성공",
+    "premium_amount": "금액",
+    "premium_content": "내용",
+    "premium_instructions": "뱅킹 앱으로 QR 코드를 스캔하세요. 결제 후 1~2분 이내에 프리미엄 상태가 자동으로 활성화됩니다.",
+    "premium_success_message": "축하합니다! 이제 프리미엄 계정입니다. 모든 프리미엄 기능을 즐기실 수 있습니다.",
+    "premium_done": "완료",
+    "premium_checking": "상태 확인 중..."
 }

@@ -228,5 +228,13 @@
     "save": "保存",
     "edit_hint_save": "点击保存以应用更改到时间轴。",
     "enable_sync_lyrics": "同步歌词",
-    "zoom": "缩放"
+    "get_premium": "开通 Premium",
+    "premium_unlock_title": "解锁 Premium",
+    "premium_success_title": "支付成功",
+    "premium_amount": "金额",
+    "premium_content": "内容",
+    "premium_instructions": "请使用银行应用程序扫描二维码。付款后1-2分钟内将自动激活高级状态。",
+    "premium_success_message": "恭喜！您的账户现在是 Premium。您现在可以享受所有高级功能。",
+    "premium_done": "完成",
+    "premium_checking": "正在检查状态..."
 }

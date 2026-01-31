@@ -234,5 +234,13 @@
     "save": "保存",
     "edit_hint_save": "保存をクリックしてタイムラインに変更を適用します。",
     "enable_sync_lyrics": "同期歌詞",
-    "zoom": "ズーム"
+    "get_premium": "プレミアムプラン",
+    "premium_unlock_title": "プレミアムをアンロック",
+    "premium_success_title": "支払い成功",
+    "premium_amount": "金額",
+    "premium_content": "内容",
+    "premium_instructions": "銀行アプリでQRコードをスキャンしてください。支払いの1〜2分後にプレミアムステータスが自動的に有効になります。",
+    "premium_success_message": "おめでとうございます！アカウントがプレミアムになりました。すべてのプレミアム機能をお楽しみいただけます。",
+    "premium_done": "完了",
+    "premium_checking": "ステータスを確認中..."
 }

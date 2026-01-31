@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { XMarkIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
 import styles from './PremiumModal.module.css';
@@ -14,6 +15,7 @@ const BANK_NAME = process.env.NEXT_PUBLIC_BANK_NAME || 'VietinBank';
 const AMOUNT = Number(process.env.NEXT_PUBLIC_PAYMENT_AMOUNT) || 5000;
 
 export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
+    const { t } = useTranslation('common');
     const { user, refreshUser } = useAuth();
     const [isChecking, setIsChecking] = useState(false);
 
@@ -55,18 +57,17 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
                 </button>
 
                 <h2 className={styles.title}>
-                    {isSuccess ? 'Payment Successful' : 'Unlock Premium'}
+                    {isSuccess ? t('premium_success_title') : t('premium_unlock_title')}
                 </h2>
 
                 {isSuccess ? (
                     <div className={styles.successContainer}>
                         <CheckCircleIcon className={styles.successIcon} />
                         <p className={styles.successMessage}>
-                            Congratulations! Your account is now Premium.<br />
-                            You can now enjoy all premium features.
+                            {t('premium_success_message')}
                         </p>
                         <button className={styles.doneButton} onClick={onClose}>
-                            Done
+                            {t('premium_done')}
                         </button>
                     </div>
                 ) : (
@@ -77,26 +78,24 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
                                 alt="Payment QR Code"
                                 className={styles.qrImage}
                             />
-                            {isChecking && <div className={styles.checkingOverlay}>Checking status...</div>}
+                            {isChecking && <div className={styles.checkingOverlay}>{t('premium_checking')}</div>}
                         </div>
 
                         <div className={styles.infoContainer}>
                             <div className={styles.infoRow}>
-                                <span className={styles.label}>Amount:</span>
+                                <span className={styles.label}>{t('premium_amount')}:</span>
                                 <span className={`${styles.value} ${styles.highlight}`}>
                                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(AMOUNT)}
                                 </span>
                             </div>
                             <div className={styles.infoRow}>
-                                <span className={styles.label}>Content:</span>
+                                <span className={styles.label}>{t('premium_content')}:</span>
                                 <span className={`${styles.value} ${styles.highlight}`}>{transferContent}</span>
                             </div>
                         </div>
 
                         <p className={styles.instructions}>
-                            Scan the QR code with your banking app.<br />
-                            The premium status will be activated automatically<br />
-                            within 1-2 minutes after payment.
+                            {t('premium_instructions')}
                         </p>
                     </>
                 )}
