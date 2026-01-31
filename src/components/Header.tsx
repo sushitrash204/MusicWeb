@@ -9,6 +9,7 @@ import styles from './Header.module.css';
 import '../services/i18n'; // Init i18n
 import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, PlusIcon, HeartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import searchService, { SearchResults } from '../services/searchService';
+import PremiumModal from './PremiumModal';
 
 const Header = () => {
     const { t, i18n } = useTranslation('common');
@@ -16,6 +17,7 @@ const Header = () => {
     const router = useRouter();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     // Search Logic
@@ -235,55 +237,66 @@ const Header = () => {
                 {/* Desktop Actions */}
                 <div className={`${styles.actions} ${styles.desktopOnly}`}>
                     {user ? (
-                        <div className={styles.userMenu} ref={dropdownRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-                            {user.avatar ? (
-                                <img
-                                    src={user.avatar}
-                                    alt="Avatar"
-                                    className={styles.avatar}
-                                />
-                            ) : (
-                                <div className={styles.avatarPlaceholder}>
-                                    {getInitials(user.fullName || user.username)}
-                                </div>
+                        <>
+                            {!user.isPremium && (
+                                <button className={styles.premiumBtn} onClick={() => setIsPremiumModalOpen(true)}>
+                                    {t('get_premium')}
+                                </button>
                             )}
-                            <span className={styles.username}>{user.fullName}</span>
-
-                            {isDropdownOpen && (
-                                <div className={styles.dropdown}>
-                                    <div className="px-4 py-2 text-sm border-b" style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
-                                        {t('welcome')}, {user.username}
+                            <div className={styles.userMenu} ref={dropdownRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                                {user.avatar ? (
+                                    <img
+                                        src={user.avatar}
+                                        alt="Avatar"
+                                        className={styles.avatar}
+                                        onError={(e) => {
+                                            e.currentTarget.src = '/default-avatar.png';
+                                            e.currentTarget.onerror = null; // Prevent loop
+                                        }}
+                                    />
+                                ) : (
+                                    <div className={styles.avatarPlaceholder}>
+                                        {getInitials(user.fullName || user.username)}
                                     </div>
-                                    {user.role === 'admin' && (
-                                        <Link href="/admin" className={styles.dropdownItem}>
-                                            <div className="w-5 h-5 flex items-center justify-center font-bold">A</div>
-                                            {t('admin_dashboard')}
+                                )}
+                                <span className={styles.username}>{user.fullName}</span>
+
+                                {isDropdownOpen && (
+                                    <div className={styles.dropdown}>
+                                        <div className="px-4 py-2 text-sm border-b" style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
+                                            {t('welcome')}, {user.username}
+                                        </div>
+                                        {user.role === 'admin' && (
+                                            <Link href="/admin" className={styles.dropdownItem}>
+                                                <div className="w-5 h-5 flex items-center justify-center font-bold">A</div>
+                                                {t('admin_dashboard')}
+                                            </Link>
+                                        )}
+                                        <Link href="/playlists" className={styles.dropdownItem}>
+                                            <PlusIcon className="w-5 h-5" />
+                                            {t('my_playlists')}
                                         </Link>
-                                    )}
-                                    <Link href="/playlists" className={styles.dropdownItem}>
-                                        <PlusIcon className="w-5 h-5" />
-                                        {t('my_playlists')}
-                                    </Link>
-                                    <Link href="/favorites" className={styles.dropdownItem}>
-                                        <HeartIcon className="w-5 h-5" />
-                                        {t('favorites')}
-                                    </Link>
-                                    <Link href="/profile" className={styles.dropdownItem}>
-                                        <UserCircleIcon className="w-5 h-5" />
-                                        {t('profile')}
-                                    </Link>
-                                    <Link href="/settings" className={styles.dropdownItem}>
-                                        <Cog6ToothIcon className="w-5 h-5" />
-                                        {t('settings')}
-                                    </Link>
-                                    <div className={styles.dropdownDivider}></div>
-                                    <button onClick={logout} className={`${styles.dropdownItem} text-red-500 hover:bg-red-50`}>
-                                        <ArrowRightOnRectangleIcon className="w-5 h-5" />
-                                        {t('logout')}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                                        <Link href="/favorites" className={styles.dropdownItem}>
+                                            <HeartIcon className="w-5 h-5" />
+                                            {t('favorites')}
+                                        </Link>
+                                        <Link href="/profile" className={styles.dropdownItem}>
+                                            <UserCircleIcon className="w-5 h-5" />
+                                            {t('profile')}
+                                        </Link>
+                                        <Link href="/settings" className={styles.dropdownItem}>
+                                            <Cog6ToothIcon className="w-5 h-5" />
+                                            {t('settings')}
+                                        </Link>
+                                        <div className={styles.dropdownDivider}></div>
+                                        <button onClick={logout} className={`${styles.dropdownItem} text-red-500 hover:bg-red-50`}>
+                                            <ArrowRightOnRectangleIcon className="w-5 h-5" />
+                                            {t('logout')}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </>
                     ) : (
                         <div className={styles.authButtons}>
                             <Link href="/login">
@@ -313,10 +326,31 @@ const Header = () => {
                             <>
                                 <div className={styles.mobileUserInfo}>
                                     <div className={styles.avatarPlaceholder} style={{ width: 60, height: 60, fontSize: '1.5rem' }}>
-                                        {user.avatar ? <img src={user.avatar} className={styles.avatar} style={{ width: '100%', height: '100%' }} /> : getInitials(user.fullName || user.username)}
+                                        {user.avatar ? (
+                                            <img
+                                                src={user.avatar}
+                                                className={styles.avatar}
+                                                style={{ width: '100%', height: '100%' }}
+                                                onError={(e) => {
+                                                    e.currentTarget.src = '/default-avatar.png';
+                                                    e.currentTarget.onerror = null;
+                                                }}
+                                            />
+                                        ) : getInitials(user.fullName || user.username)}
                                     </div>
                                     <div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{user.fullName || user.username}</div>
                                 </div>
+                                {!user.isPremium && (
+                                    <button
+                                        className={styles.premiumBtnMobile}
+                                        onClick={() => {
+                                            toggleMobileMenu();
+                                            setIsPremiumModalOpen(true);
+                                        }}
+                                    >
+                                        {t('get_premium')}
+                                    </button>
+                                )}
                                 <nav className={styles.mobileNav}>
                                     <Link href="/playlists" className={styles.mobileNavLink} onClick={toggleMobileMenu}>
                                         {t('my_playlists')}
@@ -325,7 +359,6 @@ const Header = () => {
                                         {t('favorites')}
                                     </Link>
                                     <Link href="/profile" className={styles.mobileNavLink} onClick={toggleMobileMenu}>
-
                                         {t('profile')}
                                     </Link>
                                     <Link href="/settings" className={styles.mobileNavLink} onClick={toggleMobileMenu}>
@@ -349,6 +382,8 @@ const Header = () => {
                     </div>
                 </div>
             )}
+
+            <PremiumModal isOpen={isPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
         </header>
     );
 };

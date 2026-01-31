@@ -56,16 +56,17 @@ export default function EditSongPage() {
         setLoading(true);
         setError(null);
         try {
-            // Fetch all data
-            const [genresData, songData] = await Promise.all([
+            const [genresData, songResponse] = await Promise.all([
                 artistService.getGenres(),
                 artistService.getSongById(id)
             ]);
 
             setGenres(genresData);
 
-            if (songData) {
-                // Important: Ensure we extract the right fields
+            // Handle both { song: ... } and direct object formats
+            const songData = songResponse?.song || songResponse;
+
+            if (songData && songData._id) {
                 setFormData({
                     title: songData.title || '',
                     lyrics: songData.lyrics || '',
@@ -73,7 +74,6 @@ export default function EditSongPage() {
                     coverFile: null,
                     duration: songData.duration || 0,
                     previewStart: songData.previewStart || 0,
-                    // Map objects to IDs for our selection state
                     selectedArtists: songData.artists?.map((a: any) => typeof a === 'string' ? a : a._id) || [],
                     selectedGenres: songData.genres?.map((g: any) => typeof g === 'string' ? g : g._id) || [],
                     status: songData.status || 'public',
@@ -81,7 +81,6 @@ export default function EditSongPage() {
                     existingCoverImage: songData.coverImage || ''
                 });
 
-                // If artists are populated, keep their info for the picker
                 if (songData.artists && Array.isArray(songData.artists)) {
                     setInitialArtists(songData.artists.filter((a: any) => typeof a === 'object'));
                 }

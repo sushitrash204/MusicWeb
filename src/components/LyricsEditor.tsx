@@ -23,6 +23,31 @@ interface LyricBlock {
 const MIN_BLOCK_DURATION = 0.5;
 const DEFAULT_ZOOM = 50; // pixels per second
 
+// Memoized Block Component defined OUTSIDE to maintain identity
+const BlockItem = React.memo(({ block, isSelected, zoom, onMouseDown }: { block: LyricBlock, isSelected: boolean, zoom: number, onMouseDown: any }) => (
+    <div
+        className={`${styles.block} ${isSelected ? styles.selected : ''}`}
+        style={{
+            left: block.startTime * zoom,
+            width: (block.endTime - block.startTime) * zoom
+        }}
+        onMouseDown={(e) => onMouseDown(e, block, 'move')}
+        onClick={(e) => e.stopPropagation()}
+    >
+        <div
+            className={`${styles.resizeHandle} ${styles.resizeLeft}`}
+            onMouseDown={(e) => onMouseDown(e, block, 'resize-left')}
+            onClick={(e) => e.stopPropagation()}
+        />
+        <span className={styles.blockText}>{block.text}</span>
+        <div
+            className={`${styles.resizeHandle} ${styles.resizeRight}`}
+            onMouseDown={(e) => onMouseDown(e, block, 'resize-right')}
+            onClick={(e) => e.stopPropagation()}
+        />
+    </div>
+));
+
 export default function LyricsEditor({ value, onChange, audioFile, existingAudioUrl }: LyricsEditorProps) {
     const { t } = useTranslation('common');
     const [mode, setMode] = useState<'edit' | 'sync'>('edit');
@@ -42,25 +67,31 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
     const [newBlockText, setNewBlockText] = useState('');
     const [editingText, setEditingText] = useState('');
 
+    const [hasInitialized, setHasInitialized] = useState(false);
+
     // Detect if initial value is synced (JSON) or plain text
     useEffect(() => {
-        if (value) {
+        if (value && !hasInitialized) {
             try {
                 const parsed = JSON.parse(value);
                 if (Array.isArray(parsed)) {
                     setIsSyncEnabled(true);
                     setMode('sync');
+                } else {
+                    setIsSyncEnabled(false);
+                    setMode('edit');
                 }
             } catch (e) {
                 setIsSyncEnabled(false);
                 setMode('edit');
             }
+            setHasInitialized(true);
         }
-    }, []); // Only on mount
+    }, [value, hasInitialized]);
 
     // Dragging State
     const [dragState, setDragState] = useState<{
-        type: 'move' | 'resize-left' | 'resize-right' | null;
+        type: 'move' | 'resize-left' | 'resize-right' | 'seek' | null;
         blockId: string | null;
         startX: number;
         originalStart: number;
@@ -107,46 +138,46 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
         }
     }, [value, mode]);
 
-    // Parse Value to Blocks (Initial Load & Mode Change)
+    // Parse Value to Blocks (Whenever value changes and we need to update blocks)
     useEffect(() => {
         if (!value || value === '[]') {
-            if (blocks.length > 0) setBlocks([]);
             return;
         }
 
-        // Only parse from value if we are entering a mode that needs it 
-        // Or if blocks are currently empty
         try {
             if (value.startsWith('[')) {
                 const json = JSON.parse(value);
-                if (Array.isArray(json)) {
-                    const newBlocks: LyricBlock[] = json.map((item, i) => {
-                        let end = 0;
-                        if (item.duration) {
-                            end = item.time + item.duration;
-                        } else {
-                            const nextTime = json[i + 1]?.time;
-                            end = nextTime && nextTime > item.time
-                                ? nextTime
-                                : item.time + 3;
-                        }
+                if (Array.isArray(json) && json.length > 0) {
+                    // Only update blocks if they are currently empty (first load)
+                    // or if we are forced to (e.g. state reset)
+                    if (blocks.length === 0) {
+                        const newBlocks: LyricBlock[] = json.map((item, i) => {
+                            let end = 0;
+                            if (item.duration) {
+                                end = item.time + item.duration;
+                            } else {
+                                const nextTime = json[i + 1]?.time;
+                                end = nextTime && nextTime > item.time
+                                    ? nextTime
+                                    : item.time + 3;
+                            }
 
-                        return {
-                            id: `block-${Date.now()}-${i}`,
-                            text: item.text || '',
-                            startTime: item.time || 0,
-                            endTime: end,
-                            lane: 0
-                        };
-                    });
-                    setBlocks(newBlocks);
-                    return;
+                            return {
+                                id: `block-${Date.now()}-${i}`,
+                                text: item.text || '',
+                                startTime: item.time || 0,
+                                endTime: end,
+                                lane: 0
+                            };
+                        });
+                        setBlocks(newBlocks);
+                    }
                 }
             }
         } catch (e) {
             // Not JSON or parse error
         }
-    }, [isSyncEnabled]); // Run when sync is toggled
+    }, [value]); // Depend on value to catch the first load even if it comes late
 
     const handleTabChange = (newMode: 'edit' | 'sync') => {
         if (newMode === 'sync') {
@@ -204,8 +235,7 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
     const getEventTime = (clientX: number) => {
         if (!tracksRef.current) return 0;
         const rect = tracksRef.current.getBoundingClientRect();
-        const scrollLeft = scrollContainerRef.current?.scrollLeft || 0;
-        const x = clientX - rect.left + scrollLeft;
+        const x = clientX - rect.left;
         return Math.max(0, x / zoom);
     };
 
@@ -235,8 +265,38 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
         saveBlocks(blocks);
     };
 
+    const handlePlayheadMouseDown = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setDragState({
+            type: 'seek',
+            blockId: null,
+            startX: e.clientX,
+            originalStart: currentTime,
+            originalEnd: 0
+        });
+    };
+
     const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (!dragState.type || !dragState.blockId) return;
+        if (!dragState.type) return;
+
+        if (dragState.type === 'seek') {
+            // Scrubbing logic
+            if (tracksRef.current) {
+                const rect = tracksRef.current.getBoundingClientRect();
+                // Calculate time directly from mouse X relative to tracks container
+                // rect.left already accounts for scroll offset relative to viewport
+                const x = e.clientX - rect.left;
+                const newTime = Math.max(0, x / zoom);
+
+                setCurrentTime(newTime);
+                if (audioRef.current) {
+                    audioRef.current.currentTime = newTime;
+                }
+            }
+            return;
+        }
+
+        if (!dragState.blockId) return;
 
         const deltaPixels = e.clientX - dragState.startX;
         const deltaTime = deltaPixels / zoom;
@@ -272,9 +332,14 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
     }, [dragState.type]);
 
     // Fix for saving latest blocks after drag
+    const hasDraggedRef = useRef(false);
     useEffect(() => {
-        if (!dragState.type) {
+        if (dragState.type) {
+            hasDraggedRef.current = true;
+        } else if (hasDraggedRef.current) {
+            // Only save if we just finished a drag
             saveBlocks(blocks);
+            hasDraggedRef.current = false;
         }
     }, [dragState.type]); // When drag ends
 
@@ -287,19 +352,38 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
         };
     }, [handleMouseMove, handleMouseUp]);
 
-    // Playback
-    const handleTimeUpdate = () => {
-        if (audioRef.current) {
-            setCurrentTime(audioRef.current.currentTime);
+    // Playback RAF Loop
+    useEffect(() => {
+        if (!isPlaying || !audioRef.current) return;
 
-            if (scrollContainerRef.current && isPlaying) {
-                const playheadPos = audioRef.current.currentTime * zoom;
-                const containerWidth = scrollContainerRef.current.clientWidth;
-                const scrollLeft = scrollContainerRef.current.scrollLeft;
-                if (playheadPos > scrollLeft + containerWidth * 0.8) {
-                    scrollContainerRef.current.scrollLeft = playheadPos - containerWidth * 0.2;
+        let rafId: number;
+
+        const loop = () => {
+            if (audioRef.current) {
+                const time = audioRef.current.currentTime;
+                setCurrentTime(time);
+
+                // Auto-scroll logic
+                if (scrollContainerRef.current) {
+                    const playheadPos = time * zoom;
+                    const containerWidth = scrollContainerRef.current.clientWidth;
+                    const scrollLeft = scrollContainerRef.current.scrollLeft;
+                    if (playheadPos > scrollLeft + containerWidth * 0.8) {
+                        scrollContainerRef.current.scrollLeft = playheadPos - containerWidth * 0.2;
+                    }
                 }
+                rafId = requestAnimationFrame(loop);
             }
+        };
+
+        rafId = requestAnimationFrame(loop);
+        return () => cancelAnimationFrame(rafId);
+    }, [isPlaying, zoom]);
+
+    // Fallback for seeking when paused
+    const handleTimeCheck = () => {
+        if (audioRef.current && !isPlaying) {
+            setCurrentTime(audioRef.current.currentTime);
         }
     };
 
@@ -370,8 +454,8 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
         }
     };
 
-    // Ruler Render
-    const Ruler = () => {
+    // Memoized Ruler
+    const Ruler = useMemo(() => {
         const marks = [];
         const totalSeconds = Math.max(duration, 300);
         // Ruler step
@@ -391,7 +475,10 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
             );
         }
         return <div className={styles.ruler} style={{ width: totalSeconds * zoom }}>{marks}</div>;
-    };
+    }, [duration, zoom]);
+
+
+
 
     return (
         <div className={`${styles.container} ${isFullScreen ? styles.fullScreen : ''}`}>
@@ -479,7 +566,7 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
                     <audio
                         ref={audioRef}
                         src={audioUrl}
-                        onTimeUpdate={handleTimeUpdate}
+                        onTimeUpdate={handleTimeCheck}
                         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
                         onEnded={() => setIsPlaying(false)}
                     />
@@ -538,11 +625,15 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
                                 >
                                     <div style={{ width: Math.max(duration, 300) * zoom, position: 'relative', height: '100%' }} ref={tracksRef}>
                                         <div className={styles.rulerContainer} style={{ width: '100%' }}>
-                                            {Ruler()}
+                                            {Ruler}
                                         </div>
 
                                         {/* Playhead */}
-                                        <div className={styles.playhead} style={{ left: currentTime * zoom }}>
+                                        <div
+                                            className={styles.playhead}
+                                            style={{ left: currentTime * zoom }}
+                                            onMouseDown={handlePlayheadMouseDown}
+                                        >
                                             <div className={styles.playheadHead} />
                                             <div style={{ position: 'absolute', top: 30, left: 5, color: 'red', fontSize: '0.8rem' }}></div>
                                         </div>
@@ -550,28 +641,13 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
                                         {/* Single Track Layout */}
                                         <div className={styles.track}>
                                             {blocks.map(block => (
-                                                <div
+                                                <BlockItem
                                                     key={block.id}
-                                                    className={`${styles.block} ${block.id === selectedBlockId ? styles.selected : ''}`}
-                                                    style={{
-                                                        left: block.startTime * zoom,
-                                                        width: (block.endTime - block.startTime) * zoom
-                                                    }}
-                                                    onMouseDown={(e) => handleMouseDown(e, block, 'move')}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                >
-                                                    <div
-                                                        className={`${styles.resizeHandle} ${styles.resizeLeft}`}
-                                                        onMouseDown={(e) => handleMouseDown(e, block, 'resize-left')}
-                                                        onClick={(e) => e.stopPropagation()}
-                                                    />
-                                                    <span className={styles.blockText}>{block.text}</span>
-                                                    <div
-                                                        className={`${styles.resizeHandle} ${styles.resizeRight}`}
-                                                        onMouseDown={(e) => handleMouseDown(e, block, 'resize-right')}
-                                                        onClick={(e) => e.stopPropagation()}
-                                                    />
-                                                </div>
+                                                    block={block}
+                                                    isSelected={block.id === selectedBlockId}
+                                                    zoom={zoom}
+                                                    onMouseDown={handleMouseDown}
+                                                />
                                             ))}
                                         </div>
                                     </div>

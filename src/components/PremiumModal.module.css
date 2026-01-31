@@ -1,0 +1,101 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modalContent {
+    background-color: var(--card-bg, #1e1e1e);
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--card-border, #333);
+}
+
+.closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary, #aaa);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--foreground, #fff);
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--primary, #1db954);
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.qrContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.qrImage {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.infoContainer {
+    text-align: center;
+    color: var(--foreground, #fff);
+    margin-bottom: 1.5rem;
+}
+
+.infoRow {
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+}
+
+.label {
+    color: var(--text-secondary, #aaa);
+    margin-right: 0.5rem;
+}
+
+.value {
+    font-weight: 600;
+    color: var(--foreground, #fff);
+    user-select: all;
+    /* Make it easy to copy */
+}
+
+.highlight {
+    color: var(--primary, #1db954);
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.instructions {
+    text-align: center;
+    color: var(--text-muted, #888);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}

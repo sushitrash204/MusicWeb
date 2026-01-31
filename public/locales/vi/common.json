@@ -233,6 +233,7 @@
     "enter_text_here": "Nhập nội dung tại đây...",
     "save": "Lưu",
     "edit_hint_save": "Nhấn Lưu để cập nhật thay đổi lên timeline.",
-    "enable_sync_lyrics": "Đồng bộ lời bài hát",
-    "zoom": "Thu phóng"
+    "enable_sync_lyrics": "Lời bài hát đồng bộ",
+    "zoom": "Phóng to",
+    "get_premium": "Mua Premium"
 }

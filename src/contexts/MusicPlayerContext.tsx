@@ -37,6 +37,9 @@ interface MusicPlayerContextType {
     queue: Song[];
     currentIndex: number;
     history: Song[];
+    showAd: boolean;
+    finishAd: () => void;
+    audioRef: React.MutableRefObject<HTMLAudioElement | null>;
 }
 
 const MusicPlayerContext = createContext<MusicPlayerContextType | undefined>(undefined);
@@ -150,14 +153,52 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     };
 
 
-    // Helper to play without resetting queue implicitly if part of playlist
+    // Trạng Thái Logic Quảng Cáo
+    const [showAd, setShowAd] = useState(false);
+    const pendingSongRequestRef = useRef<{ song: Song, index: number } | null>(null);
+
+    // Hàm hỗ trợ phát nhạc mà không reset hàng chờ nếu là một phần của playlist
     const playSongInternal = async (song: Song, index: number) => {
         if (!audioRef.current) return;
+
+        // Dừng mọi phát lại hiện tại trong khi kiểm tra quyền
+        audioRef.current.pause();
+        setIsPlaying(false);
+
+        // --- Kiểm Soát Quảng Cáo Phía Server ---
+        if (userRef.current) {
+            try {
+                // Xác định xem có thể phát bài hát này không
+                // Chúng ta phải làm điều này TRƯỚC KHI phát audio để ngăn chặn caching/prefetch
+                // Tuy nhiên, playSession theo dõi thống kê.
+                // Server bây giờ cũng thực thi "giới hạn 3 bài hát".
+
+                const sessionData = await artistService.startPlaySession(song._id);
+                // Nếu thành công, chúng ta nhận được sessionId
+                currentSessionIdRef.current = sessionData.sessionId;
+
+            } catch (error: any) {
+                const msg = error.response?.data?.message || '';
+                if (msg === 'AD_REQUIRED' || msg === 'AD_IN_PROGRESS') {
+                    console.log("Yêu Cầu Quảng Cáo Từ Server");
+                    // Lưu yêu cầu
+                    pendingSongRequestRef.current = { song, index };
+                    // Hiển thị quảng cáo
+                    setShowAd(true);
+                    return; // DỪNG TẠI ĐÂY. Không tải source audio.
+                }
+                // Các lỗi khác (ví dụ: không tìm thấy bài hát), log và có thể tiếp tục hoặc dừng?
+                console.error("Lỗi Play Session:", error);
+                // Nếu nghiêm trọng, return? Tạm thời giả định thất bại khi bắt đầu session không nên chặn phát lại
+                // TRỪ KHI đó là lỗi AD cụ thể.
+            }
+        }
+        // -----------------------------
 
         setCurrentIndex(index);
         setCurrentSong(song);
         hasCountedRef.current = false;
-        currentSessionIdRef.current = null;
+        // currentSessionIdRef was set above if successful
 
         audioRef.current.src = song.audioUrl;
 
@@ -176,19 +217,21 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
         try {
             await audioRef.current.play();
-            setIsPlaying(true); // Set playing state here
-
-            // Initialize play session for logged in users
-            if (userRef.current) {
-                artistService.startPlaySession(song._id)
-                    .then(data => {
-                        currentSessionIdRef.current = data.sessionId;
-                    })
-                    .catch(err => console.error("Failed to start play session", err));
-            }
+            setIsPlaying(true);
         } catch (e) {
             console.error("Play error", e);
-            setIsPlaying(false); // Ensure playing state is false on error
+            setIsPlaying(false);
+        }
+    };
+
+    const finishAd = () => {
+        setShowAd(false);
+        // Play pending song
+        if (pendingSongRequestRef.current) {
+            const { song, index } = pendingSongRequestRef.current;
+            // Retry playing. Server should allow now if 5s passed.
+            playSongInternal(song, index);
+            pendingSongRequestRef.current = null;
         }
     };
 
@@ -432,7 +475,10 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
                 toggleRepeat,
                 queue,
                 currentIndex,
-                history
+                history,
+                showAd,
+                finishAd,
+                audioRef
             }}
         >
             {children}

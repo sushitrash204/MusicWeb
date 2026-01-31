@@ -22,6 +22,7 @@ import { Providers } from "./providers";
 import Header from "../components/Header";
 import MusicPlayer from "../components/MusicPlayer";
 import GlobalAlert from "../components/GlobalAlert";
+import AdOverlay from "../components/AdOverlay";
 import { MusicPlayerProvider } from "../contexts/MusicPlayerContext";
 
 export default function RootLayout({
@@ -63,6 +64,7 @@ export default function RootLayout({
             </main>
             <GlobalAlert />
             <MusicPlayer />
+            <AdOverlay />
             <Toaster position="top-center" reverseOrder={false} />
           </MusicPlayerProvider>
         </Providers>

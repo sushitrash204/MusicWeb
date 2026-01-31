@@ -15,11 +15,12 @@ interface LyricsPanelProps {
     currentTime?: number;
 }
 
-const LyricsPanel: React.FC<LyricsPanelProps> = ({ isOpen, onClose, lyrics, title, artist, coverImage, isQueueOpen, currentTime = 0 }) => {
+const LyricsPanel: React.FC<LyricsPanelProps> = ({ isOpen, onClose, lyrics, title, artist, coverImage, isQueueOpen, currentTime: propTime = 0 }) => {
     const { t } = useTranslation('common');
-    const { seekTo } = useMusicPlayer();
+    const { seekTo, audioRef, isPlaying } = useMusicPlayer();
     const lyricsContainerRef = useRef<HTMLDivElement>(null);
     const activeLineRef = useRef<HTMLParagraphElement>(null);
+    const [activeIndex, setActiveIndex] = React.useState(-1);
 
     // Identify if lyrics are simple text or JSON
     const parsedLyrics = useMemo(() => {
@@ -37,23 +38,66 @@ const LyricsPanel: React.FC<LyricsPanelProps> = ({ isOpen, onClose, lyrics, titl
         return parsedLyrics.length > 0 && parsedLyrics.some((l: any) => l.time > 0);
     }, [parsedLyrics]);
 
-    // Find active line index based on currentTime
-    const activeIndex = useMemo(() => {
-        if (!isSynced) return -1;
-        // Find the last line that has time <= currentTime
-        // Note: parsedLyrics are hopefully sorted by time, but let's assume they are.
-        let idx = -1;
-        for (let i = 0; i < parsedLyrics.length; i++) {
-            if (currentTime >= parsedLyrics[i].time) {
-                idx = i;
-            } else {
-                break; // Found a line in future, stop
-            }
-        }
-        return idx;
-    }, [isSynced, currentTime, parsedLyrics]);
+    // High-precision sync loop (60fps)
+    useEffect(() => {
+        if (!isOpen || !isSynced || !audioRef?.current) return;
 
-    // Auto-scroll to active line
+        let animationFrameId: number;
+
+        const updateActiveIndex = () => {
+            if (!audioRef.current) return;
+            const time = audioRef.current.currentTime;
+
+            // Find active line
+            let idx = -1;
+            // Optimize: Binary search could be better for huge lyrics, but linear search is fine for songs
+            // Reverse loop might be faster for finding "last line <= time"
+            for (let i = 0; i < parsedLyrics.length; i++) {
+                if (time >= parsedLyrics[i].time) {
+                    idx = i;
+                } else {
+                    break;
+                }
+            }
+
+            setActiveIndex(prev => {
+                if (prev !== idx) return idx;
+                return prev;
+            });
+
+            if (isPlaying) {
+                animationFrameId = requestAnimationFrame(updateActiveIndex);
+            }
+        };
+
+        // Start loop
+        updateActiveIndex(); // Initial check
+        if (isPlaying) {
+            animationFrameId = requestAnimationFrame(updateActiveIndex);
+        }
+
+        return () => {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        };
+    }, [isOpen, isSynced, isPlaying, parsedLyrics, audioRef]); // Re-run if playback state changes
+
+    // Fallback if not playing or closed (sync with propTime)
+    useEffect(() => {
+        if ((!isOpen || !isPlaying) && isSynced) {
+            let idx = -1;
+            for (let i = 0; i < parsedLyrics.length; i++) {
+                if (propTime >= parsedLyrics[i].time) {
+                    idx = i;
+                } else {
+                    break;
+                }
+            }
+            setActiveIndex(idx);
+        }
+    }, [propTime, isSynced, isOpen, isPlaying, parsedLyrics]);
+
+
+    // Auto-scroll logic (unchanged)
     useEffect(() => {
         if (isOpen && activeIndex !== -1 && activeLineRef.current) {
             activeLineRef.current.scrollIntoView({
@@ -62,6 +106,7 @@ const LyricsPanel: React.FC<LyricsPanelProps> = ({ isOpen, onClose, lyrics, titl
             });
         }
     }, [activeIndex, isOpen]);
+
 
     const handleLyricClick = (time: number) => {
         if (isSynced && time >= 0) {

@@ -492,7 +492,8 @@
     background: #ff4d4f;
     /* Red playhead */
     z-index: 100;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: ew-resize;
     will-change: left;
 }
 

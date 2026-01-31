@@ -13,6 +13,9 @@ interface User {
     phone: string;
     role: string;
     isArtist?: boolean;
+    isPremium?: boolean;
+    songsPlayedSinceLastAd?: number;
+    lastAdTrigger?: Date | string | null;
 }
 
 interface AuthContextType {

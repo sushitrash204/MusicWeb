@@ -239,5 +239,6 @@
     "save": "Save",
     "edit_hint_save": "Click Save to apply changes to the timeline.",
     "enable_sync_lyrics": "Synchronized Lyrics",
-    "zoom": "Zoom"
+    "zoom": "Zoom",
+    "get_premium": "Get Premium"
 }
