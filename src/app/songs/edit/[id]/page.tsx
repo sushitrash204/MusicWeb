@@ -19,10 +19,6 @@ interface Genre {
     name: string;
 }
 
-export function generateStaticParams() {
-    return [];
-}
-
 export default function EditSongPage() {
     const { t } = useTranslation('common');
     const router = useRouter();

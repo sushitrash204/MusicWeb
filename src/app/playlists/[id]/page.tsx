@@ -14,10 +14,6 @@ import { toast } from 'react-hot-toast';
 import styles from './PlaylistDetail.module.css';
 import { useRef } from 'react';
 
-export function generateStaticParams() {
-    return [];
-}
-
 export default function PlaylistDetailPage() {
     const params = useParams();
     const router = useRouter();

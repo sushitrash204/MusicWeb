@@ -14,10 +14,6 @@ import favoriteService from '@/services/favoriteService';
 import { toast } from 'react-hot-toast';
 import styles from './ArtistProfile.module.css';
 
-export function generateStaticParams() {
-    return [];
-}
-
 export default function ArtistProfilePage() {
     const { t } = useTranslation('common');
     const params = useParams();

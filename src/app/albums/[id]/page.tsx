@@ -13,10 +13,6 @@ import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import styles from './AlbumDetail.module.css';
 
-export function generateStaticParams() {
-    return [];
-}
-
 export default function AlbumDetailPage() {
     const params = useParams();
     const router = useRouter();
