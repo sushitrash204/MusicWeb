@@ -99,3 +99,68 @@
     font-size: 0.9rem;
     line-height: 1.5;
 }
+
+.successContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+.successIcon {
+    width: 80px;
+    height: 80px;
+    color: var(--primary, #1db954);
+    margin-bottom: 1.5rem;
+}
+
+.successMessage {
+    color: var(--foreground, #fff);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.doneButton {
+    background-color: var(--primary, #1db954);
+    color: #000;
+    border: none;
+    padding: 0.8rem 2.5rem;
+    border-radius: 500px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.doneButton:hover {
+    transform: scale(1.04);
+    background-color: #1ed760;
+}
+
+.qrContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.checkingOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.8rem;
+    padding: 0.3rem;
+    text-align: center;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
