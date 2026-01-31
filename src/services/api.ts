@@ -62,9 +62,17 @@ api.interceptors.response.use(
                 // If it's a 429 from refresh, maybe don't redirect yet? 
                 // But generally if refresh fails, we need to login again.
                 if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
-                    // Optional: clear user from localStorage here if we still use it for session signal
+                    // Only redirect if the user was trying to access a protected action (indicated by having a token attempted)
+                    // or if they are on a path that strictly requires auth.
+                    // For now, let's JUST clear the state. Forced redirecting a guest is bad.
+                    tokenManager.setToken(null);
                     localStorage.removeItem('user');
-                    window.location.href = '/login';
+
+                    // Optional: Only redirect if on /profile, /settings, etc.
+                    const protectedPaths = ['/profile', '/settings', '/admin', '/favorites', '/playlists'];
+                    if (protectedPaths.some(path => window.location.pathname.startsWith(path))) {
+                        window.location.href = '/login';
+                    }
                 }
                 return Promise.reject(refreshError);
             }

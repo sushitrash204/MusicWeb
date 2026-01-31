@@ -65,11 +65,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     }
                 }
             } catch (error) {
-                // If refresh fails, clear everything
+                // If refresh fails, clear everything but DON'T force redirect here
+                // Guest users should stay on their current page (like Homepage)
                 setToken(null);
                 setUser(null);
                 localStorage.removeItem('userAvatar');
-                localStorage.removeItem('user'); // Cleanup legacy data
+                localStorage.removeItem('user');
             } finally {
                 setLoading(false);
             }
