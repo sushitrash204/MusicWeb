@@ -12,7 +12,7 @@ interface QueuePanelProps {
 }
 
 const QueuePanel: React.FC<QueuePanelProps> = ({ isOpen, onClose }) => {
-    const { queue, currentIndex, history, currentSong, playSong } = useMusicPlayer();
+    const { queue, currentIndex, history, currentSong, playSong, playFromQueue } = useMusicPlayer();
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'queue' | 'history'>('queue');
 
@@ -75,7 +75,7 @@ const QueuePanel: React.FC<QueuePanelProps> = ({ isOpen, onClose }) => {
                                         <div
                                             key={`${song._id}-${idx}`}
                                             className={styles.songItem}
-                                            onClick={() => playSong(song)}
+                                            onClick={() => playFromQueue(currentIndex + 1 + idx)}
                                         >
                                             <div className={styles.cover}>
                                                 {song.coverImage ? (

@@ -24,6 +24,7 @@ interface MusicPlayerContextType {
     duration: number;
     volume: number;
     playSong: (song: Song) => void;
+    playFromQueue: (index: number) => void;
     togglePlay: () => void;
     seekTo: (time: number) => void;
     setVolume: (volume: number) => void;
@@ -395,6 +396,12 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
         playSongInternal(songs[startIndex], startIndex);
     };
 
+    const playFromQueue = (index: number) => {
+        if (index >= 0 && index < queue.length) {
+            playSongInternal(queue[index], index);
+        }
+    };
+
     const nextSong = () => {
         const q = queue;
         const idx = currentIndex;
@@ -478,6 +485,7 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
                 duration,
                 volume,
                 playSong,
+                playFromQueue,
                 togglePlay,
                 seekTo,
                 setVolume,
