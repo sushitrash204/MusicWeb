@@ -197,11 +197,20 @@ export default function ArtistProfilePage() {
                             {t('play_all', 'Phát tất cả')}
                         </button>
                         <button
-                            className={`${styles.followButton} ${isFollowing ? styles.following : ''}`}
+                            className={styles.followButton}
                             onClick={handleFollow}
                         >
                             {isFollowing ? t('following', 'Đang theo dõi') : t('follow', 'Theo dõi')}
                         </button>
+                        {artist.isMe && (
+                            <button
+                                className={styles.editButton}
+                                onClick={() => router.push('/profile')}
+                                style={{ marginLeft: '10px' }}
+                            >
+                                {t('manage_profile', 'Quản lý')}
+                            </button>
+                        )}
                     </div>
 
                 </div>

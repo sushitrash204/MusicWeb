@@ -274,5 +274,6 @@
     "notification_PAYMENT": "Giao dịch {{plan_name}} thành công. Mã: {{transaction_id}}.",
     "notification_NEW_POST": "{{artist_name}} vừa ra mắt bài hát mới: {{song_title}}.",
     "clear_read": "Xóa đã đọc",
-    "home": "Trang chủ"
+    "home": "Trang chủ",
+    "manage_profile": "Quản lý"
 }
