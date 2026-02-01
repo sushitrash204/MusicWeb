@@ -245,9 +245,11 @@ const Header = () => {
                 {/* Desktop Actions */}
                 <div className={`${styles.actions} ${styles.desktopOnly}`}>
                     {(!user || !user.isPremium) && (
-                        <button className={styles.premiumBtn} onClick={handlePremiumClick}>
-                            {t('get_premium')}
-                        </button>
+                        <Link href="/premium">
+                            <button className={styles.premiumBtn}>
+                                {t('get_premium')}
+                            </button>
+                        </Link>
                     )}
                     {user ? (
                         <>
@@ -296,7 +298,7 @@ const Header = () => {
                                             <Cog6ToothIcon className="w-5 h-5" />
                                             {t('settings')}
                                         </Link>
-                                        <Link href="/settings" className={styles.dropdownItem}>
+                                        <Link href="/premium" className={styles.dropdownItem}>
                                             <CreditCardIcon className="w-5 h-5" />
                                             {t('premium_status')}
                                         </Link>
@@ -353,15 +355,11 @@ const Header = () => {
                                     <div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{user.fullName || user.username}</div>
                                 </div>
                                 {!user.isPremium && (
-                                    <button
-                                        className={styles.premiumBtnMobile}
-                                        onClick={() => {
-                                            toggleMobileMenu();
-                                            handlePremiumClick();
-                                        }}
-                                    >
-                                        {t('get_premium')}
-                                    </button>
+                                    <Link href="/premium" onClick={toggleMobileMenu} style={{ width: '100%' }}>
+                                        <button className={styles.premiumBtnMobile}>
+                                            {t('get_premium')}
+                                        </button>
+                                    </Link>
                                 )}
                                 <nav className={styles.mobileNav}>
                                     <Link href="/playlists" className={styles.mobileNavLink} onClick={toggleMobileMenu}>

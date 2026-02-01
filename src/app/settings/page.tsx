@@ -7,7 +7,6 @@ import { useAuth } from '@/context/AuthContext';
 import styles from './Settings.module.css';
 import '../../services/i18n';
 import api from '@/services/api';
-import PremiumModal from '@/components/PremiumModal';
 
 const LANGUAGES = [
     { code: 'en', name: 'English', nativeName: 'English' },
@@ -40,7 +39,6 @@ export default function SettingsPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
     const fileInputRef = useState<HTMLInputElement | null>(null);
-    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
     // Pre-fill form
     useEffect(() => {
@@ -357,30 +355,23 @@ export default function SettingsPage() {
 
                 <div className={styles.divider} style={{ margin: '2rem 0' }}></div>
 
-                {/* Premium Subscription Section */}
+                {/* Subscription Link */}
                 <div className={styles.settingItem}>
                     <div className={styles.settingInfo}>
                         <h3 className={styles.settingLabel}>{t('premium_status')}</h3>
-                        {user?.isPremium ? (
-                            <p className={styles.settingDescription}>
-                                {t('premium_expires')}: {user.premiumExpiryDate ? new Date(user.premiumExpiryDate).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                }) : 'N/A'}
-                            </p>
-                        ) : (
-                            <p className={styles.settingDescription}>{t('free_plan_description', 'You are currently using the free plan with ads.')}</p>
-                        )}
+                        <p className={styles.settingDescription}>{t('manage_subscription_desc', 'Manage your plan and billing details.')}</p>
                     </div>
                     <div className={styles.settingControl}>
                         <button
                             type="button"
-                            className={styles.saveButton}
-                            onClick={() => setIsPremiumModalOpen(true)}
-                            style={{ padding: '0.5rem 1.5rem', width: 'auto' }}
+                            className={styles.dropdown}
+                            onClick={() => router.push('/premium')}
+                            style={{ padding: '0.5rem 1rem' }}
                         >
-                            {user?.isPremium ? t('premium_extend') : t('get_premium')}
+                            <span>{t('manage_subscription', 'Manage Subscription')}</span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M5.427 3.427a.6.6 0 01.849 0L10.151 8l-3.875 3.874a.6.6 0 11-.849-.849L8.452 8 5.427 4.276a.6.6 0 010-.849z" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -419,7 +410,6 @@ export default function SettingsPage() {
                     </div>
                 </div>
             </div>
-            <PremiumModal isOpen={isPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
         </div>
     );
 }

@@ -257,5 +257,14 @@
     "premium_status": "Premium Status",
     "premium_expires": "Expires on",
     "premium_extend": "Extend Subscription",
-    "premium_extend_title": "Extend Premium"
+    "premium_extend_title": "Extend Premium",
+    "premium_page_title": "Monthly Premium",
+    "premium_page_subtitle": "Manage your subscription and enjoy ad-free music.",
+    "your_plan": "Your Plan",
+    "free_plan": "Spotify Free",
+    "premium_features_title": "Why go Premium?",
+    "ad_free_music": "Ad-free music listening",
+    "high_quality_audio": "High quality audio",
+    "unlimited_skips": "Unlimited skips",
+    "premium_price_hint": "Subscription is billed monthly. No commitment, cancel anytime."
 }

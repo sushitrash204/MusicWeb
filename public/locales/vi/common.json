@@ -257,5 +257,14 @@
     "premium_status": "Trạng thái Premium",
     "premium_expires": "Hết hạn vào ngày",
     "premium_extend": "Gia hạn gói",
-    "premium_extend_title": "Gia hạn Premium"
+    "premium_extend_title": "Gia hạn Premium",
+    "premium_page_title": "Premium hàng tháng",
+    "premium_page_subtitle": "Quản lý gói đăng ký và tận hưởng âm nhạc không quảng cáo.",
+    "your_plan": "Gói của bạn",
+    "free_plan": "Spotify Miễn phí",
+    "premium_features_title": "Tại sao nên dùng Premium?",
+    "ad_free_music": "Nghe nhạc không quảng cáo",
+    "high_quality_audio": "Âm thanh chất lượng cao",
+    "unlimited_skips": "Chuyển bài không giới hạn",
+    "premium_price_hint": "Gói được tính phí hàng tháng. Không ràng buộc, có thể hủy bất cứ lúc nào."
 }
