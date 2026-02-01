@@ -23,6 +23,7 @@ const Header = () => {
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const notificationRef = useRef<HTMLDivElement>(null);
 
@@ -138,12 +139,18 @@ const Header = () => {
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
+        setIsMobileSearchOpen(false); // Close search when menu opens
         // Prevent scrolling when menu is open
         if (!isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
         }
+    };
+
+    const toggleMobileSearch = () => {
+        setIsMobileSearchOpen(!isMobileSearchOpen);
+        if (isMobileMenuOpen) setIsMobileMenuOpen(false);
     };
 
 
@@ -162,9 +169,12 @@ const Header = () => {
                 </Link>
             </div>
 
-            <div className={styles.centerSection}>
+            <div className={`${styles.centerSection} ${isMobileSearchOpen ? styles.mobileSearchActive : ''}`}>
                 <div className={styles.searchContainer} ref={searchRef}>
                     <div className={styles.searchWrapper}>
+                        <button className={styles.mobileSearchBack} onClick={() => setIsMobileSearchOpen(false)}>
+                            <XMarkIcon className="w-5 h-5" />
+                        </button>
                         <MagnifyingGlassIcon className={styles.searchIcon} />
                         <input
                             type="text"
@@ -276,6 +286,9 @@ const Header = () => {
                         )}
                     </div>
                 )}
+                <button className={styles.mobileSearchBtn} onClick={toggleMobileSearch}>
+                    <MagnifyingGlassIcon className="w-6 h-6" />
+                </button>
                 {/* Desktop Actions */}
                 <div className={`${styles.actions} ${styles.desktopOnly}`}>
                     {(!user || !user.isPremium) && (
