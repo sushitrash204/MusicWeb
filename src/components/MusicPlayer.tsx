@@ -82,7 +82,7 @@ const MusicPlayer = () => {
     const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
     return (
-        <div className={styles.player}>
+        <div className={`${styles.player} ${(isLyricsOpen || isQueueOpen) ? styles.panelOpen : ''}`}>
             {/* Left: Song Info */}
             <div className={styles.songInfo}>
                 <div className={styles.cover}>
