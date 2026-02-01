@@ -3,7 +3,7 @@
     top: 0;
     left: 0;
     width: 100vw;
-    height: calc(100vh - 90px);
+    height: calc(100vh - var(--player-height, 90px));
     /* Subtract player height */
     background: linear-gradient(to bottom, var(--player-popup-bg), #000);
     /* Gradient background */
@@ -192,7 +192,11 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
+    .lyricsPanel {
+        height: calc(100vh - 72px);
+    }
+
     .lyricLine {
         font-size: 1.5rem;
     }

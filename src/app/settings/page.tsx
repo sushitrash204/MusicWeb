@@ -38,7 +38,7 @@ export default function SettingsPage() {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
-    const fileInputRef = useState<HTMLInputElement | null>(null);
+    // const fileInputRef = useState<HTMLInputElement | null>(null); // Unused and wrong type anyway
 
     // Pre-fill form
     useEffect(() => {
@@ -187,6 +187,9 @@ export default function SettingsPage() {
                                 src={previewUrl || '/default-avatar.png'}
                                 alt="Avatar"
                                 className={styles.avatarPreview}
+                                onError={(e) => {
+                                    e.currentTarget.src = '/default-avatar.png';
+                                }}
                             />
                             <label htmlFor="avatar-upload" className={styles.avatarOverlay}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -254,7 +257,7 @@ export default function SettingsPage() {
                         </div>
 
                         {/* Empty div for grid alignment if needed, or allow full width below */}
-                        <div></div>
+                        <div className={styles.spacer}></div>
 
                         <div className={styles.fullWidth}>
                             <h3 className={styles.sectionHeader}>{t('change_password', 'Change Password')}</h3>
@@ -272,7 +275,7 @@ export default function SettingsPage() {
                             />
                         </div>
 
-                        <div></div> {/* Grid spacer */}
+                        <div className={styles.spacer}></div> {/* Grid spacer */}
 
                         <div className={styles.formGroup}>
                             <label htmlFor="newPassword">{t('new_password')}</label>

@@ -267,6 +267,15 @@ const Header = () => {
             </div>
 
             <div className={styles.rightSection}>
+                {user && (
+                    <div className={styles.notificationWrapper} ref={notificationRef} onClick={() => setIsNotificationOpen(!isNotificationOpen)}>
+                        <BellIcon className={styles.notificationIcon} />
+                        {unreadCount > 0 && <span className={styles.badge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
+                        {isNotificationOpen && (
+                            <NotificationDropdown onClose={() => setIsNotificationOpen(false)} />
+                        )}
+                    </div>
+                )}
                 {/* Desktop Actions */}
                 <div className={`${styles.actions} ${styles.desktopOnly}`}>
                     {(!user || !user.isPremium) && (
@@ -275,16 +284,6 @@ const Header = () => {
                                 {t('get_premium')}
                             </button>
                         </Link>
-                    )}
-
-                    {user && (
-                        <div className={styles.notificationWrapper} ref={notificationRef} onClick={() => setIsNotificationOpen(!isNotificationOpen)}>
-                            <BellIcon className={styles.notificationIcon} />
-                            {unreadCount > 0 && <span className={styles.badge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
-                            {isNotificationOpen && (
-                                <NotificationDropdown onClose={() => setIsNotificationOpen(false)} />
-                            )}
-                        </div>
                     )}
 
                     {user ? (
@@ -398,6 +397,9 @@ const Header = () => {
                                     </Link>
                                 )}
                                 <nav className={styles.mobileNav}>
+                                    <Link href="/" className={styles.mobileNavLink} onClick={toggleMobileMenu}>
+                                        {t('home')}
+                                    </Link>
                                     <Link href="/playlists" className={styles.mobileNavLink} onClick={toggleMobileMenu}>
                                         {t('my_playlists')}
                                     </Link>

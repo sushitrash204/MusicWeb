@@ -189,6 +189,8 @@
 @media (max-width: 768px) {
     .container {
         width: 100%;
-        height: calc(100vh - 120px);
+        height: calc(100vh - 72px);
+        z-index: 5100;
+        /* Above the player bar */
     }
 }
