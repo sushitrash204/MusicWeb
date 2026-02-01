@@ -93,6 +93,7 @@ export default function SettingsPage() {
         try {
             const formDataToSend = new FormData();
             formDataToSend.append('fullName', formData.fullName);
+            formDataToSend.append('email', formData.email);
             formDataToSend.append('phone', formData.phone);
 
             if (formData.newPassword) {
@@ -249,7 +250,6 @@ export default function SettingsPage() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 className={styles.input}
-                                disabled
                             />
                         </div>
 
