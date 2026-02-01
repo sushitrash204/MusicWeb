@@ -7,7 +7,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 2000;
     transition: background-color 0.3s ease;
     height: 64px;
 }
@@ -444,8 +444,8 @@
 
 /* Premium Button */
 .premiumBtn {
-    background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
-    color: #000;
+    background: var(--primary);
+    color: var(--button-text, #fff);
     font-weight: 700;
     padding: 0.5rem 1rem;
     border-radius: 500px;
@@ -461,15 +461,16 @@
 
 .premiumBtn:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    background: var(--primary-hover);
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.4);
 }
 
 .premiumBtnMobile {
     width: 100%;
     margin-right: 0;
     text-align: center;
-    background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
-    color: #000;
+    background: var(--primary);
+    color: var(--button-text, #fff);
     font-weight: 700;
     padding: 0.75rem 1rem;
     border-radius: 8px;

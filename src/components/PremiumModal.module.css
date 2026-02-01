@@ -145,17 +145,8 @@
     background-color: #1ed760;
 }
 
-.qrContainer {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    background: #fff;
-    padding: 1rem;
-    border-radius: 8px;
-}
+
+
 
 .checkingOverlay {
     position: absolute;
