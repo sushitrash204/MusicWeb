@@ -7,16 +7,42 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import styles from './Header.module.css';
 import '../services/i18n'; // Init i18n
-import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, PlusIcon, HeartIcon, MagnifyingGlassIcon, CreditCardIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, PlusIcon, HeartIcon, MagnifyingGlassIcon, CreditCardIcon, BellIcon } from '@heroicons/react/24/outline';
 import searchService, { SearchResults } from '../services/searchService';
+import NotificationDropdown from './NotificationDropdown';
+import notificationService from '../services/notificationService';
+
+import { useMusicPlayer } from '../contexts/MusicPlayerContext';
 
 const Header = () => {
     const { t, i18n } = useTranslation('common');
     const { user, logout } = useAuth();
+    const { playSong } = useMusicPlayer();
     const router = useRouter();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(0);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const notificationRef = useRef<HTMLDivElement>(null);
+
+    // Fetch unread count
+    useEffect(() => {
+        if (user) {
+            const fetchUnread = async () => {
+                try {
+                    const data = await notificationService.getUnreadCount();
+                    setUnreadCount(data.count);
+                } catch (e) {
+                    console.error(e);
+                }
+            };
+            fetchUnread();
+            // Optional: Poll every 60s
+            const interval = setInterval(fetchUnread, 60000);
+            return () => clearInterval(interval);
+        }
+    }, [user]);
 
     // Search Logic
     const [query, setQuery] = useState('');
@@ -61,6 +87,9 @@ const Header = () => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsDropdownOpen(false);
             }
+            if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+                setIsNotificationOpen(false);
+            }
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
                 setShowResults(false);
             }
@@ -88,11 +117,16 @@ const Header = () => {
         localStorage.removeItem('searchHistory');
     };
 
-    const handleItemClick = (type: string, id: string, term: string) => {
+    const handleItemClick = (type: string, item: any, term: string) => {
         addToHistory(term);
         setShowResults(false);
         setQuery('');
-        router.push(`/${type}/${id}`);
+
+        if (type === 'song') {
+            playSong(item);
+        } else {
+            router.push(`/${type}/${item._id}`);
+        }
     };
 
     const getInitials = (name: string) => {
@@ -172,7 +206,7 @@ const Header = () => {
                                 <div className={styles.searchSection}>
                                     <div className={styles.sectionHeader}>{t('artists')}</div>
                                     {results?.artists.map(artist => (
-                                        <div key={artist._id} className={styles.searchItem} onClick={() => handleItemClick('artist', artist._id, artist.artistName)}>
+                                        <div key={artist._id} className={styles.searchItem} onClick={() => handleItemClick('artist', artist, artist.artistName)}>
                                             <img src={artist.userId?.avatar || '/default-avatar.png'} className={styles.itemImageCircle} alt="" />
                                             <div className={styles.itemInfo}>
                                                 <div className={styles.itemName}>{artist.artistName}</div>
@@ -187,7 +221,7 @@ const Header = () => {
                                 <div className={styles.searchSection}>
                                     <div className={styles.sectionHeader}>{t('songs')}</div>
                                     {results?.songs.map(song => (
-                                        <div key={song._id} className={styles.searchItem} onClick={() => handleItemClick('song', song._id, song.title)}>
+                                        <div key={song._id} className={styles.searchItem} onClick={() => handleItemClick('song', song, song.title)}>
                                             <img src={song.coverImage || '/default-song.png'} className={styles.itemImage} alt="" />
                                             <div className={styles.itemInfo}>
                                                 <div className={styles.itemName}>{song.title}</div>
@@ -202,7 +236,7 @@ const Header = () => {
                                 <div className={styles.searchSection}>
                                     <div className={styles.sectionHeader}>{t('albums')}</div>
                                     {results?.albums.map(album => (
-                                        <div key={album._id} className={styles.searchItem} onClick={() => handleItemClick('albums', album._id, album.title)}>
+                                        <div key={album._id} className={styles.searchItem} onClick={() => handleItemClick('albums', album, album.title)}>
                                             <img src={album.coverImage || '/default-album.png'} className={styles.itemImage} alt="" />
                                             <div className={styles.itemInfo}>
                                                 <div className={styles.itemName}>{album.title}</div>
@@ -217,7 +251,7 @@ const Header = () => {
                                 <div className={styles.searchSection}>
                                     <div className={styles.sectionHeader}>{t('playlists')}</div>
                                     {results?.playlists.map(playlist => (
-                                        <div key={playlist._id} className={styles.searchItem} onClick={() => handleItemClick('playlists', playlist._id, playlist.title)}>
+                                        <div key={playlist._id} className={styles.searchItem} onClick={() => handleItemClick('playlists', playlist, playlist.title)}>
                                             <img src={playlist.coverImage || '/default-playlist.png'} className={styles.itemImage} alt="" />
                                             <div className={styles.itemInfo}>
                                                 <div className={styles.itemName}>{playlist.title}</div>
@@ -242,6 +276,17 @@ const Header = () => {
                             </button>
                         </Link>
                     )}
+
+                    {user && (
+                        <div className={styles.notificationWrapper} ref={notificationRef} onClick={() => setIsNotificationOpen(!isNotificationOpen)}>
+                            <BellIcon className={styles.notificationIcon} />
+                            {unreadCount > 0 && <span className={styles.badge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
+                            {isNotificationOpen && (
+                                <NotificationDropdown onClose={() => setIsNotificationOpen(false)} />
+                            )}
+                        </div>
+                    )}
+
                     {user ? (
                         <>
                             <div className={styles.userMenu} ref={dropdownRef} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
@@ -260,12 +305,12 @@ const Header = () => {
                                         {getInitials(user.fullName || user.username)}
                                     </div>
                                 )}
-                                <span className={styles.username}>{user.fullName}</span>
+
 
                                 {isDropdownOpen && (
                                     <div className={styles.dropdown}>
                                         <div className="px-4 py-2 text-sm border-b" style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
-                                            {t('welcome')}, {user.username}
+                                            {t('welcome')}, {user.fullName || user.username}
                                         </div>
                                         {user.role === 'admin' && (
                                             <Link href="/admin" className={styles.dropdownItem}>

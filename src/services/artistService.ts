@@ -35,8 +35,9 @@ const createSong = async (songData: FormData) => {
     return response.data;
 };
 
-const getMySongs = async () => {
-    const response = await api.get('/songs/my-songs');
+const getMySongs = async (params: { limit?: number; offset?: number } = {}) => {
+    const { limit = 50, offset = 0 } = params;
+    const response = await api.get(`/songs/my-songs?limit=${limit}&offset=${offset}`);
     return response.data;
 };
 
@@ -74,8 +75,9 @@ const getArtistById = async (id: string) => {
     return response.data;
 };
 
-const getArtistSongs = async (artistId: string) => {
-    const response = await api.get(`/songs/artist/${artistId}`);
+const getArtistSongs = async (artistId: string, params: { limit?: number; offset?: number } = {}) => {
+    const { limit = 50, offset = 0 } = params;
+    const response = await api.get(`/songs/artist/${artistId}?limit=${limit}&offset=${offset}`);
     return response.data;
 };
 

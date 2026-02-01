@@ -266,5 +266,12 @@
     "ad_free_music": "Ad-free music listening",
     "high_quality_audio": "High quality audio",
     "unlimited_skips": "Unlimited skips",
-    "premium_price_hint": "Subscription is billed monthly. No commitment, cancel anytime."
+    "premium_price_hint": "Subscription is billed monthly. No commitment, cancel anytime.",
+    "notifications": "Notifications",
+    "mark_all_read": "Mark all as read",
+    "no_notifications": "No new notifications",
+    "notification_SONG_MILESTONE": "Your song {{song_title}} has reached {{milestone}} plays!",
+    "notification_PAYMENT": "Payment for {{plan_name}} successful. ID: {{transaction_id}}.",
+    "notification_NEW_POST": "{{artist_name}} has released a new song: {{song_title}}.",
+    "clear_read": "Clear Read"
 }

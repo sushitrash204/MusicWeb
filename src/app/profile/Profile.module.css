@@ -13,7 +13,7 @@
 }
 
 .header {
-    background: linear-gradient(to bottom, #444, #121212);
+    background: linear-gradient(to bottom, var(--header-gradient-start), var(--header-gradient-end));
     padding: 2rem;
     display: flex;
     align-items: flex-end;
@@ -35,12 +35,12 @@
     width: 232px;
     height: 232px;
     border-radius: 50%;
-    background: #333;
+    background: var(--player-cover-bg);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 5rem;
-    color: #fff;
+    color: var(--text-muted);
     box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
 }
 
@@ -55,7 +55,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    color: #fff;
+    color: var(--foreground);
 }
 
 .verifiedIcon {
@@ -69,12 +69,12 @@
     font-weight: 900;
     margin: 0;
     line-height: 1;
-    color: #fff;
+    color: var(--foreground);
 }
 
 .stats {
     font-size: 1rem;
-    color: #fff;
+    color: var(--text-muted);
 }
 
 .actions {
@@ -106,7 +106,7 @@
 .editButton {
     background: transparent;
     color: var(--foreground);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--text-muted);
     padding: 0.75rem 2rem;
     border-radius: 9999px;
     font-weight: 700;
@@ -150,7 +150,7 @@
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    color: #fff;
+    color: var(--foreground);
 }
 
 .bioSection {

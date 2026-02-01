@@ -27,7 +27,7 @@ import AddToPlaylistModal from './AddToPlaylistModal';
 import favoriteService from '@/services/favoriteService';
 
 const SongCard: React.FC<SongCardProps> = ({ song, onPlay, variant = 'grid' }) => {
-    const { playSong, currentSong, isPlaying } = useMusicPlayer();
+    const { playSong, currentSong, isPlaying, togglePlay } = useMusicPlayer();
     const { t } = useTranslation('common');
     const [showPlaylistModal, setShowPlaylistModal] = React.useState(false);
     const [isFavorited, setIsFavorited] = React.useState(false);
@@ -74,7 +74,9 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay, variant = 'grid' }) =
 
     const handlePlay = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (onPlay) {
+        if (isCurrentSong) {
+            togglePlay();
+        } else if (onPlay) {
             onPlay(song);
         } else {
             playSong(song);
@@ -93,7 +95,10 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay, variant = 'grid' }) =
     };
 
     return (
-        <div className={`${styles.card} ${variant === 'list' ? styles.listVariant : ''}`}>
+        <div
+            className={`${styles.card} ${variant === 'list' ? styles.listVariant : ''}`}
+            onClick={handlePlay}
+        >
             <div className={styles.coverWrapper}>
                 {song.coverImage ? (
                     <img src={song.coverImage} alt={song.title} className={styles.cover} />
@@ -102,7 +107,10 @@ const SongCard: React.FC<SongCardProps> = ({ song, onPlay, variant = 'grid' }) =
                 )}
                 <button
                     className={`${styles.playButton} ${isCurrentSong && isPlaying ? styles.playing : ''}`}
-                    onClick={handlePlay}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handlePlay(e);
+                    }}
                 >
                     {isCurrentSong && isPlaying ? (
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">

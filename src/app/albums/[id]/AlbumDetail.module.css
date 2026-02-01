@@ -3,7 +3,7 @@
     padding: 2rem;
     padding-bottom: 8rem;
     /* Space for player */
-    background: linear-gradient(to bottom, #1e1e24 0%, var(--background) 100%);
+    background: linear-gradient(to bottom, var(--header-gradient-start) 0%, var(--background) 100%);
     color: var(--foreground);
 }
 

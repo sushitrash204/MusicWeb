@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@unimusic/chromaprint": "^0.1.4",
     "axios": "^1.13.3",
     "i18next": "^25.8.0",
     "i18next-resources-to-backend": "^1.2.1",

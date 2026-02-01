@@ -6,7 +6,7 @@
 }
 
 .header {
-    background: linear-gradient(to bottom, #444, #121212);
+    background: linear-gradient(to bottom, var(--header-gradient-start), var(--header-gradient-end));
     padding: 2rem;
     display: flex;
     align-items: flex-end;
@@ -26,12 +26,12 @@
     width: 232px;
     height: 232px;
     border-radius: 50%;
-    background: #333;
+    background: var(--player-cover-bg);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 5rem;
-    color: #fff;
+    color: var(--text-muted);
     box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
 }
 
@@ -46,7 +46,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    color: #fff;
+    color: var(--foreground);
 }
 
 .verifiedIcon {
@@ -65,7 +65,7 @@
 
 .stats {
     font-size: 1rem;
-    color: #fff;
+    color: var(--text-muted);
 }
 
 .actions {
@@ -103,7 +103,7 @@
 .followButton {
     background: transparent;
     color: var(--foreground);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--text-muted);
     padding: 0.75rem 2rem;
     border-radius: 9999px;
     font-weight: 700;
@@ -141,7 +141,7 @@
 
 .content {
     padding: 2rem;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), var(--background));
+    background: linear-gradient(to bottom, var(--hero-overlay), var(--background));
 }
 
 .sectionTitle {
@@ -214,4 +214,33 @@
         justify-content: center;
         width: 100%;
     }
+}
+
+.showMoreContainer {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.showMoreButton {
+    background: transparent;
+    border: 1px solid var(--text-muted);
+    color: var(--foreground);
+    padding: 0.5rem 2rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+
+.showMoreButton:hover {
+    background: var(--card-hover);
+    border-color: var(--foreground);
+}
+
+.showMoreButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

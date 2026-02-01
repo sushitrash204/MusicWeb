@@ -212,3 +212,31 @@
     gap: 0.5rem;
     flex-shrink: 0;
 }
+
+.showMoreContainer {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.showMoreButton {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    padding: 0.5rem 2rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.showMoreButton:hover {
+    background: var(--card-hover);
+    border-color: var(--foreground);
+}
+
+.showMoreButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

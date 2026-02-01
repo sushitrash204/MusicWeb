@@ -10,14 +10,29 @@ interface ArtistSongsProps {
     songs?: any[];
     loading?: boolean;
     onRefresh?: () => void;
+    // Controlled mode props
+    hasMore?: boolean;
+    loadingMore?: boolean;
+    onLoadMore?: () => void;
 }
 
-const ArtistSongs = ({ songs: propSongs, loading: propLoading, onRefresh }: ArtistSongsProps) => {
+const ArtistSongs = ({
+    songs: propSongs,
+    loading: propLoading,
+    onRefresh,
+    hasMore: propHasMore,
+    loadingMore: propLoadingMore,
+    onLoadMore
+}: ArtistSongsProps) => {
     const { t } = useTranslation('common');
     const router = useRouter();
-    const { playSong } = useMusicPlayer();
+    const { playList } = useMusicPlayer();
     const [songs, setSongs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [offset, setOffset] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const LIMIT = 5;
 
     useEffect(() => {
         if (propSongs) {
@@ -28,16 +43,47 @@ const ArtistSongs = ({ songs: propSongs, loading: propLoading, onRefresh }: Arti
         }
     }, [propSongs, propLoading]);
 
-    const fetchSongs = async () => {
+    const fetchSongs = async (reset = false) => {
+        // If controlled mode, do not fetch internally
+        if (onLoadMore) return;
+
         try {
-            const data = await artistService.getMySongs();
-            setSongs(data);
+            if (reset) {
+                setLoading(true);
+                setOffset(0);
+            } else {
+                setLoadingMore(true);
+            }
+
+            const currentOffset = reset ? 0 : offset;
+            const data = await artistService.getMySongs({ limit: LIMIT, offset: currentOffset });
+
+            if (data.length < LIMIT) {
+                setHasMore(false);
+            } else {
+                setHasMore(true);
+            }
+
+            setSongs(prev => {
+                if (reset) return data;
+                const existingIds = new Set(prev.map(s => s._id));
+                const uniqueNewSongs = data.filter((s: any) => !existingIds.has(s._id));
+                return [...prev, ...uniqueNewSongs];
+            });
+            setOffset(currentOffset + LIMIT);
         } catch (error) {
             console.error('Failed to fetch songs', error);
         } finally {
             setLoading(false);
+            setLoadingMore(false);
         }
     };
+
+    useEffect(() => {
+        if (!propSongs) {
+            fetchSongs(true);
+        }
+    }, [propSongs]);
 
     const handleDelete = async (id: string) => {
         if (!confirm(t('confirm_delete_song', 'Are you sure you want to delete this song?'))) return;
@@ -54,7 +100,10 @@ const ArtistSongs = ({ songs: propSongs, loading: propLoading, onRefresh }: Arti
     };
 
     const handlePlay = (song: any) => {
-        playSong(song);
+        const index = songs.findIndex(s => s._id === song._id);
+        if (index !== -1) {
+            playList(songs, index);
+        }
     };
 
     if (loading) return <div>{t('loading')}</div>;
@@ -98,6 +147,17 @@ const ArtistSongs = ({ songs: propSongs, loading: propLoading, onRefresh }: Arti
                             </div>
                         </div>
                     ))
+                )}
+                {(propHasMore !== undefined ? propHasMore : hasMore) && !loading && (
+                    <div className={styles.showMoreContainer}>
+                        <button
+                            className={styles.showMoreButton}
+                            onClick={() => onLoadMore ? onLoadMore() : fetchSongs(false)}
+                            disabled={propLoadingMore !== undefined ? propLoadingMore : loadingMore}
+                        >
+                            {(propLoadingMore !== undefined ? propLoadingMore : loadingMore) ? t('loading') + '...' : t('show_more', 'Show More')}
+                        </button>
+                    </div>
                 )}
             </div>
         </div>

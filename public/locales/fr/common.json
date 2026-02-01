@@ -266,5 +266,12 @@
     "unlimited_skips": "Zappings illimités",
     "premium_price_hint": "L'abonnement là est facturé mensuellement. Sans engagement, annulez à tout moment.",
     "manage_subscription": "Gérer l'abonnement",
-    "manage_subscription_desc": "Gérez votre forfait et vos informations de facturation."
+    "manage_subscription_desc": "Gérez votre forfait et vos informations de facturation.",
+    "clear_read": "Effacer les lus",
+    "notifications": "Notifications",
+    "mark_all_read": "Tout marquer comme lu",
+    "no_notifications": "Pas de nouvelles notifications",
+    "notification_SONG_MILESTONE": "Votre chanson {{song_title}} a atteint {{milestone}} écoutes!",
+    "notification_PAYMENT": "Paiement pour {{plan_name}} réussi. ID: {{transaction_id}}.",
+    "notification_NEW_POST": "{{artist_name}} a sorti une nouvelle chanson: {{song_title}}."
 }

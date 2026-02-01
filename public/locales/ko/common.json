@@ -266,5 +266,12 @@
     "unlimited_skips": "무제한 건너뛰기",
     "premium_price_hint": "구독료는 매달 청구됩니다. 언제든지 취소할 수 있습니다.",
     "manage_subscription": "구독 관리",
-    "manage_subscription_desc": "플랜 및 결제 세부 정보를 관리합니다."
+    "manage_subscription_desc": "플랜 및 결제 세부 정보를 관리합니다.",
+    "clear_read": "읽은 알림 삭제",
+    "notifications": "알림",
+    "mark_all_read": "모두 읽음으로 표시",
+    "no_notifications": "새 알림이 없습니다",
+    "notification_SONG_MILESTONE": "노래 {{song_title}}이(가) {{milestone}} 재생에 도달했습니다!",
+    "notification_PAYMENT": "{{plan_name}} 결제가 완료되었습니다. ID: {{transaction_id}}.",
+    "notification_NEW_POST": "{{artist_name}}님이 새 노래를 발표했습니다: {{song_title}}."
 }

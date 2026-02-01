@@ -22,7 +22,7 @@
     margin-bottom: 1rem;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     position: relative;
-    background-color: #282828;
+    background-color: var(--player-cover-bg);
     /* Fallback bg */
 }
 

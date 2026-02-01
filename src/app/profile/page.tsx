@@ -33,6 +33,12 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const [loadingSongs, setLoadingSongs] = useState(true);
 
+    // Pagination
+    const [offset, setOffset] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const LIMIT = 5;
+
     const fetchArtistProfile = async () => {
         try {
             const [artistData, albumsData] = await Promise.all([
@@ -52,15 +58,36 @@ export default function ProfilePage() {
         }
     };
 
-    const fetchSongs = async () => {
-        setLoadingSongs(true);
+    const fetchSongs = async (reset = false) => {
+        if (reset) {
+            setLoadingSongs(true);
+            setOffset(0);
+        } else {
+            setLoadingMore(true);
+        }
+
         try {
-            const data = await artistService.getMySongs();
-            setSongs(data);
+            const currentOffset = reset ? 0 : offset;
+            const data = await artistService.getMySongs({ limit: LIMIT, offset: currentOffset });
+
+            if (data.length < LIMIT) {
+                setHasMore(false);
+            } else {
+                setHasMore(true);
+            }
+
+            setSongs(prev => {
+                if (reset) return data;
+                const existingIds = new Set(prev.map(s => s._id));
+                const uniqueNewSongs = data.filter((s: any) => !existingIds.has(s._id));
+                return [...prev, ...uniqueNewSongs];
+            });
+            setOffset(currentOffset + LIMIT);
         } catch (error) {
             console.error('Failed to fetch songs', error);
         } finally {
             setLoadingSongs(false);
+            setLoadingMore(false);
         }
     };
 
@@ -73,7 +100,7 @@ export default function ProfilePage() {
         }
 
         fetchArtistProfile();
-        fetchSongs();
+        fetchSongs(true);
     }, [user, authLoading, router]);
 
     // Artist Edit State
@@ -180,7 +207,10 @@ export default function ProfilePage() {
                         <ArtistSongs
                             songs={songs}
                             loading={loadingSongs}
-                            onRefresh={fetchSongs}
+                            onRefresh={() => fetchSongs(true)}
+                            hasMore={hasMore}
+                            loadingMore={loadingMore}
+                            onLoadMore={() => fetchSongs(false)}
                         />
                     </div>
 
@@ -270,7 +300,10 @@ export default function ProfilePage() {
                         <ArtistSongs
                             songs={songs}
                             loading={loadingSongs}
-                            onRefresh={fetchSongs}
+                            onRefresh={() => fetchSongs(true)}
+                            hasMore={hasMore}
+                            loadingMore={loadingMore}
+                            onLoadMore={() => fetchSongs(false)}
                         />
                     </div>
                 </div>

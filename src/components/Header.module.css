@@ -9,7 +9,7 @@
     top: 0;
     z-index: 2000;
     transition: background-color 0.3s ease;
-    height: 64px;
+    height: 80px;
 }
 
 .leftSection {
@@ -92,26 +92,35 @@
 }
 
 .avatar {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid var(--card-border);
+    border: 2px solid var(--primary);
+    padding: 2px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0 8px rgba(29, 185, 84, 0.2);
+}
+
+.avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
 }
 
 .avatarPlaceholder {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background-color: var(--primary);
     color: var(--button-text);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 1.1rem;
     font-weight: 600;
     text-transform: uppercase;
-    border: 1px solid var(--card-border);
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 8px rgba(29, 185, 84, 0.2);
 }
 
 .username {
@@ -479,4 +488,204 @@
     text-transform: uppercase;
     font-size: 1rem;
     margin-bottom: 1rem;
+}
+
+/* Notification Styles */
+.notificationWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.notificationIcon {
+    width: 24px;
+    height: 24px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.notificationWrapper:hover .notificationIcon {
+    color: var(--foreground);
+}
+
+.badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.notificationDropdown {
+    position: absolute;
+    top: 150%;
+    right: -80px;
+    width: 380px;
+    background-color: var(--dropdown-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Notification Header */
+.notificationHeader {
+    padding: 1rem;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--dropdown-bg);
+    border-radius: 8px 8px 0 0;
+}
+
+.notificationHeader h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--foreground);
+}
+
+.headerActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.markReadBtn {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.markReadBtn:hover {
+    color: var(--foreground);
+    border-color: var(--foreground);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.notificationList {
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+    /* Approx 5 items (80px each) */
+    overflow-y: auto;
+}
+
+/* Custom Scrollbar for Notification List */
+.notificationList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notificationList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notificationList::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.notificationList::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.notificationItem {
+    padding: 1rem;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    background-color: transparent;
+    min-height: 80px;
+    /* Ensure consistent height for calculation */
+}
+
+/* Notifications Footer */
+.notificationFooter {
+    padding: 0.75rem;
+    border-top: 1px solid var(--card-border);
+    display: flex;
+    justify-content: center;
+    background-color: var(--dropdown-bg);
+    border-radius: 0 0 8px 8px;
+}
+
+.clearReadBtn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: color 0.2s;
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.clearReadBtn:hover {
+    color: var(--foreground);
+    text-decoration: underline;
+}
+
+
+.notificationItem.unread {
+    background-color: rgba(29, 185, 84, 0.08);
+    /* Very subtle green tint */
+    border-left: 3px solid var(--primary);
+}
+
+.notificationItem:hover {
+    background-color: var(--dropdown-hover);
+}
+
+.notifImage {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.notifContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.notifMessage {
+    font-size: 0.9rem;
+    color: var(--foreground);
+    line-height: 1.4;
+    font-weight: 400;
+}
+
+.notificationItem.unread .notifMessage {
+    font-weight: 500;
+    color: #fff;
+}
+
+.notifTime {
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }

@@ -99,6 +99,20 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
         localStorage.setItem('music_history', JSON.stringify(history));
     }, [history]);
 
+    // Load volume from localStorage on mount
+    useEffect(() => {
+        const savedVolume = localStorage.getItem('music_volume');
+        if (savedVolume !== null) {
+            const vol = parseFloat(savedVolume);
+            if (!isNaN(vol)) {
+                setVolumeState(vol);
+                if (audioRef.current) {
+                    audioRef.current.volume = vol;
+                }
+            }
+        }
+    }, []);
+
     const [isShuffle, setIsShuffle] = useState(false);
     const [repeatMode, setRepeatMode] = useState<'off' | 'all' | 'one'>('off');
 
@@ -452,6 +466,7 @@ export const MusicPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
         if (!audioRef.current) return;
         audioRef.current.volume = newVolume;
         setVolumeState(newVolume);
+        localStorage.setItem('music_volume', newVolume.toString());
     };
 
     return (

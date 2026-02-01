@@ -260,5 +260,12 @@
     "unlimited_skips": "无限次跳过",
     "premium_price_hint": "按月计费。无合约，随时可取消。",
     "manage_subscription": "管理订阅",
-    "manage_subscription_desc": "管理您的方案和账单详情。"
+    "manage_subscription_desc": "管理您的方案和账单详情。",
+    "clear_read": "清除已读",
+    "notifications": "通知",
+    "mark_all_read": "全部标记为已读",
+    "no_notifications": "没有新通知",
+    "notification_SONG_MILESTONE": "您的歌曲 {{song_title}} 已达到 {{milestone}} 次播放！",
+    "notification_PAYMENT": "{{plan_name}} 付款成功。ID：{{transaction_id}}。",
+    "notification_NEW_POST": "{{artist_name}} 发布了一首新歌：{{song_title}}。"
 }

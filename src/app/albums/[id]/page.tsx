@@ -164,11 +164,13 @@ export default function AlbumDetailPage() {
                             <div
                                 key={song._id}
                                 className={styles.songItem}
-                                onClick={() => playList(album.songs, index)}
-                                style={{ cursor: 'pointer' }}
                             >
                                 <span className={styles.songNumber}>{index + 1}</span>
-                                <SongCard song={song} variant="list" />
+                                <SongCard
+                                    song={song}
+                                    variant="list"
+                                    onPlay={() => playList(album.songs, index)}
+                                />
                             </div>
                         ))
                     ) : (

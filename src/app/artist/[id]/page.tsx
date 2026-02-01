@@ -28,6 +28,12 @@ export default function ArtistProfilePage() {
     const [loading, setLoading] = useState(true);
     const [isFollowing, setIsFollowing] = useState(false);
 
+    // Pagination
+    const [offset, setOffset] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const LIMIT = 5;
+
     const handlePlayAll = () => {
         if (songs.length > 0) {
             playList(songs, 0);
@@ -52,6 +58,30 @@ export default function ArtistProfilePage() {
         const index = songs.findIndex(s => s._id === song._id);
         if (index !== -1) {
             playList(songs, index);
+        }
+    };
+
+    const loadMoreSongs = async () => {
+        if (loadingMore || !hasMore) return;
+        setLoadingMore(true);
+        try {
+            const nextOffset = offset + LIMIT;
+            const newSongs = await artistService.getArtistSongs(id, { limit: LIMIT, offset: nextOffset });
+
+            if (newSongs.length < LIMIT) {
+                setHasMore(false);
+            }
+
+            setSongs(prev => {
+                const existingIds = new Set(prev.map(s => s._id));
+                const uniqueNewSongs = newSongs.filter((s: any) => !existingIds.has(s._id));
+                return [...prev, ...uniqueNewSongs];
+            });
+            setOffset(nextOffset);
+        } catch (error) {
+            console.error('Failed to load more songs', error);
+        } finally {
+            setLoadingMore(false);
         }
     };
 
@@ -92,7 +122,7 @@ export default function ArtistProfilePage() {
                 // Fetch songs and albums in parallel
                 console.log('Fetching songs and albums...');
                 const [songsData, albumsData] = await Promise.all([
-                    artistService.getArtistSongs(id),
+                    artistService.getArtistSongs(id, { limit: LIMIT, offset: 0 }),
                     albumService.getAlbumsByArtist(id)
                 ]);
 
@@ -100,6 +130,12 @@ export default function ArtistProfilePage() {
                     console.log('Songs and albums received');
                     setSongs(songsData);
                     setAlbums(albumsData);
+                    setOffset(0);
+                    if (songsData.length < LIMIT) {
+                        setHasMore(false);
+                    } else {
+                        setHasMore(true);
+                    }
                 }
             } catch (error) {
                 if (isMounted) {
@@ -188,6 +224,17 @@ export default function ArtistProfilePage() {
                             <p className="text-[var(--text-muted)]">{t('no_songs', 'No songs yet.')}</p>
                         )}
                     </div>
+                    {hasMore && !loading && (
+                        <div className={styles.showMoreContainer}>
+                            <button
+                                className={styles.showMoreButton}
+                                onClick={loadMoreSongs}
+                                disabled={loadingMore}
+                            >
+                                {loadingMore ? t('loading') + '...' : t('show_more', 'Xem thêm')}
+                            </button>
+                        </div>
+                    )}
                 </section>
 
                 <div className="mb-8">

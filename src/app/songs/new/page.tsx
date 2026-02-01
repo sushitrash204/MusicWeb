@@ -85,6 +85,19 @@ export default function NewSongPage() {
 
         setLoading(true);
         try {
+            // Generate Fingerprint
+            let fingerprint = '';
+            try {
+                if (window.AudioContext) {
+                    // Dynamic import to avoid SSR issues with AudioContext
+                    const { generateFingerprint } = await import('@/utils/audioFingerprint');
+                    const fp = await generateFingerprint(formData.audioFile);
+                    if (fp) fingerprint = fp;
+                }
+            } catch (err) {
+                console.warn('Fingerprint generation failed', err);
+            }
+
             const uploadData = new FormData();
             uploadData.append('title', formData.title);
             uploadData.append('lyrics', formData.lyrics);
@@ -92,6 +105,9 @@ export default function NewSongPage() {
             uploadData.append('previewStart', formData.previewStart.toString());
             uploadData.append('audio', formData.audioFile);
             uploadData.append('status', formData.status);
+            if (fingerprint) {
+                uploadData.append('fingerprint', fingerprint);
+            }
 
             if (formData.coverFile) {
                 uploadData.append('cover', formData.coverFile);
@@ -106,7 +122,11 @@ export default function NewSongPage() {
             router.push('/profile');
         } catch (error: any) {
             console.error('Failed to create song', error);
-            alert(error.response?.data?.message || t('upload_failed', 'An error occurred. Please try again.'));
+            if (error.response?.status === 409) {
+                alert(t('copyright_error', 'Bài hát này đã tồn tại (Vi phạm bản quyền).'));
+            } else {
+                alert(error.response?.data?.message || t('upload_failed', 'An error occurred. Please try again.'));
+            }
         } finally {
             setLoading(false);
         }

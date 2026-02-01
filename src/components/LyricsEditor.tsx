@@ -128,8 +128,8 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
                     return {
                         id: existing?.id || `block-${Date.now()}-${i}`,
                         text: text.trim(),
-                        startTime: existing?.startTime ?? i * 4,
-                        endTime: existing?.endTime ?? (i * 4) + 3,
+                        startTime: existing?.startTime ?? i * 3,
+                        endTime: existing?.endTime ?? (i * 3) + 2,
                         lane: 0
                     };
                 });
@@ -159,7 +159,7 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
                                 const nextTime = json[i + 1]?.time;
                                 end = nextTime && nextTime > item.time
                                     ? nextTime
-                                    : item.time + 3;
+                                    : item.time + 2;
                             }
 
                             return {
@@ -193,8 +193,8 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
                 return {
                     id: existing?.id || `block-${Date.now()}-${i}`,
                     text: text.trim(),
-                    startTime: existing?.startTime ?? i * 4,
-                    endTime: existing?.endTime ?? (i * 4) + 3,
+                    startTime: existing?.startTime ?? i * 3,
+                    endTime: existing?.endTime ?? (i * 3) + 2,
                     lane: 0
                 };
             });
@@ -302,7 +302,8 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
         const deltaTime = deltaPixels / zoom;
 
         setBlocks(prev => {
-            const nextBlocks = prev.map(b => {
+            // 1. Update the dragged block's position/size
+            let nextBlocks = prev.map(b => {
                 if (b.id !== dragState.blockId) return b;
 
                 let newStart = b.startTime;
@@ -320,6 +321,32 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
 
                 return { ...b, startTime: newStart, endTime: newEnd };
             });
+
+            // 2. Ripple/Push Logic: Prevent overlapping by pushing subsequent blocks
+            if (dragState.type === 'move' || dragState.type === 'resize-right') {
+                // Sort by start time to ensure we process them in sequence
+                nextBlocks.sort((a, b) => a.startTime - b.startTime);
+
+                // Find the index of the block currently being dragged
+                const draggedIdx = nextBlocks.findIndex(b => b.id === dragState.blockId);
+
+                // Start from the block immediately after the dragged one
+                for (let i = draggedIdx + 1; i < nextBlocks.length; i++) {
+                    const prevBlock = nextBlocks[i - 1];
+                    const currBlock = nextBlocks[i];
+
+                    // If current block starts before previous block ends, push it forward
+                    if (currBlock.startTime < prevBlock.endTime) {
+                        const shift = prevBlock.endTime - currBlock.startTime;
+                        nextBlocks[i] = {
+                            ...currBlock,
+                            startTime: prevBlock.endTime,
+                            endTime: currBlock.endTime + shift
+                        };
+                    }
+                }
+            }
+
             return nextBlocks;
         });
     }, [dragState, zoom]);
@@ -407,7 +434,7 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
         if (!newBlockText.trim()) return;
 
         const start = currentTime; // Add at playhead
-        const end = start + 3;
+        const end = start + 2;
 
         // Find best lane (check collision?)
         const lane = blocks.length % 2;
@@ -659,37 +686,42 @@ export default function LyricsEditor({ value, onChange, audioFile, existingAudio
                             </div>
                         </div>
 
-                        {/* Right Panel for Editing Text */}
-                        {selectedBlockId && (
-                            <div className={styles.editPanel}>
-                                <div className={styles.panelHeader}>
-                                    <h4 className={styles.panelTitle}>{t('edit_lyric_line', 'Edit Lyric Line')}</h4>
-                                    <button type="button" className={styles.closePanel} onClick={() => setSelectedBlockId(null)}>×</button>
-                                </div>
-                                <div className={styles.panelBody}>
-                                    <label className={styles.panelLabel}>{t('text_content', 'Text Content')}</label>
-                                    <input
-                                        type="text"
-                                        className={styles.panelInput}
-                                        value={editingText}
-                                        onChange={(e) => handleBlockTextChangeLocal(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && handleSaveBlockText()}
-                                        placeholder={t('enter_text_here', 'Enter text here...')}
-                                        autoFocus
-                                    />
-                                    <button
-                                        type="button"
-                                        className={styles.saveBtn}
-                                        onClick={handleSaveBlockText}
-                                    >
-                                        {t('save', 'Save')}
-                                    </button>
-                                    <div className={styles.panelHint}>
-                                        {t('edit_hint_save', 'Click Save to apply changes to the timeline.')}
-                                    </div>
-                                </div>
+                        {/* Right Panel for Editing Text - Always Visible */}
+                        <div className={styles.editPanel}>
+                            <div className={styles.panelHeader}>
+                                <h4 className={styles.panelTitle}>{t('edit_lyric_line', 'Edit Lyric Line')}</h4>
                             </div>
-                        )}
+                            <div className={styles.panelBody}>
+                                {selectedBlockId ? (
+                                    <>
+                                        <label className={styles.panelLabel}>{t('text_content', 'Text Content')}</label>
+                                        <input
+                                            type="text"
+                                            className={styles.panelInput}
+                                            value={editingText}
+                                            onChange={(e) => handleBlockTextChangeLocal(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleSaveBlockText()}
+                                            placeholder={t('enter_text_here', 'Enter text here...')}
+                                            autoFocus
+                                        />
+                                        <button
+                                            type="button"
+                                            className={styles.saveBtn}
+                                            onClick={handleSaveBlockText}
+                                        >
+                                            {t('save', 'Save')}
+                                        </button>
+                                        <div className={styles.panelHint}>
+                                            {t('edit_hint_save', 'Click Save to apply changes to the timeline.')}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className={styles.panelPlaceholder}>
+                                        <p>{t('select_block_to_edit', 'Select a block on the timeline to edit its content.')}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </>
             )}

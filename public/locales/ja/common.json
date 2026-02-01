@@ -266,5 +266,12 @@
     "unlimited_skips": "スキップ制限なし",
     "premium_price_hint": "サブスクリプションは月単位で請求されます。いつでも解約可能です。",
     "manage_subscription": "サブスクリプションを管理",
-    "manage_subscription_desc": "プランと請求の詳細を管理します。"
+    "manage_subscription_desc": "プランと請求の詳細を管理します。",
+    "clear_read": "既読を消去",
+    "notifications": "通知",
+    "mark_all_read": "すべて既読にする",
+    "no_notifications": "新しい通知はありません",
+    "notification_SONG_MILESTONE": "あなたの曲 {{song_title}} が {{milestone}} 再生に達しました！",
+    "notification_PAYMENT": "{{plan_name}} の支払いが完了しました。ID: {{transaction_id}}.",
+    "notification_NEW_POST": "{{artist_name}} が新曲をリリースしました: {{song_title}}."
 }

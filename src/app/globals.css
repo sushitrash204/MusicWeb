@@ -30,6 +30,11 @@
   --player-track-bg: #d0d0d0;
   --player-popup-bg: #ffffff;
 
+  /* Gradients */
+  --header-gradient-start: #f0f0f0;
+  --header-gradient-end: #ffffff;
+  --hero-overlay: rgba(255, 255, 255, 0.4);
+
   /* Utilities */
   --radius: 8px;
   --radius-pill: 500px;
@@ -67,6 +72,11 @@
   --player-cover-bg: #282828;
   --player-track-bg: #4d4d4d;
   --player-popup-bg: #282828;
+
+  /* Gradients */
+  --header-gradient-start: #444444;
+  --header-gradient-end: #121212;
+  --hero-overlay: rgba(0, 0, 0, 0.5);
 }
 
 

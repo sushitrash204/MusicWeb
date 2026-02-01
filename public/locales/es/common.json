@@ -266,5 +266,12 @@
     "unlimited_skips": "Saltos ilimitados",
     "premium_price_hint": "La suscripción se factura mensualmente. Sin compromiso, cancela en cualquier momento.",
     "manage_subscription": "Gestionar suscripción",
-    "manage_subscription_desc": "Gestiona tu plan y detalles de facturación."
+    "manage_subscription_desc": "Gestiona tu plan y detalles de facturación.",
+    "clear_read": "Borrar leídos",
+    "notifications": "Notificaciones",
+    "mark_all_read": "Marcar todo como leído",
+    "no_notifications": "No hay notificaciones",
+    "notification_SONG_MILESTONE": "¡Tu canción {{song_title}} ha alcanzado {{milestone}} reproducciones!",
+    "notification_PAYMENT": "Pago de {{plan_name}} exitoso. ID: {{transaction_id}}.",
+    "notification_NEW_POST": "{{artist_name}} ha lanzado una nueva canción: {{song_title}}."
 }

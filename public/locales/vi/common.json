@@ -266,5 +266,12 @@
     "ad_free_music": "Nghe nhạc không quảng cáo",
     "high_quality_audio": "Âm thanh chất lượng cao",
     "unlimited_skips": "Chuyển bài không giới hạn",
-    "premium_price_hint": "Gói được tính phí hàng tháng. Không ràng buộc, có thể hủy bất cứ lúc nào."
+    "premium_price_hint": "Gói được tính phí hàng tháng. Không ràng buộc, có thể hủy bất cứ lúc nào.",
+    "notifications": "Thông báo",
+    "mark_all_read": "Đánh dấu tất cả đã đọc",
+    "no_notifications": "Không có thông báo nào",
+    "notification_SONG_MILESTONE": "Bài hát {{song_title}} của bạn đã đạt {{milestone}} lượt nghe!",
+    "notification_PAYMENT": "Giao dịch {{plan_name}} thành công. Mã: {{transaction_id}}.",
+    "notification_NEW_POST": "{{artist_name}} vừa ra mắt bài hát mới: {{song_title}}.",
+    "clear_read": "Xóa đã đọc"
 }
