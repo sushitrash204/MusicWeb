@@ -228,11 +228,6 @@
     "add_new_lyric": "Add New Lyric",
     "type_lyric_here": "Type lyrics here...",
     "confirm_delete_lyric": "Delete this lyric block?",
-    "search_artists": "Search artists...",
-    "selected_artists": "Selected artists",
-    "default_artist": "You",
-    "remove_artist": "Remove artist",
-    "selected": "Selected",
     "edit_lyric_line": "Edit Lyric Line",
     "text_content": "Text Content",
     "enter_text_here": "Enter text here...",
@@ -248,5 +243,15 @@
     "premium_instructions": "Scan the QR code with your banking app. The premium status will be activated automatically within 1-2 minutes after payment.",
     "premium_success_message": "Congratulations! Your account is now Premium. You can now enjoy all premium features.",
     "premium_done": "Done",
-    "premium_checking": "Checking status..."
+    "premium_checking": "Checking status...",
+    "search_placeholder": "Search for songs, artists...",
+    "recent_searches": "Recent Searches",
+    "clear_all": "Clear All",
+    "searching": "Searching...",
+    "no_results_found": "No results found",
+    "unknown_user": "Unknown User",
+    "search_artists": "Search for artists...",
+    "selected_artists": "Selected Artists",
+    "remove_artist": "Remove artist",
+    "selected": "Selected"
 }

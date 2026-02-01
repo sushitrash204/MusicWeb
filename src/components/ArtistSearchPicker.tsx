@@ -100,7 +100,7 @@ export default function ArtistSearchPicker({ selectedArtists, onChange, defaultA
                 <input
                     type="text"
                     className={styles.searchInput}
-                    placeholder={t('search_artists', 'Tìm kiếm nghệ sĩ...')}
+                    placeholder={t('search_artists')}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => query && setShowDropdown(true)}
@@ -110,13 +110,13 @@ export default function ArtistSearchPicker({ selectedArtists, onChange, defaultA
                     <div className={styles.dropdown}>
                         {isSearching && (
                             <div className={styles.searchingText}>
-                                {t('searching', 'Đang tìm kiếm...')}
+                                {t('searching')}
                             </div>
                         )}
 
                         {!isSearching && searchResults.length === 0 && (
                             <div className={styles.noResults}>
-                                {t('no_results_found', 'Không tìm thấy kết quả')}
+                                {t('no_results_found')}
                             </div>
                         )}
 
@@ -134,7 +134,7 @@ export default function ArtistSearchPicker({ selectedArtists, onChange, defaultA
                                 <div className={styles.artistInfo}>
                                     <div className={styles.artistName}>{artist.artistName}</div>
                                     {selectedArtists.includes(artist._id) && (
-                                        <span className={styles.selectedBadge}>✓ {t('selected', 'Đã chọn')}</span>
+                                        <span className={styles.selectedBadge}>✓ {t('selected')}</span>
                                     )}
                                 </div>
                             </div>
@@ -146,7 +146,7 @@ export default function ArtistSearchPicker({ selectedArtists, onChange, defaultA
             {selectedArtists.length > 0 && (
                 <div className={styles.selectedSection}>
                     <div className={styles.selectedLabel}>
-                        {t('selected_artists', 'Nghệ sĩ đã chọn')} ({selectedArtists.length})
+                        {t('selected_artists')} ({selectedArtists.length})
                     </div>
                     <div className={styles.chipsContainer}>
                         {selectedArtists.map(artistId => {
@@ -166,7 +166,7 @@ export default function ArtistSearchPicker({ selectedArtists, onChange, defaultA
                                             type="button"
                                             className={styles.removeButton}
                                             onClick={() => handleRemoveArtist(artistId)}
-                                            title={t('remove_artist', 'Xóa nghệ sĩ')}
+                                            title={t('remove_artist')}
                                         >
                                             ×
                                         </button>

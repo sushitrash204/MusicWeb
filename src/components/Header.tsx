@@ -143,7 +143,7 @@ const Header = () => {
                         <MagnifyingGlassIcon className={styles.searchIcon} />
                         <input
                             type="text"
-                            placeholder={t('search_placeholder', 'Tìm kiếm bài hát, nghệ sĩ...')}
+                            placeholder={t('search_placeholder')}
                             className={styles.searchInput}
                             value={query}
                             onChange={(e) => {
@@ -159,8 +159,8 @@ const Header = () => {
                             {!query && searchHistory.length > 0 && (
                                 <div className={styles.searchSection}>
                                     <div className={styles.historyHeader}>
-                                        <span className={styles.sectionHeader}>{t('recent_searches', 'Tìm kiếm gần đây')}</span>
-                                        <button className={styles.clearHistory} onClick={clearHistory}>{t('clear_all', 'Xóa tất cả')}</button>
+                                        <span className={styles.sectionHeader}>{t('recent_searches')}</span>
+                                        <button className={styles.clearHistory} onClick={clearHistory}>{t('clear_all')}</button>
                                     </div>
                                     {searchHistory.map(term => (
                                         <div key={term} className={`${styles.searchItem} ${styles.historyItem}`} onClick={() => setQuery(term)}>
@@ -173,9 +173,9 @@ const Header = () => {
                                 </div>
                             )}
 
-                            {query && isSearching && <div className={styles.noResults}>{t('searching', 'Đang tìm kiếm...')}</div>}
+                            {query && isSearching && <div className={styles.noResults}>{t('searching')}</div>}
 
-                            {query && !isSearching && !hasResults && <div className={styles.noResults}>{t('no_results_found', 'Không tìm thấy kết quả')}</div>}
+                            {query && !isSearching && !hasResults && <div className={styles.noResults}>{t('no_results_found')}</div>}
 
                             {(results?.artists?.length ?? 0) > 0 && (
                                 <div className={styles.searchSection}>
@@ -224,7 +224,7 @@ const Header = () => {
 
                             {(results?.playlists?.length ?? 0) > 0 && (
                                 <div className={styles.searchSection}>
-                                    <div className={styles.sectionHeader}>{t('playlists', 'Danh sách phát')}</div>
+                                    <div className={styles.sectionHeader}>{t('playlists')}</div>
                                     {results?.playlists.map(playlist => (
                                         <div key={playlist._id} className={styles.searchItem} onClick={() => handleItemClick('playlists', playlist._id, playlist.title)}>
                                             <img src={playlist.coverImage || '/default-playlist.png'} className={styles.itemImage} alt="" />

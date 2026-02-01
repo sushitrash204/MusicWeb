@@ -243,5 +243,15 @@
     "premium_instructions": "Quét mã QR bằng ứng dụng ngân hàng của bạn. Trạng thái Premium sẽ được kích hoạt tự động trong vòng 1-2 phút sau khi thanh toán.",
     "premium_success_message": "Chúc mừng! Tài khoản của bạn đã được nâng cấp lên Premium. Bây giờ bạn có thể tận hưởng mọi tính năng cao cấp.",
     "premium_done": "Hoàn tất",
-    "premium_checking": "Đang kiểm tra trạng thái..."
+    "premium_checking": "Đang kiểm tra trạng thái...",
+    "search_placeholder": "Tìm kiếm bài hát, nghệ sĩ...",
+    "recent_searches": "Tìm kiếm gần đây",
+    "clear_all": "Xóa tất cả",
+    "searching": "Đang tìm kiếm...",
+    "no_results_found": "Không tìm thấy kết quả",
+    "unknown_user": "Người dùng ẩn danh",
+    "search_artists": "Tìm kiếm nghệ sĩ...",
+    "selected_artists": "Nghệ sĩ đã chọn",
+    "remove_artist": "Xóa nghệ sĩ",
+    "selected": "Đã chọn"
 }

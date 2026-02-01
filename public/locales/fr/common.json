@@ -242,5 +242,14 @@
     "premium_instructions": "Scannez le code QR avec votre application bancaire. Le statut premium sera activé automatiquement dans un délai de 1 à 2 minutes après le paiement.",
     "premium_success_message": "Félicitations ! Votre compte est désormais Premium. Vous pouvez maintenant profiter de toutes les fonctionnalités premium.",
     "premium_done": "Terminé",
-    "premium_checking": "Vérification du statut..."
+    "premium_checking": "Vérification du statut...",
+    "search_placeholder": "Rechercher des chansons, des artistes...",
+    "recent_searches": "Recherches récentes",
+    "clear_all": "Tout effacer",
+    "searching": "Recherche...",
+    "no_results_found": "Aucun résultat trouvé",
+    "unknown_user": "Utilisateur inconnu",
+    "search_artists": "Rechercher des artistes...",
+    "selected_artists": "Artistes sélectionnés",
+    "remove_artist": "Supprimer l'artiste"
 }

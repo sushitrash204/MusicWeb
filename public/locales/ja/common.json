@@ -242,5 +242,14 @@
     "premium_instructions": "銀行アプリでQRコードをスキャンしてください。支払いの1〜2分後にプレミアムステータスが自動的に有効になります。",
     "premium_success_message": "おめでとうございます！アカウントがプレミアムになりました。すべてのプレミアム機能をお楽しみいただけます。",
     "premium_done": "完了",
-    "premium_checking": "ステータスを確認中..."
+    "premium_checking": "ステータスを確認中...",
+    "search_placeholder": "曲、アーティストを検索...",
+    "recent_searches": "最近の検索",
+    "clear_all": "すべてクリア",
+    "searching": "検索中...",
+    "no_results_found": "結果が見つかりませんでした",
+    "unknown_user": "不明なユーザー",
+    "search_artists": "アーティストを検索...",
+    "selected_artists": "選択されたアーティスト",
+    "remove_artist": "アーティストを削除"
 }

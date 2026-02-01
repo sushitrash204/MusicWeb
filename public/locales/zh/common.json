@@ -236,5 +236,14 @@
     "premium_instructions": "请使用银行应用程序扫描二维码。付款后1-2分钟内将自动激活高级状态。",
     "premium_success_message": "恭喜！您的账户现在是 Premium。您现在可以享受所有高级功能。",
     "premium_done": "完成",
-    "premium_checking": "正在检查状态..."
+    "premium_checking": "正在检查状态...",
+    "search_placeholder": "搜索歌曲、艺人...",
+    "recent_searches": "最近搜索",
+    "clear_all": "清除全部",
+    "searching": "正在搜索...",
+    "no_results_found": "未找到结果",
+    "unknown_user": "未知用户",
+    "search_artists": "搜索艺人...",
+    "selected_artists": "已选艺人",
+    "remove_artist": "移除艺人"
 }
