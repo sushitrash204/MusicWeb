@@ -251,5 +251,20 @@
     "unknown_user": "알 수 없는 사용자",
     "search_artists": "아티스트 검색...",
     "selected_artists": "선택된 아티스트",
-    "remove_artist": "아티스트 삭제"
+    "remove_artist": "아티스트 삭제",
+    "premium_status": "프리미엄 상태",
+    "premium_expires": "만료일",
+    "premium_extend": "구독 연장",
+    "premium_extend_title": "프리미엄 연장",
+    "premium_page_title": "월간 프리미엄",
+    "premium_page_subtitle": "구독을 관리하고 광고 없이 음악을 즐기세요.",
+    "your_plan": "내 플랜",
+    "free_plan": "Spotify 무료",
+    "premium_features_title": "프리미엄을 선택해야 하는 이유",
+    "ad_free_music": "광고 없는 음악 감상",
+    "high_quality_audio": "고품질 오디오",
+    "unlimited_skips": "무제한 건너뛰기",
+    "premium_price_hint": "구독료는 매달 청구됩니다. 언제든지 취소할 수 있습니다.",
+    "manage_subscription": "구독 관리",
+    "manage_subscription_desc": "플랜 및 결제 세부 정보를 관리합니다."
 }

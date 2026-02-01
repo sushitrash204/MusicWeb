@@ -251,5 +251,20 @@
     "unknown_user": "Usuario desconocido",
     "search_artists": "Buscar artistas...",
     "selected_artists": "Artistas seleccionados",
-    "remove_artist": "Eliminar artista"
+    "remove_artist": "Eliminar artista",
+    "premium_status": "Estado Premium",
+    "premium_expires": "Expira el",
+    "premium_extend": "Extender suscripción",
+    "premium_extend_title": "Extender Premium",
+    "premium_page_title": "Premium mensual",
+    "premium_page_subtitle": "Gestiona tu suscripción y disfruta de música sin anuncios.",
+    "your_plan": "Tu plan",
+    "free_plan": "Spotify Gratis",
+    "premium_features_title": "¿Por qué pasarte a Premium?",
+    "ad_free_music": "Música sin anuncios",
+    "high_quality_audio": "Audio de alta calidad",
+    "unlimited_skips": "Saltos ilimitados",
+    "premium_price_hint": "La suscripción se factura mensualmente. Sin compromiso, cancela en cualquier momento.",
+    "manage_subscription": "Gestionar suscripción",
+    "manage_subscription_desc": "Gestiona tu plan y detalles de facturación."
 }

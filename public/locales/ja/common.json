@@ -251,5 +251,20 @@
     "unknown_user": "不明なユーザー",
     "search_artists": "アーティストを検索...",
     "selected_artists": "選択されたアーティスト",
-    "remove_artist": "アーティストを削除"
+    "remove_artist": "アーティストを削除",
+    "premium_status": "プレミアムステータス",
+    "premium_expires": "有効期限",
+    "premium_extend": "サブスクリプションを延長",
+    "premium_extend_title": "プレミアムを延長",
+    "premium_page_title": "月額プレミアム",
+    "premium_page_subtitle": "サブスクリプションを管理して、広告なしで音楽を楽しもう。",
+    "your_plan": "あなたのプラン",
+    "free_plan": "Spotify Free",
+    "premium_features_title": "プレミアムにする理由",
+    "ad_free_music": "広告なしの音楽再生",
+    "high_quality_audio": "高音質オーディオ",
+    "unlimited_skips": "スキップ制限なし",
+    "premium_price_hint": "サブスクリプションは月単位で請求されます。いつでも解約可能です。",
+    "manage_subscription": "サブスクリプションを管理",
+    "manage_subscription_desc": "プランと請求の詳細を管理します。"
 }

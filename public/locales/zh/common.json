@@ -245,5 +245,20 @@
     "unknown_user": "未知用户",
     "search_artists": "搜索艺人...",
     "selected_artists": "已选艺人",
-    "remove_artist": "移除艺人"
+    "remove_artist": "移除艺人",
+    "premium_status": "高级版状态",
+    "premium_expires": "有效期至",
+    "premium_extend": "延长订阅",
+    "premium_extend_title": "延长高级版",
+    "premium_page_title": "每月高级版",
+    "premium_page_subtitle": "管理您的订阅并享受无广告音乐。",
+    "your_plan": "您的方案",
+    "free_plan": "Spotify 免费版",
+    "premium_features_title": "为什么选择高级版？",
+    "ad_free_music": "无广告音乐体验",
+    "high_quality_audio": "高品质音频",
+    "unlimited_skips": "无限次跳过",
+    "premium_price_hint": "按月计费。无合约，随时可取消。",
+    "manage_subscription": "管理订阅",
+    "manage_subscription_desc": "管理您的方案和账单详情。"
 }
