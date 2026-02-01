@@ -9,7 +9,6 @@ import styles from './Header.module.css';
 import '../services/i18n'; // Init i18n
 import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, PlusIcon, HeartIcon, MagnifyingGlassIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 import searchService, { SearchResults } from '../services/searchService';
-import PremiumModal from './PremiumModal';
 
 const Header = () => {
     const { t, i18n } = useTranslation('common');
@@ -17,7 +16,6 @@ const Header = () => {
     const router = useRouter();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     // Search Logic
@@ -114,13 +112,6 @@ const Header = () => {
         }
     };
 
-    const handlePremiumClick = () => {
-        if (!user) {
-            router.push('/login');
-            return;
-        }
-        setIsPremiumModalOpen(true);
-    };
 
     const hasResults = results && (
         results.songs.length > 0 ||
@@ -393,7 +384,6 @@ const Header = () => {
                 </div>
             )}
 
-            <PremiumModal isOpen={isPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
         </header>
     );
 };
