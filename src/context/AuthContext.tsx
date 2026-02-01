@@ -14,6 +14,7 @@ interface User {
     role: string;
     isArtist?: boolean;
     isPremium?: boolean;
+    premiumExpiryDate?: string | Date;
     songsPlayedSinceLastAd?: number;
     lastAdTrigger?: Date | string | null;
 }

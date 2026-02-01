@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import styles from './Header.module.css';
 import '../services/i18n'; // Init i18n
-import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, PlusIcon, HeartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, PlusIcon, HeartIcon, MagnifyingGlassIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 import searchService, { SearchResults } from '../services/searchService';
 import PremiumModal from './PremiumModal';
 
@@ -295,6 +295,10 @@ const Header = () => {
                                         <Link href="/settings" className={styles.dropdownItem}>
                                             <Cog6ToothIcon className="w-5 h-5" />
                                             {t('settings')}
+                                        </Link>
+                                        <Link href="/settings" className={styles.dropdownItem}>
+                                            <CreditCardIcon className="w-5 h-5" />
+                                            {t('premium_status')}
                                         </Link>
                                         <div className={styles.dropdownDivider}></div>
                                         <button onClick={logout} className={`${styles.dropdownItem} text-red-500 hover:bg-red-50`}>

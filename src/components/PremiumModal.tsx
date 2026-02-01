@@ -18,11 +18,20 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
     const { t } = useTranslation('common');
     const { user, refreshUser } = useAuth();
     const [isChecking, setIsChecking] = useState(false);
+    const [initialExpiry, setInitialExpiry] = useState<string | Date | null>(null);
+    const [justUpgraded, setJustUpgraded] = useState(false);
+
+    useEffect(() => {
+        if (isOpen && user) {
+            setInitialExpiry(user.premiumExpiryDate || null);
+            setJustUpgraded(false);
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
 
-        if (isOpen && user && !user.isPremium) {
+        if (isOpen && user && !justUpgraded) {
             // Start polling every 5 seconds
             interval = setInterval(async () => {
                 setIsChecking(true);
@@ -34,20 +43,28 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
         return () => {
             if (interval) clearInterval(interval);
         };
-    }, [isOpen, user?.isPremium, refreshUser]);
+    }, [isOpen, justUpgraded, refreshUser]);
+
+    // Detect if upgraded or extended
+    useEffect(() => {
+        if (isOpen && user && !justUpgraded) {
+            const currentExpiry = user.premiumExpiryDate || null;
+            if (initialExpiry !== currentExpiry) {
+                setJustUpgraded(true);
+            }
+        }
+    }, [user?.premiumExpiryDate]);
 
     if (!isOpen || !user) return null;
 
+    const isSuccess = justUpgraded;
+    const isExtension = user.isPremium && !justUpgraded;
+
     // Create unique transfer content: SEVQR TKPACB MUSA <UserId>
-    // SePay VA requirement: Must start with SEVQR and contain TKPACB
-    // We append MUSA <UserId> for our backend to identify the user.
     const transferContent = `SEVQR TKPACB MUSA ${user._id}`;
 
     // Construct QR URL
-    // https://qr.sepay.vn/img?acc=SO_TAI_KHOAN&bank=NGAN_HANG&amount=SO_TIEN&des=NOI_DUNG
     const qrUrl = `https://qr.sepay.vn/img?acc=${BANK_ACCOUNT}&bank=${BANK_NAME}&amount=${AMOUNT}&des=${encodeURIComponent(transferContent)}`;
-
-    const isSuccess = user.isPremium;
 
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
@@ -57,7 +74,7 @@ export default function PremiumModal({ isOpen, onClose }: PremiumModalProps) {
                 </button>
 
                 <h2 className={styles.title}>
-                    {isSuccess ? t('premium_success_title') : t('premium_unlock_title')}
+                    {isSuccess ? t('premium_success_title') : (isExtension ? t('premium_extend_title') : t('premium_unlock_title'))}
                 </h2>
 
                 {isSuccess ? (

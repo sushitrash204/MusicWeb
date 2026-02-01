@@ -253,5 +253,9 @@
     "search_artists": "Search for artists...",
     "selected_artists": "Selected Artists",
     "remove_artist": "Remove artist",
-    "selected": "Selected"
+    "selected": "Selected",
+    "premium_status": "Premium Status",
+    "premium_expires": "Expires on",
+    "premium_extend": "Extend Subscription",
+    "premium_extend_title": "Extend Premium"
 }

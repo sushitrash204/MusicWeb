@@ -253,5 +253,9 @@
     "search_artists": "Tìm kiếm nghệ sĩ...",
     "selected_artists": "Nghệ sĩ đã chọn",
     "remove_artist": "Xóa nghệ sĩ",
-    "selected": "Đã chọn"
+    "selected": "Đã chọn",
+    "premium_status": "Trạng thái Premium",
+    "premium_expires": "Hết hạn vào ngày",
+    "premium_extend": "Gia hạn gói",
+    "premium_extend_title": "Gia hạn Premium"
 }
