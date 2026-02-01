@@ -11,10 +11,10 @@
     width: 100%;
     padding: 0.75rem 1rem;
     font-size: 0.95rem;
-    border: 2px solid var(--border-color, #333);
+    border: 1px solid var(--input-border);
     border-radius: 8px;
-    background: var(--bg-secondary, #1a1a1a);
-    color: var(--text-primary, #fff);
+    background: var(--input-bg);
+    color: var(--foreground);
     transition: all 0.2s ease;
 }
 
@@ -35,8 +35,8 @@
     right: 0;
     max-height: 300px;
     overflow-y: auto;
-    background: var(--bg-secondary, #1a1a1a);
-    border: 1px solid var(--border-color, #333);
+    background: var(--player-popup-bg, var(--card-bg));
+    border: 1px solid var(--input-border);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     z-index: 1000;
@@ -60,7 +60,7 @@
 }
 
 .artistItem:hover {
-    background: var(--bg-hover, #282828);
+    background: var(--dropdown-hover, #282828);
 }
 
 .artistItem.selected {
@@ -73,7 +73,7 @@
     border-radius: 50%;
     object-fit: cover;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: 2px solid var(--border-color, #333);
+    border: 2px solid var(--input-border);
 }
 
 .artistInfo {
@@ -85,7 +85,7 @@
 
 .artistName {
     font-size: 0.95rem;
-    color: var(--text-primary, #fff);
+    color: var(--foreground, #fff);
     font-weight: 500;
 }
 
@@ -130,9 +130,9 @@
 }
 
 .chipRemovable {
-    background: var(--bg-secondary, #282828);
-    color: var(--text-primary, #fff);
-    border: 1px solid var(--border-color, #444);
+    background: var(--input-bg);
+    color: var(--foreground);
+    border: 1px solid var(--input-border);
 }
 
 .chipRemovable:hover {
@@ -165,25 +165,6 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* Light mode support */
-[data-theme='light'] .searchInput,
-[data-theme='light'] .dropdown {
-    background: #fff;
-    border-color: #ddd;
-    color: #000;
-}
-
-[data-theme='light'] .artistItem:hover {
-    background: #f5f5f5;
-}
-
-[data-theme='light'] .chipRemovable {
-    background: #f0f0f0;
-    color: #000;
-    border-color: #ddd;
-}
-
-[data-theme='light'] .chipRemovable:hover {
-    background: rgba(29, 185, 84, 0.1);
-    border-color: #1db954;
+.removeButton:hover {
+    background: rgba(255, 255, 255, 0.1);
 }

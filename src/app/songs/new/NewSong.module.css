@@ -18,6 +18,7 @@
     margin: 0;
     background: linear-gradient(135deg, #1db954, #1ed760);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -42,10 +43,10 @@
 }
 
 .section {
-    background: var(--background-elevated);
+    background: var(--card-bg, var(--background-elevated));
     border-radius: 12px;
     padding: 2rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border, var(--border));
 }
 
 .sectionTitle {
@@ -53,7 +54,7 @@
     font-weight: 700;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--card-border, var(--border));
 }
 
 .formGroup {
@@ -75,13 +76,10 @@
 .textarea {
     width: 100%;
     padding: 0.75rem 1rem;
-    background: var(--background-input);
-    /* Fallback or specific var */
-    background-color: #2a2a2a;
-    /* Explicit dark bg if var missing */
-    border: 1px solid var(--border);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
     border-radius: 6px;
-    color: white;
+    color: var(--foreground);
     font-size: 1rem;
     transition: border-color 0.2s;
 }
@@ -96,10 +94,10 @@
     display: block;
     width: 100%;
     padding: 0.5rem;
-    background: #2a2a2a;
+    background: var(--input-bg);
     border-radius: 6px;
-    border: 1px solid var(--border);
-    color: #ccc;
+    border: 1px solid var(--input-border);
+    color: var(--text-muted);
     cursor: pointer;
 }
 
@@ -138,11 +136,12 @@
 .tag {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: #333;
+    background: var(--input-bg, #333);
     border-radius: 20px;
     font-size: 0.9rem;
     transition: all 0.2s;
-    border: 1px solid transparent;
+    border: 1px solid var(--card-border, transparent);
+    color: var(--foreground);
 }
 
 .tagLabel input:checked+.tag {
@@ -154,7 +153,7 @@
 }
 
 .tag:hover {
-    background: #444;
+    background: var(--card-border, #444);
 }
 
 .tagLabel input:checked+.tag:hover {
@@ -172,11 +171,11 @@
     align-items: flex-start;
     gap: 0.75rem;
     cursor: pointer;
-    background: #2a2a2a;
+    background: var(--input-bg, #2a2a2a);
     padding: 1rem 1.5rem;
     border-radius: 8px;
     flex: 1;
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border, var(--border));
     transition: all 0.2s;
 }
 
@@ -199,7 +198,7 @@
 
 .radioLabel small {
     display: block;
-    color: #888;
+    color: var(--text-muted, #888);
     font-size: 0.85rem;
 }
 
@@ -214,8 +213,8 @@
 
 .cancelButton {
     background: transparent;
-    border: 1px solid #666;
-    color: white;
+    border: 1px solid var(--card-border, #666);
+    color: var(--foreground, white);
     padding: 0.8rem 1.5rem;
     border-radius: 50px;
     font-weight: 700;
@@ -224,14 +223,14 @@
 }
 
 .cancelButton:hover {
-    border-color: white;
+    border-color: var(--foreground, white);
     transform: scale(1.02);
 }
 
 .submitButton {
     background: var(--primary);
     border: none;
-    color: black;
+    color: #fff;
     padding: 0.8rem 2rem;
     border-radius: 50px;
     font-weight: 700;

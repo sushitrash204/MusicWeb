@@ -109,7 +109,7 @@
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
-    background: var(--player-bg);
+    background: var(--input-bg);
     border-radius: 0 0 8px 8px;
     min-height: 400px;
 }
@@ -117,8 +117,8 @@
 .textarea {
     flex: 1;
     width: 100%;
-    background: var(--card-bg);
-    border: 1px solid var(--player-border);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
     border-radius: 6px;
     color: var(--foreground);
     padding: 1.25rem;
@@ -282,11 +282,12 @@
     font-family: monospace;
     font-size: 1rem;
     color: var(--foreground);
-    background: var(--background);
+    background: var(--input-bg);
     padding: 0.4rem 0.8rem;
     border-radius: 4px;
     min-width: 100px;
     text-align: center;
+    border: 1px solid var(--input-border);
 }
 
 .zoomControls {
@@ -396,8 +397,8 @@
 }
 
 .panelInput {
-    background: var(--background);
-    border: 1px solid var(--player-border);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
     border-radius: 4px;
     padding: 0.75rem;
     color: var(--foreground);
@@ -541,20 +542,21 @@
 
 .block.active {
     background: rgba(29, 185, 84, 0.8);
-    border-color: #fff;
+    border-color: var(--foreground, #fff);
     z-index: 20;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Selected block visual cue */
 .block.selected {
-    border: 2px solid #fff;
+    border: 2px solid var(--foreground, #fff);
     background: rgba(29, 185, 84, 0.9);
 }
 
 .blockText {
     font-size: 0.85rem;
     color: #fff;
+    /* Active block text always white for contrast with green */
     overflow: hidden;
     text-overflow: ellipsis;
     pointer-events: none;
@@ -587,13 +589,14 @@
     position: absolute;
     bottom: 1rem;
     right: 1rem;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--background-elevated, rgba(0, 0, 0, 0.5));
     padding: 0.5rem;
     border-radius: 4px;
     font-size: 0.8rem;
-    color: #aaa;
+    color: var(--text-muted, #aaa);
     pointer-events: none;
     z-index: 50;
+    border: 1px solid var(--card-border, transparent);
 }
 
 /* Modal Helper for Add Text */
@@ -626,8 +629,8 @@
 .modalInput {
     width: 100%;
     padding: 0.8rem;
-    background: var(--background);
-    border: 1px solid var(--player-border);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
     color: var(--foreground);
     margin-bottom: 1rem;
     border-radius: 4px;
